@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
@@ -10,16 +11,22 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/format";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> {
+  const { slug, locale } = await params;
   const supabase = await createClient();
+  const t = await getTranslations({ locale, namespace: "hotels.detail" });
   const { data: hotel } = await supabase.from("hotels").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: hotel?.name ?? "מלון", description: hotel?.description };
+  return { title: hotel?.name ?? t("fallbackTitle"), description: hotel?.description };
 }
 
 export default async function HotelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
+  const t = await getTranslations("hotels.detail");
 
   const { data: hotel } = await supabase.from("hotels").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!hotel) notFound();
@@ -51,7 +58,9 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
           <p className="mt-1 text-foreground/60">{hotel.area} · {hotel.address}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            {hotel.distance_to_kever_meters != null && <Badge tone="teal">{hotel.distance_to_kever_meters} מ&apos; מהציון</Badge>}
+            {hotel.distance_to_kever_meters != null && (
+              <Badge tone="teal">{t("distanceFromSite", { meters: hotel.distance_to_kever_meters })}</Badge>
+            )}
             {hotel.amenities.map((a) => (
               <Badge key={a} tone="navy">{a}</Badge>
             ))}
@@ -61,7 +70,7 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
 
           {(hotel.whatsapp_phone || hotel.contact_name) && (
             <Card className="mt-6 p-5">
-              <p className="font-display font-bold text-brand-navy">יצירת קשר</p>
+              <p className="font-display font-bold text-brand-navy">{t("contact")}</p>
               {hotel.contact_name && <p className="mt-1 text-sm text-foreground/70">{hotel.contact_name}</p>}
               {hotel.whatsapp_phone && (
                 <a
@@ -77,7 +86,7 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
             </Card>
           )}
 
-          <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">חוות דעת</h2>
+          <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">{t("reviews")}</h2>
           {reviews && reviews.length > 0 ? (
             <div className="mt-4 grid gap-4">
               {reviews.map((review) => (
@@ -91,12 +100,12 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-sm text-foreground/60">עדיין אין חוות דעת על המלון הזה.</p>
+            <p className="mt-4 text-sm text-foreground/60">{t("noReviews")}</p>
           )}
         </div>
 
         <div>
-          <h2 className="font-display text-2xl font-bold text-brand-navy">חדרים</h2>
+          <h2 className="font-display text-2xl font-bold text-brand-navy">{t("rooms")}</h2>
           {rooms && rooms.length > 0 ? (
             <div className="mt-4 flex flex-col gap-4">
               {rooms.map((room) => (
@@ -106,7 +115,7 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-display font-bold text-brand-navy">{room.name}</p>
-                          <p className="text-xs text-foreground/60">עד {room.capacity} אורחים</p>
+                          <p className="text-xs text-foreground/60">{t("upToGuests", { count: room.capacity })}</p>
                         </div>
                         <span dir="ltr" className="font-display font-bold text-brand-terracotta">
                           {formatCurrency(room.price_per_night, room.currency)}
@@ -121,7 +130,7 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
               ))}
             </div>
           ) : (
-            <EmptyState title="אין חדרים זמינים כרגע" className="mt-4" />
+            <EmptyState title={t("noRooms")} className="mt-4" />
           )}
         </div>
       </div>

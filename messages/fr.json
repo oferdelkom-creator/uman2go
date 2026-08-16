@@ -26,6 +26,23 @@
     }
   },
   "hotels": {
+    "list": {
+      "metaTitle": "Hôtels à Ouman",
+      "title": "Hôtels à Ouman",
+      "subtitle": "Hôtels et chalets vérifiés, près du site saint.",
+      "emptyTitle": "Aucun hôtel disponible pour l'instant",
+      "emptyDesc": "Revenez bientôt"
+    },
+    "detail": {
+      "fallbackTitle": "Hôtel",
+      "distanceFromSite": "{meters} m du site",
+      "contact": "Contact",
+      "reviews": "Avis",
+      "noReviews": "Aucun avis pour cet hôtel pour l'instant.",
+      "rooms": "Chambres",
+      "upToGuests": "Jusqu'à {count} personnes",
+      "noRooms": "Aucune chambre disponible pour le moment"
+    },
     "booking": {
       "checkIn": "Arrivée",
       "checkOut": "Départ",
@@ -40,6 +57,70 @@
       "sentDesc": "Le propriétaire de l'hôtel confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
       "roomUnavailable": "Cette chambre n'est pas disponible à ces dates",
       "genericError": "Une erreur s'est produite, veuillez réessayer"
+    }
+  },
+  "transport": {
+    "list": {
+      "metaTitle": "Transport vers Ouman",
+      "title": "Transport à Ouman",
+      "subtitle": "Chauffeurs et bus vérifiés vers toutes les destinations.",
+      "generalRequest": "Demande de transport générale",
+      "emptyTitle": "Aucun chauffeur disponible pour l'instant",
+      "emptyDesc": "Revenez bientôt"
+    },
+    "detail": {
+      "fallbackTitle": "Chauffeur",
+      "upToPassengers": "Jusqu'à {count} passagers",
+      "routesAndPrices": "Trajets et tarifs",
+      "roundTrip": "aller-retour",
+      "reviews": "Avis",
+      "noReviews": "Aucun avis pour ce chauffeur pour l'instant.",
+      "requestTitle": "Demander un trajet"
+    },
+    "request": {
+      "metaTitle": "Demande de transport",
+      "title": "Demande de transport",
+      "subtitle": "Nous trouverons le bon chauffeur pour votre destination."
+    },
+    "form": {
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "destination": "Destination",
+      "destinationPlaceholder": "Kiev, Berdytchiv...",
+      "departureDate": "Date de départ",
+      "guestsCount": "Nombre de passagers",
+      "roundTrip": "Aller-retour",
+      "notes": "Remarques",
+      "sending": "Envoi...",
+      "submit": "Envoyer la demande",
+      "genericError": "Une erreur s'est produite, veuillez réessayer.",
+      "sentTitle": "Demande envoyée !",
+      "sentDesc": "Nous vous contacterons pour organiser le trajet."
+    }
+  },
+  "tours": {
+    "list": {
+      "metaTitle": "Excursions à Ouman",
+      "title": "Excursions à Ouman",
+      "subtitle": "Excursions guidées et expériences à Ouman et ses environs.",
+      "emptyTitle": "Bientôt disponible - un choix d'excursions guidées",
+      "emptyDesc": "Nous travaillons à l'ajout de guides recommandés. Laissez vos coordonnées et nous vous tiendrons informé."
+    },
+    "detail": {
+      "fallbackTitle": "Guide touristique",
+      "tourDates": "Dates des excursions",
+      "noDates": "Aucune date d'excursion ouverte pour le moment"
+    },
+    "form": {
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "participantsCount": "Nombre de participants",
+      "notes": "Remarques",
+      "signingUp": "Inscription...",
+      "submit": "S'inscrire à l'excursion",
+      "dateFull": "Cette date est complète",
+      "genericError": "Une erreur s'est produite, veuillez réessayer",
+      "sentMessage": "Vous êtes inscrit ! Nous vous contacterons."
     }
   },
   "owner": {

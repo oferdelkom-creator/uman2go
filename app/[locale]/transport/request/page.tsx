@@ -1,16 +1,27 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { TransportRequestForm } from "@/components/TransportRequestForm";
 
-export const metadata: Metadata = { title: "בקשת הסעה" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "transport.request" });
+  return { title: t("metaTitle") };
+}
 
-export default function TransportRequestPage() {
+export default async function TransportRequestPage() {
+  const t = await getTranslations("transport.request");
+
   return (
     <Section>
       <div className="mx-auto max-w-2xl">
-        <h1 className="text-center font-display text-3xl font-extrabold text-brand-navy">בקשת הסעה</h1>
-        <p className="mt-2 text-center text-foreground/70">נמצא עבורכם את הנהג המתאים ליעד שלכם.</p>
+        <h1 className="text-center font-display text-3xl font-extrabold text-brand-navy">{t("title")}</h1>
+        <p className="mt-2 text-center text-foreground/70">{t("subtitle")}</p>
         <Card className="mt-8 p-6 sm:p-8">
           <TransportRequestForm />
         </Card>

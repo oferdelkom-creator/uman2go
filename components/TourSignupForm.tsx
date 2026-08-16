@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input, Textarea } from "@/components/ui/FormField";
 
 export function TourSignupForm({ tourDateId, guideId }: { tourDateId: string; guideId: string }) {
+  const t = useTranslations("tours.form");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -28,7 +30,7 @@ export function TourSignupForm({ tourDateId, guideId }: { tourDateId: string; gu
 
     if (error) {
       setStatus("error");
-      setErrorMessage(error.message.includes("full") ? "התאריך הזה מלא" : "אירעה שגיאה, נסו שוב");
+      setErrorMessage(error.message.includes("full") ? t("dateFull") : t("genericError"));
       return;
     }
 
@@ -43,7 +45,7 @@ export function TourSignupForm({ tourDateId, guideId }: { tourDateId: string; gu
   if (status === "done") {
     return (
       <div className="rounded-2xl bg-brand-teal/10 p-4 text-center text-sm text-brand-teal">
-        נרשמתם בהצלחה! ניצור איתכם קשר.
+        {t("sentMessage")}
       </div>
     );
   }
@@ -51,22 +53,22 @@ export function TourSignupForm({ tourDateId, guideId }: { tourDateId: string; gu
   return (
     <form onSubmit={handleSubmit} className="grid gap-3">
       <div className="grid grid-cols-2 gap-3">
-        <FormField label="שם מלא" htmlFor={`name-${tourDateId}`} required>
+        <FormField label={t("fullName")} htmlFor={`name-${tourDateId}`} required>
           <Input id={`name-${tourDateId}`} name="full_name" required />
         </FormField>
-        <FormField label="טלפון" htmlFor={`phone-${tourDateId}`} required>
+        <FormField label={t("phone")} htmlFor={`phone-${tourDateId}`} required>
           <Input id={`phone-${tourDateId}`} name="phone" type="tel" dir="ltr" required />
         </FormField>
       </div>
-      <FormField label="מספר משתתפים" htmlFor={`participants-${tourDateId}`} required>
+      <FormField label={t("participantsCount")} htmlFor={`participants-${tourDateId}`} required>
         <Input id={`participants-${tourDateId}`} name="participants_count" type="number" dir="ltr" min={1} defaultValue={1} required />
       </FormField>
-      <FormField label="הערות" htmlFor={`notes-${tourDateId}`}>
+      <FormField label={t("notes")} htmlFor={`notes-${tourDateId}`}>
         <Textarea id={`notes-${tourDateId}`} name="notes" />
       </FormField>
       {status === "error" && <p className="text-sm text-red-600">{errorMessage}</p>}
       <Button type="submit" disabled={status === "loading"} className="w-full">
-        {status === "loading" ? "נרשם..." : "הרשמה לטיול"}
+        {status === "loading" ? t("signingUp") : t("submit")}
       </Button>
     </form>
   );

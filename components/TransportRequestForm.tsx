@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input, Textarea } from "@/components/ui/FormField";
 
 export function TransportRequestForm({ driverId }: { driverId?: string }) {
+  const t = useTranslations("transport.form");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -43,42 +45,42 @@ export function TransportRequestForm({ driverId }: { driverId?: string }) {
   if (status === "done") {
     return (
       <div className="rounded-2xl bg-brand-teal/10 p-6 text-center text-brand-teal">
-        <p className="font-display text-lg font-bold">הבקשה נשלחה!</p>
-        <p className="mt-1 text-sm">ניצור איתכם קשר לתיאום ההסעה.</p>
+        <p className="font-display text-lg font-bold">{t("sentTitle")}</p>
+        <p className="mt-1 text-sm">{t("sentDesc")}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-      <FormField label="שם מלא" htmlFor="full_name" required>
+      <FormField label={t("fullName")} htmlFor="full_name" required>
         <Input id="full_name" name="full_name" required />
       </FormField>
-      <FormField label="טלפון" htmlFor="phone" required>
+      <FormField label={t("phone")} htmlFor="phone" required>
         <Input id="phone" name="phone" type="tel" dir="ltr" required />
       </FormField>
-      <FormField label="יעד" htmlFor="destination" required>
-        <Input id="destination" name="destination" placeholder="קייב, בורדיצ'ב..." required />
+      <FormField label={t("destination")} htmlFor="destination" required>
+        <Input id="destination" name="destination" placeholder={t("destinationPlaceholder")} required />
       </FormField>
-      <FormField label="תאריך יציאה" htmlFor="departure_date" required>
+      <FormField label={t("departureDate")} htmlFor="departure_date" required>
         <Input id="departure_date" name="departure_date" type="date" dir="ltr" required />
       </FormField>
-      <FormField label="מספר נוסעים" htmlFor="guests_count" required>
+      <FormField label={t("guestsCount")} htmlFor="guests_count" required>
         <Input id="guests_count" name="guests_count" type="number" dir="ltr" min={1} defaultValue={1} required />
       </FormField>
       <label className="flex items-center gap-2 self-end pb-2 text-sm font-medium text-brand-navy">
         <input type="checkbox" name="round_trip" className="h-4 w-4 rounded border-brand-navy/30 text-brand-terracotta" />
-        הלוך ושוב
+        {t("roundTrip")}
       </label>
       <div className="sm:col-span-2">
-        <FormField label="הערות" htmlFor="notes">
+        <FormField label={t("notes")} htmlFor="notes">
           <Textarea id="notes" name="notes" />
         </FormField>
       </div>
-      {status === "error" && <p className="sm:col-span-2 text-sm text-red-600">אירעה שגיאה, נסו שוב.</p>}
+      {status === "error" && <p className="sm:col-span-2 text-sm text-red-600">{t("genericError")}</p>}
       <div className="sm:col-span-2">
         <Button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "שולח..." : "שליחת בקשה"}
+          {status === "loading" ? t("sending") : t("submit")}
         </Button>
       </div>
     </form>

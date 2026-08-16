@@ -26,6 +26,23 @@
     }
   },
   "hotels": {
+    "list": {
+      "metaTitle": "Hotels in Uman",
+      "title": "Hotels in Uman",
+      "subtitle": "Verified hotels and cabins, close to the holy site.",
+      "emptyTitle": "No hotels available yet",
+      "emptyDesc": "Check back soon"
+    },
+    "detail": {
+      "fallbackTitle": "Hotel",
+      "distanceFromSite": "{meters} m from the site",
+      "contact": "Contact",
+      "reviews": "Reviews",
+      "noReviews": "No reviews for this hotel yet.",
+      "rooms": "Rooms",
+      "upToGuests": "Up to {count} guests",
+      "noRooms": "No rooms available right now"
+    },
     "booking": {
       "checkIn": "Check-in",
       "checkOut": "Check-out",
@@ -40,6 +57,70 @@
       "sentDesc": "The hotel owner will confirm the booking soon. You can track the status in your account.",
       "roomUnavailable": "This room isn't available for these dates",
       "genericError": "Something went wrong, please try again"
+    }
+  },
+  "transport": {
+    "list": {
+      "metaTitle": "Transport to Uman",
+      "title": "Transport in Uman",
+      "subtitle": "Verified drivers and buses to every destination.",
+      "generalRequest": "General Transport Request",
+      "emptyTitle": "No drivers available yet",
+      "emptyDesc": "Check back soon"
+    },
+    "detail": {
+      "fallbackTitle": "Driver",
+      "upToPassengers": "Up to {count} passengers",
+      "routesAndPrices": "Routes & Prices",
+      "roundTrip": "round trip",
+      "reviews": "Reviews",
+      "noReviews": "No reviews for this driver yet.",
+      "requestTitle": "Request a Ride"
+    },
+    "request": {
+      "metaTitle": "Request Transport",
+      "title": "Request Transport",
+      "subtitle": "We'll find the right driver for your destination."
+    },
+    "form": {
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "destination": "Destination",
+      "destinationPlaceholder": "Kyiv, Berdychiv...",
+      "departureDate": "Departure Date",
+      "guestsCount": "Number of Passengers",
+      "roundTrip": "Round trip",
+      "notes": "Notes",
+      "sending": "Sending...",
+      "submit": "Send Request",
+      "genericError": "Something went wrong, please try again.",
+      "sentTitle": "Request sent!",
+      "sentDesc": "We'll contact you to arrange the ride."
+    }
+  },
+  "tours": {
+    "list": {
+      "metaTitle": "Tours in Uman",
+      "title": "Tours in Uman",
+      "subtitle": "Guided tours and experiences in Uman and beyond.",
+      "emptyTitle": "Coming soon - a range of guided tours",
+      "emptyDesc": "We're working on adding recommended tour guides. Leave your details and we'll update you."
+    },
+    "detail": {
+      "fallbackTitle": "Tour Guide",
+      "tourDates": "Tour Dates",
+      "noDates": "No open tour dates right now"
+    },
+    "form": {
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "participantsCount": "Number of Participants",
+      "notes": "Notes",
+      "signingUp": "Signing up...",
+      "submit": "Sign Up for Tour",
+      "dateFull": "This date is full",
+      "genericError": "Something went wrong, please try again",
+      "sentMessage": "You're signed up! We'll be in touch."
     }
   },
   "owner": {

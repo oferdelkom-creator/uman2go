@@ -26,6 +26,23 @@
     }
   },
   "hotels": {
+    "list": {
+      "metaTitle": "מלונות באומן",
+      "title": "מלונות באומן",
+      "subtitle": "מלונות וצימרים מאומתים, קרוב לציון הקדוש.",
+      "emptyTitle": "עדיין אין מלונות זמינים",
+      "emptyDesc": "חזרו בקרוב"
+    },
+    "detail": {
+      "fallbackTitle": "מלון",
+      "distanceFromSite": "{meters} מ' מהציון",
+      "contact": "יצירת קשר",
+      "reviews": "חוות דעת",
+      "noReviews": "עדיין אין חוות דעת על המלון הזה.",
+      "rooms": "חדרים",
+      "upToGuests": "עד {count} אורחים",
+      "noRooms": "אין חדרים זמינים כרגע"
+    },
     "booking": {
       "checkIn": "הגעה",
       "checkOut": "עזיבה",
@@ -40,6 +57,70 @@
       "sentDesc": "בעל המלון יאשר את ההזמנה בקרוב. תוכלו לעקוב אחרי הסטטוס באזור האישי.",
       "roomUnavailable": "החדר אינו זמין בתאריכים אלו",
       "genericError": "אירעה שגיאה, נסו שוב"
+    }
+  },
+  "transport": {
+    "list": {
+      "metaTitle": "הסעות לאומן",
+      "title": "הסעות באומן",
+      "subtitle": "נהגים ואוטובוסים מאומתים לכל יעד.",
+      "generalRequest": "בקשת הסעה כללית",
+      "emptyTitle": "עדיין אין נהגים זמינים",
+      "emptyDesc": "חזרו בקרוב"
+    },
+    "detail": {
+      "fallbackTitle": "נהג",
+      "upToPassengers": "עד {count} נוסעים",
+      "routesAndPrices": "מסלולים ומחירים",
+      "roundTrip": "הלוך-חזור",
+      "reviews": "חוות דעת",
+      "noReviews": "עדיין אין חוות דעת על הנהג הזה.",
+      "requestTitle": "בקשת הסעה"
+    },
+    "request": {
+      "metaTitle": "בקשת הסעה",
+      "title": "בקשת הסעה",
+      "subtitle": "נמצא עבורכם את הנהג המתאים ליעד שלכם."
+    },
+    "form": {
+      "fullName": "שם מלא",
+      "phone": "טלפון",
+      "destination": "יעד",
+      "destinationPlaceholder": "קייב, בורדיצ'ב...",
+      "departureDate": "תאריך יציאה",
+      "guestsCount": "מספר נוסעים",
+      "roundTrip": "הלוך ושוב",
+      "notes": "הערות",
+      "sending": "שולח...",
+      "submit": "שליחת בקשה",
+      "genericError": "אירעה שגיאה, נסו שוב.",
+      "sentTitle": "הבקשה נשלחה!",
+      "sentDesc": "ניצור איתכם קשר לתיאום ההסעה."
+    }
+  },
+  "tours": {
+    "list": {
+      "metaTitle": "טיולים באומן",
+      "title": "טיולים באומן",
+      "subtitle": "טיולים מודרכים וחוויות באומן והסביבה.",
+      "emptyTitle": "בקרוב - מגוון טיולים מודרכים",
+      "emptyDesc": "אנחנו עובדים על הוספת מדריכי טיולים מומלצים. השאירו פרטים ונעדכן אתכם."
+    },
+    "detail": {
+      "fallbackTitle": "מדריך טיולים",
+      "tourDates": "תאריכי טיולים",
+      "noDates": "אין תאריכי טיולים פתוחים כרגע"
+    },
+    "form": {
+      "fullName": "שם מלא",
+      "phone": "טלפון",
+      "participantsCount": "מספר משתתפים",
+      "notes": "הערות",
+      "signingUp": "נרשם...",
+      "submit": "הרשמה לטיול",
+      "dateFull": "התאריך הזה מלא",
+      "genericError": "אירעה שגיאה, נסו שוב",
+      "sentMessage": "נרשמתם בהצלחה! ניצור איתכם קשר."
     }
   },
   "owner": {

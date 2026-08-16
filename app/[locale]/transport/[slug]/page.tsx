@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
@@ -8,16 +9,22 @@ import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { TransportRequestForm } from "@/components/TransportRequestForm";
 import { formatCurrency } from "@/lib/format";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> {
+  const { slug, locale } = await params;
   const supabase = await createClient();
+  const t = await getTranslations({ locale, namespace: "transport.detail" });
   const { data: driver } = await supabase.from("drivers").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: driver?.name ?? "נהג", description: driver?.description };
+  return { title: driver?.name ?? t("fallbackTitle"), description: driver?.description };
 }
 
 export default async function DriverDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
+  const t = await getTranslations("transport.detail");
 
   const { data: driver } = await supabase.from("drivers").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!driver) notFound();
@@ -44,20 +51,20 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
           </div>
           <p className="mt-1 text-foreground/60">
             {driver.vehicle_type}
-            {driver.passenger_capacity ? ` · עד ${driver.passenger_capacity} נוסעים` : ""}
+            {driver.passenger_capacity ? ` · ${t("upToPassengers", { count: driver.passenger_capacity })}` : ""}
           </p>
           <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{driver.description}</p>
 
           {routes && routes.length > 0 && (
             <>
-              <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">מסלולים ומחירים</h2>
+              <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">{t("routesAndPrices")}</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {routes.map((route) => (
                   <Card key={route.id} className="flex items-center justify-between p-4">
                     <span className="font-semibold text-brand-navy">{route.destination}</span>
                     <span dir="ltr" className="font-display font-bold text-brand-terracotta">
                       {formatCurrency(route.price, route.currency)}
-                      {route.round_trip_price && ` / ${formatCurrency(route.round_trip_price, route.currency)} הלוך-חזור`}
+                      {route.round_trip_price && ` / ${formatCurrency(route.round_trip_price, route.currency)} ${t("roundTrip")}`}
                     </span>
                   </Card>
                 ))}
@@ -65,7 +72,7 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
             </>
           )}
 
-          <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">חוות דעת</h2>
+          <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">{t("reviews")}</h2>
           {reviews && reviews.length > 0 ? (
             <div className="mt-4 grid gap-4">
               {reviews.map((review) => (
@@ -79,12 +86,12 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-sm text-foreground/60">עדיין אין חוות דעת על הנהג הזה.</p>
+            <p className="mt-4 text-sm text-foreground/60">{t("noReviews")}</p>
           )}
         </div>
 
         <div>
-          <h2 className="font-display text-2xl font-bold text-brand-navy">בקשת הסעה</h2>
+          <h2 className="font-display text-2xl font-bold text-brand-navy">{t("requestTitle")}</h2>
           <Card className="mt-4 p-5">
             <TransportRequestForm driverId={driver.id} />
           </Card>

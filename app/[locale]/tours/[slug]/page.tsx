@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
@@ -8,16 +9,22 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { TourSignupForm } from "@/components/TourSignupForm";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> {
+  const { slug, locale } = await params;
   const supabase = await createClient();
+  const t = await getTranslations({ locale, namespace: "tours.detail" });
   const { data: guide } = await supabase.from("tour_guides").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: guide?.name ?? "מדריך טיולים", description: guide?.description };
+  return { title: guide?.name ?? t("fallbackTitle"), description: guide?.description };
 }
 
 export default async function TourGuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
+  const t = await getTranslations("tours.detail");
 
   const { data: guide } = await supabase.from("tour_guides").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!guide) notFound();
@@ -41,7 +48,7 @@ export default async function TourGuideDetailPage({ params }: { params: Promise<
         </div>
 
         <div>
-          <h2 className="font-display text-2xl font-bold text-brand-navy">תאריכי טיולים</h2>
+          <h2 className="font-display text-2xl font-bold text-brand-navy">{t("tourDates")}</h2>
           {tourDates && tourDates.length > 0 ? (
             <div className="mt-4 flex flex-col gap-4">
               {tourDates.map((date) => (
@@ -67,7 +74,7 @@ export default async function TourGuideDetailPage({ params }: { params: Promise<
               ))}
             </div>
           ) : (
-            <EmptyState title="אין תאריכי טיולים פתוחים כרגע" className="mt-4" />
+            <EmptyState title={t("noDates")} className="mt-4" />
           )}
         </div>
       </div>
