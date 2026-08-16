@@ -36,15 +36,21 @@ export function RoomForm({ hotelId, room }: { hotelId: string; room?: Room }) {
     };
 
     const supabase = createClient();
-    const { error } = room
-      ? await supabase.from("rooms").update(payload).eq("id", room.id)
-      : await supabase.from("rooms").insert({ ...payload, hotel_id: hotelId });
+    const { data: saved, error } = room
+      ? await supabase.from("rooms").update(payload).eq("id", room.id).select("id").single()
+      : await supabase.from("rooms").insert({ ...payload, hotel_id: hotelId }).select("id").single();
 
     if (error) {
       setError(t("genericError"));
       setLoading(false);
       return;
     }
+
+    fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "rooms", id: saved.id }),
+    }).catch(() => {});
 
     router.push("/owner/rooms");
     router.refresh();

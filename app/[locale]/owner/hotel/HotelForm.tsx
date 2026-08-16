@@ -54,15 +54,21 @@ export function HotelForm({ hotel }: { hotel?: Hotel }) {
       return;
     }
 
-    const { error } = hotel
-      ? await supabase.from("hotels").update(payload).eq("id", hotel.id)
-      : await supabase.from("hotels").insert({ ...payload, owner_id: user.id });
+    const { data: saved, error } = hotel
+      ? await supabase.from("hotels").update(payload).eq("id", hotel.id).select("id").single()
+      : await supabase.from("hotels").insert({ ...payload, owner_id: user.id }).select("id").single();
 
     if (error) {
       setError(error.message.includes("duplicate") ? t("slugTaken") : t("genericError"));
       setLoading(false);
       return;
     }
+
+    fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "hotels", id: saved.id }),
+    }).catch(() => {});
 
     router.push("/owner");
     router.refresh();
