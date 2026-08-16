@@ -1,9 +1,11 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
+  const t = await getTranslations("admin.dashboard");
 
   const [
     { count: bookingsCount },
@@ -26,10 +28,10 @@ export default async function AdminDashboardPage() {
   const leadsCount = (vipCount ?? 0) + (investmentCount ?? 0) + (flightCount ?? 0) + (homeRentalCount ?? 0);
 
   const cards = [
-    { href: "/admin/bookings", title: "הזמנות מלונות", count: bookingsCount ?? 0 },
-    { href: "/admin/transport", title: "בקשות הסעה", count: transportCount ?? 0 },
-    { href: "/admin/tours", title: "הרשמות לטיולים", count: tourSignupsCount ?? 0 },
-    { href: "/admin/leads", title: "פניות (VIP/השקעות/טיסות/נכסים)", count: leadsCount },
+    { href: "/admin/bookings", title: t("hotelBookings"), count: bookingsCount ?? 0 },
+    { href: "/admin/transport", title: t("transportRequests"), count: transportCount ?? 0 },
+    { href: "/admin/tours", title: t("tourSignups"), count: tourSignupsCount ?? 0 },
+    { href: "/admin/leads", title: t("leads"), count: leadsCount },
   ];
 
   return (

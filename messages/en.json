@@ -178,13 +178,53 @@
       "viewHotelPage": "View Hotel Page"
     },
     "hotelForm": {
-      "editTitle": "Edit Hotel Details"
+      "editTitle": "Edit Hotel Details",
+      "addTitle": "Add Hotel",
+      "mustLogin": "You must log in",
+      "slugTaken": "This URL is already taken",
+      "genericError": "Something went wrong, please try again",
+      "name": "Hotel Name",
+      "slug": "URL (slug)",
+      "area": "Area",
+      "address": "Address",
+      "distanceFromSite": "Distance from the site (meters)",
+      "contactName": "Contact Name",
+      "whatsapp": "WhatsApp",
+      "altPhone": "Alternate Phone",
+      "amenities": "Amenities (comma-separated)",
+      "amenitiesPlaceholder": "Parking, Kitchenette, A/C",
+      "description": "Description",
+      "photos": "Photo URLs (one per line)",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "createHotel": "Create Hotel"
+    },
+    "roomForm": {
+      "name": "Room Name",
+      "capacity": "Guest Capacity",
+      "pricePerNight": "Price per Night",
+      "currency": "Currency",
+      "pricingType": "Pricing Type",
+      "pricingTypePerNight": "Fixed price per night",
+      "pricingTypePerNightPerGuest": "Price per night per guest",
+      "quantity": "Number of Units of This Type",
+      "status": "Status",
+      "statusActive": "Active",
+      "statusHidden": "Hidden",
+      "description": "Description",
+      "photos": "Photo URLs (one per line)",
+      "genericError": "Something went wrong, please try again",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "addRoom": "Add Room"
     },
     "bookings": {
       "title": "Bookings",
       "guest": "Guest",
       "guestsCount": "{count} guests",
       "noBookings": "No bookings yet",
+      "confirmAction": "Confirm Booking",
+      "cancelAction": "Cancel",
       "status": {
         "pendingDeposit": "Awaiting Payment",
         "depositPaid": "Deposit Paid",
@@ -238,6 +278,57 @@
       "transport": "Transport",
       "tours": "Tours",
       "team": "Team"
+    },
+    "dashboard": {
+      "hotelBookings": "Hotel Bookings",
+      "transportRequests": "Transport Requests",
+      "tourSignups": "Tour Signups",
+      "leads": "Leads (VIP/Investments/Flights/Rentals)"
+    },
+    "bookings": {
+      "title": "All Bookings",
+      "guestFallback": "Guest",
+      "guestsCount": "{count} guests",
+      "noBookings": "No bookings yet",
+      "feePaid": "Fee Paid",
+      "feeNotPaid": "Fee Not Paid"
+    },
+    "transport": {
+      "title": "All Transport Requests",
+      "roundTrip": "round trip",
+      "passengersCount": "{count} passengers",
+      "noRequests": "No transport requests yet",
+      "feePaid": "Fee Paid",
+      "feeNotPaid": "Fee Not Paid"
+    },
+    "tours": {
+      "title": "All Tour Signups",
+      "participantsCount": "{count} participants",
+      "statusCancelled": "Cancelled",
+      "statusConfirmed": "Confirmed",
+      "noSignups": "No signups yet",
+      "feePaid": "Fee Paid",
+      "feeNotPaid": "Fee Not Paid",
+      "cancelAction": "Cancel"
+    },
+    "leads": {
+      "vipTitle": "VIP Requests",
+      "investmentTitle": "Investment Inquiries",
+      "flightTitle": "Flight Requests",
+      "homeRentalTitle": "Home Rental Leads",
+      "noLeads": "No leads"
+    },
+    "team": {
+      "title": "Admin Team",
+      "description": "Only users who have already signed up on the site (via the regular signup page) can be made admins.",
+      "noName": "No name",
+      "you": "you",
+      "promoteEmailLabel": "Team member's email (must already be registered on the site)",
+      "promoting": "Adding...",
+      "promoteButton": "Make Admin",
+      "notFoundError": "No user found with this email — they need to sign up on the site first.",
+      "genericError": "Something went wrong, please try again.",
+      "removeAction": "Remove Access"
     }
   },
   "vip": {

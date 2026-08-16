@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +10,7 @@ import { slugify } from "@/lib/slug";
 import type { Hotel } from "@/lib/types";
 
 export function HotelForm({ hotel }: { hotel?: Hotel }) {
+  const t = useTranslations("owner.hotelForm");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ export function HotelForm({ hotel }: { hotel?: Hotel }) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      setError("יש להתחבר");
+      setError(t("mustLogin"));
       setLoading(false);
       return;
     }
@@ -57,7 +59,7 @@ export function HotelForm({ hotel }: { hotel?: Hotel }) {
       : await supabase.from("hotels").insert({ ...payload, owner_id: user.id });
 
     if (error) {
-      setError(error.message.includes("duplicate") ? "כתובת ה-URL הזו כבר תפוסה" : "אירעה שגיאה, נסו שוב");
+      setError(error.message.includes("duplicate") ? t("slugTaken") : t("genericError"));
       setLoading(false);
       return;
     }
@@ -68,44 +70,44 @@ export function HotelForm({ hotel }: { hotel?: Hotel }) {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-      <FormField label="שם המלון" htmlFor="name" required>
+      <FormField label={t("name")} htmlFor="name" required>
         <Input id="name" name="name" defaultValue={hotel?.name} required />
       </FormField>
       {!hotel && (
-        <FormField label="כתובת URL (slug)" htmlFor="slug">
+        <FormField label={t("slug")} htmlFor="slug">
           <Input id="slug" name="slug" dir="ltr" placeholder="my-hotel" />
         </FormField>
       )}
-      <FormField label="אזור" htmlFor="area">
+      <FormField label={t("area")} htmlFor="area">
         <Input id="area" name="area" defaultValue={hotel?.area} />
       </FormField>
-      <FormField label="כתובת" htmlFor="address">
+      <FormField label={t("address")} htmlFor="address">
         <Input id="address" name="address" defaultValue={hotel?.address} />
       </FormField>
-      <FormField label="מרחק מהציון (מטרים)" htmlFor="distance_to_kever_meters">
+      <FormField label={t("distanceFromSite")} htmlFor="distance_to_kever_meters">
         <Input id="distance_to_kever_meters" name="distance_to_kever_meters" type="number" dir="ltr" defaultValue={hotel?.distance_to_kever_meters ?? ""} />
       </FormField>
-      <FormField label="איש קשר" htmlFor="contact_name">
+      <FormField label={t("contactName")} htmlFor="contact_name">
         <Input id="contact_name" name="contact_name" defaultValue={hotel?.contact_name ?? ""} />
       </FormField>
-      <FormField label="וואטסאפ" htmlFor="whatsapp_phone">
+      <FormField label={t("whatsapp")} htmlFor="whatsapp_phone">
         <Input id="whatsapp_phone" name="whatsapp_phone" dir="ltr" defaultValue={hotel?.whatsapp_phone ?? ""} />
       </FormField>
-      <FormField label="טלפון נוסף" htmlFor="phone_alt">
+      <FormField label={t("altPhone")} htmlFor="phone_alt">
         <Input id="phone_alt" name="phone_alt" dir="ltr" defaultValue={hotel?.phone_alt ?? ""} />
       </FormField>
       <div className="sm:col-span-2">
-        <FormField label="מתקנים (מופרדים בפסיק)" htmlFor="amenities">
-          <Input id="amenities" name="amenities" defaultValue={hotel?.amenities.join(", ")} placeholder="חניה, מטבחון, מיזוג" />
+        <FormField label={t("amenities")} htmlFor="amenities">
+          <Input id="amenities" name="amenities" defaultValue={hotel?.amenities.join(", ")} placeholder={t("amenitiesPlaceholder")} />
         </FormField>
       </div>
       <div className="sm:col-span-2">
-        <FormField label="תיאור" htmlFor="description">
+        <FormField label={t("description")} htmlFor="description">
           <Textarea id="description" name="description" defaultValue={hotel?.description} />
         </FormField>
       </div>
       <div className="sm:col-span-2">
-        <FormField label="קישורי תמונות (אחד בכל שורה)" htmlFor="photos">
+        <FormField label={t("photos")} htmlFor="photos">
           <Textarea id="photos" name="photos" dir="ltr" defaultValue={hotel?.photos.join("\n")} />
         </FormField>
       </div>
@@ -114,7 +116,7 @@ export function HotelForm({ hotel }: { hotel?: Hotel }) {
 
       <div className="sm:col-span-2">
         <Button type="submit" disabled={loading}>
-          {loading ? "שומר..." : hotel ? "שמירת שינויים" : "יצירת מלון"}
+          {loading ? t("saving") : hotel ? t("saveChanges") : t("createHotel")}
         </Button>
       </div>
     </form>

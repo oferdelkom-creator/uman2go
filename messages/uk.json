@@ -178,13 +178,53 @@
       "viewHotelPage": "Переглянути сторінку готелю"
     },
     "hotelForm": {
-      "editTitle": "Редагувати дані готелю"
+      "editTitle": "Редагувати дані готелю",
+      "addTitle": "Додати готель",
+      "mustLogin": "Потрібно увійти",
+      "slugTaken": "Ця URL-адреса вже зайнята",
+      "genericError": "Сталася помилка, спробуйте ще раз",
+      "name": "Назва готелю",
+      "slug": "URL-адреса (slug)",
+      "area": "Район",
+      "address": "Адреса",
+      "distanceFromSite": "Відстань від цвинтаря (метри)",
+      "contactName": "Контактна особа",
+      "whatsapp": "WhatsApp",
+      "altPhone": "Додатковий телефон",
+      "amenities": "Зручності (через кому)",
+      "amenitiesPlaceholder": "Парковка, кухня, кондиціонер",
+      "description": "Опис",
+      "photos": "Посилання на фото (по одному в рядку)",
+      "saving": "Збереження...",
+      "saveChanges": "Зберегти зміни",
+      "createHotel": "Створити готель"
+    },
+    "roomForm": {
+      "name": "Назва номера",
+      "capacity": "Кількість гостей",
+      "pricePerNight": "Ціна за ніч",
+      "currency": "Валюта",
+      "pricingType": "Тип ціноутворення",
+      "pricingTypePerNight": "Фіксована ціна за ніч",
+      "pricingTypePerNightPerGuest": "Ціна за ніч на гостя",
+      "quantity": "Кількість номерів цього типу",
+      "status": "Статус",
+      "statusActive": "Активний",
+      "statusHidden": "Прихований",
+      "description": "Опис",
+      "photos": "Посилання на фото (по одному в рядку)",
+      "genericError": "Сталася помилка, спробуйте ще раз",
+      "saving": "Збереження...",
+      "saveChanges": "Зберегти зміни",
+      "addRoom": "Додати номер"
     },
     "bookings": {
       "title": "Бронювання",
       "guest": "Гість",
       "guestsCount": "{count} гостей",
       "noBookings": "Ще немає бронювань",
+      "confirmAction": "Підтвердити бронювання",
+      "cancelAction": "Скасувати",
       "status": {
         "pendingDeposit": "Очікує оплати",
         "depositPaid": "Завдаток сплачено",
@@ -238,6 +278,57 @@
       "transport": "Трансфери",
       "tours": "Тури",
       "team": "Команда"
+    },
+    "dashboard": {
+      "hotelBookings": "Бронювання готелів",
+      "transportRequests": "Запити на трансфер",
+      "tourSignups": "Реєстрації на тури",
+      "leads": "Заявки (VIP/Інвестиції/Авіаквитки/Оренда)"
+    },
+    "bookings": {
+      "title": "Усі бронювання",
+      "guestFallback": "Гість",
+      "guestsCount": "{count} гостей",
+      "noBookings": "Ще немає бронювань",
+      "feePaid": "Комісію сплачено",
+      "feeNotPaid": "Комісію не сплачено"
+    },
+    "transport": {
+      "title": "Усі запити на трансфер",
+      "roundTrip": "туди-назад",
+      "passengersCount": "{count} пасажирів",
+      "noRequests": "Ще немає запитів на трансфер",
+      "feePaid": "Комісію сплачено",
+      "feeNotPaid": "Комісію не сплачено"
+    },
+    "tours": {
+      "title": "Усі реєстрації на тури",
+      "participantsCount": "{count} учасників",
+      "statusCancelled": "Скасовано",
+      "statusConfirmed": "Підтверджено",
+      "noSignups": "Ще немає реєстрацій",
+      "feePaid": "Комісію сплачено",
+      "feeNotPaid": "Комісію не сплачено",
+      "cancelAction": "Скасувати"
+    },
+    "leads": {
+      "vipTitle": "VIP-запити",
+      "investmentTitle": "Інвестиційні заявки",
+      "flightTitle": "Запити на авіаквитки",
+      "homeRentalTitle": "Заявки на оренду житла",
+      "noLeads": "Немає заявок"
+    },
+    "team": {
+      "title": "Команда адміністраторів",
+      "description": "Адміністраторами можуть стати лише користувачі, які вже зареєструвалися на сайті (через звичайну сторінку реєстрації).",
+      "noName": "Без імені",
+      "you": "ви",
+      "promoteEmailLabel": "Електронна пошта члена команди (має бути вже зареєстрована на сайті)",
+      "promoting": "Додавання...",
+      "promoteButton": "Зробити адміністратором",
+      "notFoundError": "Не знайдено користувача з цією поштою — спершу йому потрібно зареєструватися на сайті.",
+      "genericError": "Сталася помилка, спробуйте ще раз.",
+      "removeAction": "Прибрати доступ"
     }
   },
   "vip": {

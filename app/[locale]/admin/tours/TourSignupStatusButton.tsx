@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 
 export function TourSignupStatusButton({ signupId, status }: { signupId: string; status: string }) {
+  const t = useTranslations("admin.tours");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +23,7 @@ export function TourSignupStatusButton({ signupId, status }: { signupId: string;
 
   return (
     <Button variant="ghost" disabled={loading} onClick={cancel}>
-      ביטול
+      {t("cancelAction")}
     </Button>
   );
 }

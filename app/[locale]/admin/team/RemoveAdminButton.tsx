@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 
 export function RemoveAdminButton({ profileId, disabled }: { profileId: string; disabled?: boolean }) {
+  const t = useTranslations("admin.team");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +21,7 @@ export function RemoveAdminButton({ profileId, disabled }: { profileId: string; 
 
   return (
     <Button variant="ghost" disabled={loading || disabled} onClick={remove}>
-      הסרת הרשאה
+      {t("removeAction")}
     </Button>
   );
 }

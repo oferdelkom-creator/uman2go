@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { PromoteAdminForm } from "@/app/[locale]/admin/team/PromoteAdminForm";
@@ -5,6 +6,7 @@ import { RemoveAdminButton } from "@/app/[locale]/admin/team/RemoveAdminButton";
 
 export default async function AdminTeamPage() {
   const supabase = await createClient();
+  const t = await getTranslations("admin.team");
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -17,10 +19,8 @@ export default async function AdminTeamPage() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-bold text-brand-navy">צוות ניהול</h2>
-      <p className="mt-1 text-sm text-foreground/60">
-        רק משתמשים שכבר נרשמו באתר (בעמוד ההרשמה הרגיל) ניתן להפוך למנהלים.
-      </p>
+      <h2 className="font-display text-2xl font-bold text-brand-navy">{t("title")}</h2>
+      <p className="mt-1 text-sm text-foreground/60">{t("description")}</p>
 
       <Card className="mt-6 p-5">
         <PromoteAdminForm />
@@ -31,7 +31,7 @@ export default async function AdminTeamPage() {
           <Card key={admin.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div>
               <p className="font-semibold text-brand-navy">
-                {admin.full_name || "ללא שם"} {admin.id === user?.id && <span className="text-xs text-foreground/50">(את/ה)</span>}
+                {admin.full_name || t("noName")} {admin.id === user?.id && <span className="text-xs text-foreground/50">({t("you")})</span>}
               </p>
               <p dir="ltr" className="text-sm text-foreground/60">
                 {admin.email} {admin.phone && `· ${admin.phone}`}

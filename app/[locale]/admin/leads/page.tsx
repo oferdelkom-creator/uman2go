@@ -1,13 +1,14 @@
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/format";
 
 const LEAD_SOURCES = [
-  { table: "vip_requests" as const, title: "בקשות VIP" },
-  { table: "investment_requests" as const, title: "פניות השקעות" },
-  { table: "flight_requests" as const, title: "בקשות טיסות" },
-  { table: "home_rental_leads" as const, title: "לידים השכרת נכסים" },
+  { table: "vip_requests" as const, titleKey: "vipTitle" as const },
+  { table: "investment_requests" as const, titleKey: "investmentTitle" as const },
+  { table: "flight_requests" as const, titleKey: "flightTitle" as const },
+  { table: "home_rental_leads" as const, titleKey: "homeRentalTitle" as const },
 ];
 
 function LeadRow({ row }: { row: Record<string, unknown> }) {
@@ -32,6 +33,7 @@ function LeadRow({ row }: { row: Record<string, unknown> }) {
 
 export default async function AdminLeadsPage() {
   const supabase = await createClient();
+  const t = await getTranslations("admin.leads");
 
   const results = await Promise.all(
     LEAD_SOURCES.map((source) =>
@@ -46,7 +48,7 @@ export default async function AdminLeadsPage() {
         return (
           <div key={source.table}>
             <h2 className="font-display text-xl font-bold text-brand-navy">
-              {source.title} <span className="text-sm font-normal text-foreground/50">({rows.length})</span>
+              {t(source.titleKey)} <span className="text-sm font-normal text-foreground/50">({rows.length})</span>
             </h2>
             {rows.length > 0 ? (
               <div className="mt-4 flex flex-col gap-3">
@@ -55,7 +57,7 @@ export default async function AdminLeadsPage() {
                 ))}
               </div>
             ) : (
-              <EmptyState title="אין פניות" className="mt-4" />
+              <EmptyState title={t("noLeads")} className="mt-4" />
             )}
           </div>
         );

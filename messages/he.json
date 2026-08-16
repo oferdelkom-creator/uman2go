@@ -178,13 +178,53 @@
       "viewHotelPage": "צפייה בדף המלון"
     },
     "hotelForm": {
-      "editTitle": "עריכת פרטי המלון"
+      "editTitle": "עריכת פרטי המלון",
+      "addTitle": "הוספת מלון",
+      "mustLogin": "יש להתחבר",
+      "slugTaken": "כתובת ה-URL הזו כבר תפוסה",
+      "genericError": "אירעה שגיאה, נסו שוב",
+      "name": "שם המלון",
+      "slug": "כתובת URL (slug)",
+      "area": "אזור",
+      "address": "כתובת",
+      "distanceFromSite": "מרחק מהציון (מטרים)",
+      "contactName": "איש קשר",
+      "whatsapp": "וואטסאפ",
+      "altPhone": "טלפון נוסף",
+      "amenities": "מתקנים (מופרדים בפסיק)",
+      "amenitiesPlaceholder": "חניה, מטבחון, מיזוג",
+      "description": "תיאור",
+      "photos": "קישורי תמונות (אחד בכל שורה)",
+      "saving": "שומר...",
+      "saveChanges": "שמירת שינויים",
+      "createHotel": "יצירת מלון"
+    },
+    "roomForm": {
+      "name": "שם החדר",
+      "capacity": "קיבולת אורחים",
+      "pricePerNight": "מחיר ללילה",
+      "currency": "מטבע",
+      "pricingType": "סוג תמחור",
+      "pricingTypePerNight": "מחיר קבוע ללילה",
+      "pricingTypePerNightPerGuest": "מחיר ללילה לכל אורח",
+      "quantity": "מספר חדרים מסוג זה",
+      "status": "סטטוס",
+      "statusActive": "פעיל",
+      "statusHidden": "מוסתר",
+      "description": "תיאור",
+      "photos": "קישורי תמונות (אחד בכל שורה)",
+      "genericError": "אירעה שגיאה, נסו שוב",
+      "saving": "שומר...",
+      "saveChanges": "שמירת שינויים",
+      "addRoom": "הוספת חדר"
     },
     "bookings": {
       "title": "הזמנות",
       "guest": "אורח",
       "guestsCount": "{count} אורחים",
       "noBookings": "עדיין אין הזמנות",
+      "confirmAction": "אישור הזמנה",
+      "cancelAction": "ביטול",
       "status": {
         "pendingDeposit": "ממתין לתשלום",
         "depositPaid": "מקדמה שולמה",
@@ -238,6 +278,57 @@
       "transport": "הסעות",
       "tours": "טיולים",
       "team": "צוות"
+    },
+    "dashboard": {
+      "hotelBookings": "הזמנות מלונות",
+      "transportRequests": "בקשות הסעה",
+      "tourSignups": "הרשמות לטיולים",
+      "leads": "פניות (VIP/השקעות/טיסות/נכסים)"
+    },
+    "bookings": {
+      "title": "כל ההזמנות",
+      "guestFallback": "אורח",
+      "guestsCount": "{count} אורחים",
+      "noBookings": "עדיין אין הזמנות",
+      "feePaid": "עמלה שולמה",
+      "feeNotPaid": "עמלה לא שולמה"
+    },
+    "transport": {
+      "title": "כל בקשות ההסעה",
+      "roundTrip": "הלוך ושוב",
+      "passengersCount": "{count} נוסעים",
+      "noRequests": "עדיין אין בקשות הסעה",
+      "feePaid": "עמלה שולמה",
+      "feeNotPaid": "עמלה לא שולמה"
+    },
+    "tours": {
+      "title": "כל ההרשמות לטיולים",
+      "participantsCount": "{count} משתתפים",
+      "statusCancelled": "מבוטל",
+      "statusConfirmed": "מאושר",
+      "noSignups": "עדיין אין הרשמות",
+      "feePaid": "עמלה שולמה",
+      "feeNotPaid": "עמלה לא שולמה",
+      "cancelAction": "ביטול"
+    },
+    "leads": {
+      "vipTitle": "בקשות VIP",
+      "investmentTitle": "פניות השקעות",
+      "flightTitle": "בקשות טיסות",
+      "homeRentalTitle": "לידים השכרת נכסים",
+      "noLeads": "אין פניות"
+    },
+    "team": {
+      "title": "צוות ניהול",
+      "description": "רק משתמשים שכבר נרשמו באתר (בעמוד ההרשמה הרגיל) ניתן להפוך למנהלים.",
+      "noName": "ללא שם",
+      "you": "את/ה",
+      "promoteEmailLabel": "מייל של איש/אשת צוות (חייב להיות רשום כבר באתר)",
+      "promoting": "מוסיף...",
+      "promoteButton": "הפוך למנהל",
+      "notFoundError": "לא נמצא משתמש עם המייל הזה — עליו קודם להירשם באתר.",
+      "genericError": "אירעה שגיאה, נסו שוב.",
+      "removeAction": "הסרת הרשאה"
     }
   },
   "vip": {

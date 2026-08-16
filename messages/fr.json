@@ -178,13 +178,53 @@
       "viewHotelPage": "Voir la page de l'hôtel"
     },
     "hotelForm": {
-      "editTitle": "Modifier les détails de l'hôtel"
+      "editTitle": "Modifier les détails de l'hôtel",
+      "addTitle": "Ajouter un hôtel",
+      "mustLogin": "Vous devez vous connecter",
+      "slugTaken": "Cette URL est déjà utilisée",
+      "genericError": "Une erreur s'est produite, veuillez réessayer",
+      "name": "Nom de l'hôtel",
+      "slug": "URL (slug)",
+      "area": "Zone",
+      "address": "Adresse",
+      "distanceFromSite": "Distance du site (mètres)",
+      "contactName": "Nom du contact",
+      "whatsapp": "WhatsApp",
+      "altPhone": "Téléphone secondaire",
+      "amenities": "Équipements (séparés par des virgules)",
+      "amenitiesPlaceholder": "Parking, kitchenette, climatisation",
+      "description": "Description",
+      "photos": "URL des photos (une par ligne)",
+      "saving": "Enregistrement...",
+      "saveChanges": "Enregistrer les modifications",
+      "createHotel": "Créer l'hôtel"
+    },
+    "roomForm": {
+      "name": "Nom de la chambre",
+      "capacity": "Capacité d'accueil",
+      "pricePerNight": "Prix par nuit",
+      "currency": "Devise",
+      "pricingType": "Type de tarification",
+      "pricingTypePerNight": "Prix fixe par nuit",
+      "pricingTypePerNightPerGuest": "Prix par nuit et par personne",
+      "quantity": "Nombre de chambres de ce type",
+      "status": "Statut",
+      "statusActive": "Actif",
+      "statusHidden": "Masqué",
+      "description": "Description",
+      "photos": "URL des photos (une par ligne)",
+      "genericError": "Une erreur s'est produite, veuillez réessayer",
+      "saving": "Enregistrement...",
+      "saveChanges": "Enregistrer les modifications",
+      "addRoom": "Ajouter une chambre"
     },
     "bookings": {
       "title": "Réservations",
       "guest": "Client",
       "guestsCount": "{count} personnes",
       "noBookings": "Aucune réservation pour l'instant",
+      "confirmAction": "Confirmer la réservation",
+      "cancelAction": "Annuler",
       "status": {
         "pendingDeposit": "En attente de paiement",
         "depositPaid": "Acompte payé",
@@ -238,6 +278,57 @@
       "transport": "Transport",
       "tours": "Excursions",
       "team": "Équipe"
+    },
+    "dashboard": {
+      "hotelBookings": "Réservations d'hôtels",
+      "transportRequests": "Demandes de transport",
+      "tourSignups": "Inscriptions aux excursions",
+      "leads": "Demandes (VIP/Investissements/Vols/Locations)"
+    },
+    "bookings": {
+      "title": "Toutes les réservations",
+      "guestFallback": "Client",
+      "guestsCount": "{count} personnes",
+      "noBookings": "Aucune réservation pour l'instant",
+      "feePaid": "Frais payés",
+      "feeNotPaid": "Frais non payés"
+    },
+    "transport": {
+      "title": "Toutes les demandes de transport",
+      "roundTrip": "aller-retour",
+      "passengersCount": "{count} passagers",
+      "noRequests": "Aucune demande de transport pour l'instant",
+      "feePaid": "Frais payés",
+      "feeNotPaid": "Frais non payés"
+    },
+    "tours": {
+      "title": "Toutes les inscriptions aux excursions",
+      "participantsCount": "{count} participants",
+      "statusCancelled": "Annulée",
+      "statusConfirmed": "Confirmée",
+      "noSignups": "Aucune inscription pour l'instant",
+      "feePaid": "Frais payés",
+      "feeNotPaid": "Frais non payés",
+      "cancelAction": "Annuler"
+    },
+    "leads": {
+      "vipTitle": "Demandes VIP",
+      "investmentTitle": "Demandes d'investissement",
+      "flightTitle": "Demandes de vols",
+      "homeRentalTitle": "Demandes de location",
+      "noLeads": "Aucune demande"
+    },
+    "team": {
+      "title": "Équipe d'administration",
+      "description": "Seuls les utilisateurs déjà inscrits sur le site (via la page d'inscription standard) peuvent être nommés administrateurs.",
+      "noName": "Sans nom",
+      "you": "vous",
+      "promoteEmailLabel": "E-mail du membre de l'équipe (doit déjà être inscrit sur le site)",
+      "promoting": "Ajout...",
+      "promoteButton": "Nommer administrateur",
+      "notFoundError": "Aucun utilisateur trouvé avec cet e-mail — il doit d'abord s'inscrire sur le site.",
+      "genericError": "Une erreur s'est produite, veuillez réessayer.",
+      "removeAction": "Retirer l'accès"
     }
   },
   "vip": {

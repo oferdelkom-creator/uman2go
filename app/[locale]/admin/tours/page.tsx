@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -7,6 +8,7 @@ import { TourSignupStatusButton } from "@/app/[locale]/admin/tours/TourSignupSta
 
 export default async function AdminToursPage() {
   const supabase = await createClient();
+  const t = await getTranslations("admin.tours");
 
   const { data: signups } = await supabase
     .from("tour_signups")
@@ -15,7 +17,7 @@ export default async function AdminToursPage() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-bold text-brand-navy">כל ההרשמות לטיולים</h2>
+      <h2 className="font-display text-2xl font-bold text-brand-navy">{t("title")}</h2>
 
       {signups && signups.length > 0 ? (
         <div className="mt-6 flex flex-col gap-4">
@@ -29,17 +31,17 @@ export default async function AdminToursPage() {
                   {signup.full_name} <span dir="ltr" className="text-brand-teal">· {signup.phone}</span>
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">
-                  {signup.tour_date?.tour_date && formatDate(signup.tour_date.tour_date)} · {signup.participants_count} משתתפים
+                  {signup.tour_date?.tour_date && formatDate(signup.tour_date.tour_date)} · {t("participantsCount", { count: signup.participants_count })}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Badge tone={signup.status === "cancelled" ? "navy" : "teal"}>
-                  {signup.status === "cancelled" ? "מבוטל" : "מאושר"}
+                  {signup.status === "cancelled" ? t("statusCancelled") : t("statusConfirmed")}
                 </Badge>
                 {signup.platform_fee_paid_at ? (
-                  <Badge tone="teal">עמלה שולמה</Badge>
+                  <Badge tone="teal">{t("feePaid")}</Badge>
                 ) : (
-                  <Badge tone="gold">עמלה לא שולמה</Badge>
+                  <Badge tone="gold">{t("feeNotPaid")}</Badge>
                 )}
                 <TourSignupStatusButton signupId={signup.id} status={signup.status} />
               </div>
@@ -47,7 +49,7 @@ export default async function AdminToursPage() {
           ))}
         </div>
       ) : (
-        <EmptyState title="עדיין אין הרשמות" className="mt-8" />
+        <EmptyState title={t("noSignups")} className="mt-8" />
       )}
     </div>
   );
