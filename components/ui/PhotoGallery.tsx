@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 export function PhotoGallery({ photos, alt }: { photos: string[]; alt: string }) {
+  const t = useTranslations("common");
   const [failed, setFailed] = useState<Set<number>>(new Set());
   const valid = photos.filter((_, i) => !failed.has(i));
 
   if (photos.length === 0 || valid.length === 0) {
-    return <EmptyState title="עדיין אין תמונות" description="התמונות יתווספו בקרוב" className="aspect-video" />;
+    return <EmptyState title={t("noPhotosTitle")} description={t("noPhotosDesc")} className="aspect-video" />;
   }
 
   const [main, ...rest] = valid;

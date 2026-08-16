@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { TourGuide } from "@/lib/types";
 
-export function TourGuideCard({ guide }: { guide: TourGuide }) {
+export async function TourGuideCard({ guide }: { guide: TourGuide }) {
+  const t = await getTranslations();
   const photo = guide.photos[0];
 
   return (
@@ -21,7 +23,7 @@ export function TourGuideCard({ guide }: { guide: TourGuide }) {
           />
         ) : (
           <div className="flex h-full items-center justify-center text-brand-navy/30">
-            <span className="font-display text-sm">אין תמונה</span>
+            <span className="font-display text-sm">{t("common.noPhoto")}</span>
           </div>
         )}
       </div>

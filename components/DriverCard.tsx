@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Driver } from "@/lib/types";
 
-export function DriverCard({ driver }: { driver: Driver }) {
+export async function DriverCard({ driver }: { driver: Driver }) {
+  const t = await getTranslations();
   const photo = driver.photos[0];
 
   return (
@@ -21,13 +23,13 @@ export function DriverCard({ driver }: { driver: Driver }) {
           />
         ) : (
           <div className="flex h-full items-center justify-center text-brand-navy/30">
-            <span className="font-display text-sm">אין תמונה</span>
+            <span className="font-display text-sm">{t("common.noPhoto")}</span>
           </div>
         )}
       </div>
       <div className="p-4">
         <h3 className="font-display text-lg font-bold text-brand-navy">{driver.name}</h3>
-        <p className="mt-1 text-sm text-foreground/60">{driver.vehicle_type || "רכב הסעות"}</p>
+        <p className="mt-1 text-sm text-foreground/60">{driver.vehicle_type || t("transport.list.defaultVehicleType")}</p>
       </div>
     </Link>
   );

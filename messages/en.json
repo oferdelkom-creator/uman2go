@@ -1,4 +1,10 @@
 {
+  "common": {
+    "noPhoto": "No photo",
+    "whatsappAriaLabel": "Contact us on WhatsApp",
+    "noPhotosTitle": "No photos yet",
+    "noPhotosDesc": "Photos will be added soon"
+  },
   "meta": {
     "tagline": "Hotels · Transport · Tours in Uman",
     "description": "The leading booking platform for your trip to Uman - verified hotels, transport and buses, and guided tours. Everything in one place."
@@ -70,7 +76,9 @@
       "title": "Hotels in Uman",
       "subtitle": "Verified hotels and cabins, close to the holy site.",
       "emptyTitle": "No hotels available yet",
-      "emptyDesc": "Check back soon"
+      "emptyDesc": "Check back soon",
+      "featured": "Featured",
+      "perNight": "/night"
     },
     "detail": {
       "fallbackTitle": "Hotel",
@@ -105,7 +113,8 @@
       "subtitle": "Verified drivers and buses to every destination.",
       "generalRequest": "General Transport Request",
       "emptyTitle": "No drivers available yet",
-      "emptyDesc": "Check back soon"
+      "emptyDesc": "Check back soon",
+      "defaultVehicleType": "Transport vehicle"
     },
     "detail": {
       "fallbackTitle": "Driver",

@@ -1,10 +1,11 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/format";
 import type { Hotel } from "@/lib/types";
 
-export function HotelCard({
+export async function HotelCard({
   hotel,
   fromPrice,
   currency = "USD",
@@ -13,6 +14,7 @@ export function HotelCard({
   fromPrice?: number | null;
   currency?: string;
 }) {
+  const t = await getTranslations();
   const photo = hotel.photos[0];
 
   return (
@@ -31,12 +33,12 @@ export function HotelCard({
           />
         ) : (
           <div className="flex h-full items-center justify-center text-brand-navy/30">
-            <span className="font-display text-sm">אין תמונה</span>
+            <span className="font-display text-sm">{t("common.noPhoto")}</span>
           </div>
         )}
         {hotel.featured && (
           <span className="absolute top-3 right-3 rounded-full bg-gradient-to-l from-brand-terracotta to-brand-gold px-3 py-1 text-xs font-bold text-white shadow">
-            מומלץ
+            {t("hotels.list.featured")}
           </span>
         )}
       </div>
@@ -45,11 +47,11 @@ export function HotelCard({
         <p className="mt-1 text-sm text-foreground/60">{hotel.area}</p>
         <div className="mt-3 flex items-center justify-between">
           {hotel.distance_to_kever_meters != null && (
-            <Badge tone="teal">{hotel.distance_to_kever_meters} מ&apos; מהציון</Badge>
+            <Badge tone="teal">{t("hotels.detail.distanceFromSite", { meters: hotel.distance_to_kever_meters })}</Badge>
           )}
           {fromPrice != null && (
             <span dir="ltr" className="font-display text-sm font-bold text-brand-terracotta">
-              {formatCurrency(fromPrice, currency)}/לילה
+              {formatCurrency(fromPrice, currency)}{t("hotels.list.perNight")}
             </span>
           )}
         </div>

@@ -1,4 +1,10 @@
 {
+  "common": {
+    "noPhoto": "אין תמונה",
+    "whatsappAriaLabel": "צרו קשר בוואטסאפ",
+    "noPhotosTitle": "עדיין אין תמונות",
+    "noPhotosDesc": "התמונות יתווספו בקרוב"
+  },
   "meta": {
     "tagline": "מלונות · הסעות · טיולים באומן",
     "description": "פלטפורמת ההזמנות המובילה לנסיעה לאומן - מלונות מאומתים, הסעות ואוטובוסים, וטיולים מודרכים. הכל במקום אחד."
@@ -70,7 +76,9 @@
       "title": "מלונות באומן",
       "subtitle": "מלונות וצימרים מאומתים, קרוב לציון הקדוש.",
       "emptyTitle": "עדיין אין מלונות זמינים",
-      "emptyDesc": "חזרו בקרוב"
+      "emptyDesc": "חזרו בקרוב",
+      "featured": "מומלץ",
+      "perNight": "/לילה"
     },
     "detail": {
       "fallbackTitle": "מלון",
@@ -105,7 +113,8 @@
       "subtitle": "נהגים ואוטובוסים מאומתים לכל יעד.",
       "generalRequest": "בקשת הסעה כללית",
       "emptyTitle": "עדיין אין נהגים זמינים",
-      "emptyDesc": "חזרו בקרוב"
+      "emptyDesc": "חזרו בקרוב",
+      "defaultVehicleType": "רכב הסעות"
     },
     "detail": {
       "fallbackTitle": "נהג",

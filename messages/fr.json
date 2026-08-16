@@ -1,4 +1,10 @@
 {
+  "common": {
+    "noPhoto": "Aucune photo",
+    "whatsappAriaLabel": "Contactez-nous sur WhatsApp",
+    "noPhotosTitle": "Aucune photo pour l'instant",
+    "noPhotosDesc": "Les photos seront ajoutées prochainement"
+  },
   "meta": {
     "tagline": "Hôtels · Transport · Excursions à Ouman",
     "description": "La principale plateforme de réservation pour votre voyage à Ouman - hôtels vérifiés, transport et bus, et excursions guidées. Tout en un seul endroit."
@@ -70,7 +76,9 @@
       "title": "Hôtels à Ouman",
       "subtitle": "Hôtels et chalets vérifiés, près du site saint.",
       "emptyTitle": "Aucun hôtel disponible pour l'instant",
-      "emptyDesc": "Revenez bientôt"
+      "emptyDesc": "Revenez bientôt",
+      "featured": "Recommandé",
+      "perNight": "/nuit"
     },
     "detail": {
       "fallbackTitle": "Hôtel",
@@ -105,7 +113,8 @@
       "subtitle": "Chauffeurs et bus vérifiés vers toutes les destinations.",
       "generalRequest": "Demande de transport générale",
       "emptyTitle": "Aucun chauffeur disponible pour l'instant",
-      "emptyDesc": "Revenez bientôt"
+      "emptyDesc": "Revenez bientôt",
+      "defaultVehicleType": "Véhicule de transport"
     },
     "detail": {
       "fallbackTitle": "Chauffeur",
