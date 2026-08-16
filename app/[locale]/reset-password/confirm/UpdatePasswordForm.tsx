@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input } from "@/components/ui/FormField";
 
 export function UpdatePasswordForm() {
+  const t = useTranslations("auth.updatePassword");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export function UpdatePasswordForm() {
       password: String(formData.get("password")),
     });
     if (error) {
-      setError("אירעה שגיאה, נסו לבקש קישור חדש");
+      setError(t("genericError"));
       setLoading(false);
       return;
     }
@@ -30,12 +32,12 @@ export function UpdatePasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <FormField label="סיסמה חדשה" htmlFor="password" required>
+      <FormField label={t("newPassword")} htmlFor="password" required>
         <Input id="password" name="password" type="password" minLength={6} required />
       </FormField>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "מעדכן..." : "עדכון סיסמה"}
+        {loading ? t("updating") : t("submit")}
       </Button>
     </form>
   );

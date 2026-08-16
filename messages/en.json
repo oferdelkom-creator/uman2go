@@ -23,6 +23,45 @@
       "invalidCredentials": "Invalid email or password",
       "forgotPassword": "Forgot password",
       "signup": "Sign up"
+    },
+    "signup": {
+      "metaTitle": "Sign Up",
+      "title": "Sign Up",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "password": "Password",
+      "signUpAs": "Sign up as",
+      "roleGuest": "Guest",
+      "roleHotelOwner": "Hotel Owner",
+      "termsPrefix": "I've read and agree to the ",
+      "termsLink": "Terms of Service",
+      "mustAcceptTerms": "You must accept the Terms of Service",
+      "alreadyRegistered": "This email is already registered",
+      "genericError": "Something went wrong signing up",
+      "signingUp": "Signing up...",
+      "submit": "Sign Up",
+      "sentTitle": "You're signed up!",
+      "sentDesc": "We sent you an email to verify your account.",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Log In"
+    },
+    "resetPassword": {
+      "metaTitle": "Reset Password",
+      "title": "Reset Password",
+      "email": "Email",
+      "sending": "Sending...",
+      "submit": "Send Reset Link",
+      "sentTitle": "Email sent!",
+      "sentDesc": "If that address is registered, you'll receive a password reset link."
+    },
+    "updatePassword": {
+      "metaTitle": "Set New Password",
+      "title": "New Password",
+      "newPassword": "New Password",
+      "genericError": "Something went wrong, please request a new link",
+      "updating": "Updating...",
+      "submit": "Update Password"
     }
   },
   "hotels": {
@@ -200,6 +239,71 @@
       "tours": "Tours",
       "team": "Team"
     }
+  },
+  "vip": {
+    "metaTitle": "VIP Service",
+    "title": "VIP Service",
+    "subtitle": "Personal support - we'll handle coordinating your hotel, transport and tours so all you have to do is enjoy.",
+    "submit": "Request VIP Service"
+  },
+  "investments": {
+    "metaTitle": "Investments in Uman",
+    "title": "Investments in Uman",
+    "subtitle": "Interested in real estate or business investment opportunities in Uman? Leave your details and we'll get back to you.",
+    "submit": "Send Request"
+  },
+  "leads": {
+    "form": {
+      "sentTitle": "Request sent successfully!",
+      "sentDesc": "We'll contact you soon.",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "notes": "Notes",
+      "genericError": "Something went wrong sending this, please try again.",
+      "sending": "Sending...",
+      "defaultSubmit": "Send Request"
+    }
+  },
+  "flights": {
+    "metaTitle": "Book Flights",
+    "title": "Book Flights",
+    "subtitle": "We'll find you the best-value flight to Uman.",
+    "submit": "Request a Quote",
+    "email": "Email",
+    "departureDate": "Departure Date",
+    "returnDate": "Return Date",
+    "passengersCount": "Number of Passengers",
+    "travelInsurance": "Interested in travel insurance"
+  },
+  "homeRentals": {
+    "metaTitle": "Home Rentals",
+    "title": "Home Rentals",
+    "subtitle": "Own a property in Uman and want to rent it out for the holidays? Leave your details and let's talk.",
+    "submit": "Send Property Details",
+    "area": "Area",
+    "propertyType": "Property Type",
+    "capacity": "Guest Capacity",
+    "askingPrice": "Asking Price"
+  },
+  "terms": {
+    "metaTitle": "Terms of Service",
+    "title": "Terms of Service",
+    "paragraph1": "{siteName} serves as a platform connecting travelers with independent hotels, drivers and tour guides operating in Uman. The actual booking, payment and service are provided by the service provider (the hotel owner/driver/guide), not by the platform itself.",
+    "paragraph2": "A fixed platform fee is charged for use of the service, in addition to the price paid directly to the service provider. Fee details are shown during the booking process.",
+    "paragraph3": "Cancellations and changes are subject to the specific service provider's cancellation policy. We recommend checking the cancellation policy before confirming a booking.",
+    "paragraph4": "Using the site constitutes agreement to these terms. We reserve the right to update these terms from time to time."
+  },
+  "contact": {
+    "metaTitle": "Contact",
+    "title": "Contact",
+    "fullName": "Full Name",
+    "email": "Email",
+    "message": "Message",
+    "genericError": "Something went wrong, please try again.",
+    "sending": "Sending...",
+    "submit": "Send",
+    "sentTitle": "Thanks for reaching out!",
+    "sentDesc": "We'll get back to you soon."
   },
   "footer": {
     "services": "Services",

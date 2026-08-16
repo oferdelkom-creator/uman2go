@@ -1,28 +1,37 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { LeadForm } from "@/components/LeadForm";
 
-export const metadata: Metadata = { title: "השכרת נכסים" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "homeRentals" });
+  return { title: t("metaTitle") };
+}
 
-export default function HomeRentalsPage() {
+export default async function HomeRentalsPage() {
+  const t = await getTranslations("homeRentals");
+
   return (
     <Section>
       <div className="mx-auto max-w-2xl">
-        <h1 className="text-center font-display text-3xl font-extrabold text-brand-navy">השכרת נכסים</h1>
-        <p className="mt-2 text-center text-foreground/70">
-          בעלי נכס באומן ומעוניינים להשכיר לחגים? השאירו פרטים ונדבר.
-        </p>
+        <h1 className="text-center font-display text-3xl font-extrabold text-brand-navy">{t("title")}</h1>
+        <p className="mt-2 text-center text-foreground/70">{t("subtitle")}</p>
         <Card className="mt-8 p-6 sm:p-8">
           <LeadForm
             table="home_rental_leads"
             leadType="home-rental"
-            submitLabel="שליחת פרטי הנכס"
+            submitLabel={t("submit")}
             extraFields={[
-              { name: "area", label: "אזור", type: "text" },
-              { name: "property_type", label: "סוג הנכס", type: "text" },
-              { name: "capacity", label: "קיבולת אורחים", type: "number" },
-              { name: "asking_price", label: "מחיר מבוקש", type: "text" },
+              { name: "area", label: t("area"), type: "text" },
+              { name: "property_type", label: t("propertyType"), type: "text" },
+              { name: "capacity", label: t("capacity"), type: "number" },
+              { name: "asking_price", label: t("askingPrice"), type: "text" },
             ]}
           />
         </Card>

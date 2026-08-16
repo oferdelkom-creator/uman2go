@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { FormField, Input, Select } from "@/components/ui/FormField";
 
 export function SignupForm() {
+  const t = useTranslations("auth.signup");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export function SignupForm() {
     const formData = new FormData(e.currentTarget);
     const termsAccepted = formData.get("terms") === "on";
     if (!termsAccepted) {
-      setError("יש לאשר את תנאי השימוש");
+      setError(t("mustAcceptTerms"));
       setLoading(false);
       return;
     }
@@ -41,7 +43,7 @@ export function SignupForm() {
     });
 
     if (error) {
-      setError(error.message === "User already registered" ? "המייל כבר רשום במערכת" : "אירעה שגיאה בהרשמה");
+      setError(error.message === "User already registered" ? t("alreadyRegistered") : t("genericError"));
       setLoading(false);
       return;
     }
@@ -65,44 +67,45 @@ export function SignupForm() {
   if (needsConfirmation) {
     return (
       <div className="rounded-2xl bg-brand-teal/10 p-6 text-center text-brand-teal">
-        <p className="font-display text-lg font-bold">נרשמתם בהצלחה!</p>
-        <p className="mt-1 text-sm">שלחנו לכם מייל לאימות החשבון.</p>
+        <p className="font-display text-lg font-bold">{t("sentTitle")}</p>
+        <p className="mt-1 text-sm">{t("sentDesc")}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <FormField label="שם מלא" htmlFor="full_name" required>
+      <FormField label={t("fullName")} htmlFor="full_name" required>
         <Input id="full_name" name="full_name" required />
       </FormField>
-      <FormField label="טלפון" htmlFor="phone" required>
+      <FormField label={t("phone")} htmlFor="phone" required>
         <Input id="phone" name="phone" type="tel" dir="ltr" required />
       </FormField>
-      <FormField label="אימייל" htmlFor="email" required>
+      <FormField label={t("email")} htmlFor="email" required>
         <Input id="email" name="email" type="email" dir="ltr" required />
       </FormField>
-      <FormField label="סיסמה" htmlFor="password" required>
+      <FormField label={t("password")} htmlFor="password" required>
         <Input id="password" name="password" type="password" minLength={6} required />
       </FormField>
-      <FormField label="נרשמים בתור" htmlFor="role" required>
+      <FormField label={t("signUpAs")} htmlFor="role" required>
         <Select id="role" name="role" defaultValue="guest">
-          <option value="guest">אורח/ת</option>
-          <option value="hotel_owner">בעל/ת מלון</option>
+          <option value="guest">{t("roleGuest")}</option>
+          <option value="hotel_owner">{t("roleHotelOwner")}</option>
         </Select>
       </FormField>
       <label className="flex items-start gap-2 text-sm text-brand-navy/80">
         <input type="checkbox" name="terms" className="mt-0.5 h-4 w-4 rounded border-brand-navy/30 text-brand-terracotta" />
         <span>
-          קראתי ואני מסכימ/ה ל<Link href="/terms" className="text-brand-terracotta hover:underline">תנאי השימוש</Link>
+          {t("termsPrefix")}
+          <Link href="/terms" className="text-brand-terracotta hover:underline">{t("termsLink")}</Link>
         </span>
       </label>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "נרשם..." : "הרשמה"}
+        {loading ? t("signingUp") : t("submit")}
       </Button>
       <p className="text-center text-sm text-brand-navy/70">
-        כבר רשומים? <Link href="/login" className="text-brand-terracotta hover:underline">התחברות</Link>
+        {t("alreadyHaveAccount")} <Link href="/login" className="text-brand-terracotta hover:underline">{t("login")}</Link>
       </p>
     </form>
   );

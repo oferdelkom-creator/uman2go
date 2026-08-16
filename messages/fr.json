@@ -23,6 +23,45 @@
       "invalidCredentials": "E-mail ou mot de passe incorrect",
       "forgotPassword": "Mot de passe oublié",
       "signup": "Inscription"
+    },
+    "signup": {
+      "metaTitle": "Inscription",
+      "title": "Inscription",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "signUpAs": "S'inscrire en tant que",
+      "roleGuest": "Voyageur",
+      "roleHotelOwner": "Propriétaire d'hôtel",
+      "termsPrefix": "J'ai lu et j'accepte les ",
+      "termsLink": "conditions d'utilisation",
+      "mustAcceptTerms": "Vous devez accepter les conditions d'utilisation",
+      "alreadyRegistered": "Cet e-mail est déjà enregistré",
+      "genericError": "Une erreur s'est produite lors de l'inscription",
+      "signingUp": "Inscription...",
+      "submit": "Inscription",
+      "sentTitle": "Inscription réussie !",
+      "sentDesc": "Nous vous avons envoyé un e-mail pour vérifier votre compte.",
+      "alreadyHaveAccount": "Déjà inscrit ?",
+      "login": "Connexion"
+    },
+    "resetPassword": {
+      "metaTitle": "Réinitialiser le mot de passe",
+      "title": "Réinitialiser le mot de passe",
+      "email": "E-mail",
+      "sending": "Envoi...",
+      "submit": "Envoyer le lien de réinitialisation",
+      "sentTitle": "E-mail envoyé !",
+      "sentDesc": "Si cette adresse est enregistrée, vous recevrez un lien de réinitialisation du mot de passe."
+    },
+    "updatePassword": {
+      "metaTitle": "Définir un nouveau mot de passe",
+      "title": "Nouveau mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "genericError": "Une erreur s'est produite, veuillez demander un nouveau lien",
+      "updating": "Mise à jour...",
+      "submit": "Mettre à jour le mot de passe"
     }
   },
   "hotels": {
@@ -200,6 +239,71 @@
       "tours": "Excursions",
       "team": "Équipe"
     }
+  },
+  "vip": {
+    "metaTitle": "Service VIP",
+    "title": "Service VIP",
+    "subtitle": "Accompagnement personnel - nous nous chargeons de coordonner l'hôtel, le transport et les excursions pour qu'il ne vous reste plus qu'à profiter.",
+    "submit": "Demander le service VIP"
+  },
+  "investments": {
+    "metaTitle": "Investissements à Ouman",
+    "title": "Investissements à Ouman",
+    "subtitle": "Intéressé par des opportunités d'investissement immobilier ou commercial à Ouman ? Laissez vos coordonnées et nous vous recontacterons.",
+    "submit": "Envoyer la demande"
+  },
+  "leads": {
+    "form": {
+      "sentTitle": "Demande envoyée avec succès !",
+      "sentDesc": "Nous vous contacterons bientôt.",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "notes": "Remarques",
+      "genericError": "Une erreur s'est produite lors de l'envoi, veuillez réessayer.",
+      "sending": "Envoi...",
+      "defaultSubmit": "Envoyer la demande"
+    }
+  },
+  "flights": {
+    "metaTitle": "Réserver des vols",
+    "title": "Réserver des vols",
+    "subtitle": "Nous vous trouvons le vol le plus avantageux vers Ouman.",
+    "submit": "Demander un devis",
+    "email": "E-mail",
+    "departureDate": "Date de départ",
+    "returnDate": "Date de retour",
+    "passengersCount": "Nombre de passagers",
+    "travelInsurance": "Intéressé par une assurance voyage"
+  },
+  "homeRentals": {
+    "metaTitle": "Location de biens",
+    "title": "Location de biens",
+    "subtitle": "Propriétaire à Ouman et intéressé par la location pour les fêtes ? Laissez vos coordonnées, discutons-en.",
+    "submit": "Envoyer les détails du bien",
+    "area": "Zone",
+    "propertyType": "Type de bien",
+    "capacity": "Capacité d'accueil",
+    "askingPrice": "Prix demandé"
+  },
+  "terms": {
+    "metaTitle": "Conditions d'utilisation",
+    "title": "Conditions générales d'utilisation",
+    "paragraph1": "{siteName} sert de plateforme de mise en relation entre voyageurs et hôtels, chauffeurs et guides touristiques indépendants opérant à Ouman. La réservation, le paiement et le service sont fournis par le prestataire (le propriétaire de l'hôtel/chauffeur/guide) et non par la plateforme elle-même.",
+    "paragraph2": "Des frais de plateforme fixes sont facturés pour l'utilisation du service, en plus du prix payé directement au prestataire. Le détail des frais est affiché pendant le processus de réservation.",
+    "paragraph3": "Les annulations et modifications sont soumises à la politique d'annulation du prestataire concerné. Nous vous recommandons de vérifier cette politique avant de confirmer une réservation.",
+    "paragraph4": "L'utilisation du site vaut acceptation de ces conditions. Nous nous réservons le droit de mettre à jour ces conditions de temps à autre."
+  },
+  "contact": {
+    "metaTitle": "Contact",
+    "title": "Contact",
+    "fullName": "Nom complet",
+    "email": "E-mail",
+    "message": "Message",
+    "genericError": "Une erreur s'est produite, veuillez réessayer.",
+    "sending": "Envoi...",
+    "submit": "Envoyer",
+    "sentTitle": "Merci de nous avoir contactés !",
+    "sentDesc": "Nous vous répondrons bientôt."
   },
   "footer": {
     "services": "Services",

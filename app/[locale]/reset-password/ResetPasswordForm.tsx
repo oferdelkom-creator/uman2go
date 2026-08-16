@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input } from "@/components/ui/FormField";
 import { SITE_URL } from "@/lib/constants";
 
 export function ResetPasswordForm() {
+  const t = useTranslations("auth.resetPassword");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -25,19 +27,19 @@ export function ResetPasswordForm() {
   if (sent) {
     return (
       <div className="rounded-2xl bg-brand-teal/10 p-6 text-center text-brand-teal">
-        <p className="font-display text-lg font-bold">נשלח מייל!</p>
-        <p className="mt-1 text-sm">אם הכתובת רשומה במערכת, קיבלתם קישור לאיפוס הסיסמה.</p>
+        <p className="font-display text-lg font-bold">{t("sentTitle")}</p>
+        <p className="mt-1 text-sm">{t("sentDesc")}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <FormField label="אימייל" htmlFor="email" required>
+      <FormField label={t("email")} htmlFor="email" required>
         <Input id="email" name="email" type="email" dir="ltr" required />
       </FormField>
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "שולח..." : "שליחת קישור לאיפוס"}
+        {loading ? t("sending") : t("submit")}
       </Button>
     </form>
   );
