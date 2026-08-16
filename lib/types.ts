@@ -10,6 +10,8 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15"
   }
@@ -158,6 +160,7 @@ export type Database = {
           created_at: string
           currency: string
           destination: string
+          destination_i18n: Json
           driver_id: string
           id: string
           price: number
@@ -168,6 +171,7 @@ export type Database = {
           created_at?: string
           currency?: string
           destination: string
+          destination_i18n?: Json
           driver_id: string
           id?: string
           price: number
@@ -178,6 +182,7 @@ export type Database = {
           created_at?: string
           currency?: string
           destination?: string
+          destination_i18n?: Json
           driver_id?: string
           id?: string
           price?: number
@@ -199,6 +204,7 @@ export type Database = {
           contact_name: string | null
           created_at: string
           description: string
+          description_i18n: Json
           featured: boolean
           id: string
           name: string
@@ -210,12 +216,14 @@ export type Database = {
           status: string
           terms_accepted_at: string | null
           vehicle_type: string
+          vehicle_type_i18n: Json
           whatsapp_phone: string | null
         }
         Insert: {
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           featured?: boolean
           id?: string
           name: string
@@ -227,12 +235,14 @@ export type Database = {
           status?: string
           terms_accepted_at?: string | null
           vehicle_type?: string
+          vehicle_type_i18n?: Json
           whatsapp_phone?: string | null
         }
         Update: {
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           featured?: boolean
           id?: string
           name?: string
@@ -244,6 +254,7 @@ export type Database = {
           status?: string
           terms_accepted_at?: string | null
           vehicle_type?: string
+          vehicle_type_i18n?: Json
           whatsapp_phone?: string | null
         }
         Relationships: [
@@ -372,11 +383,15 @@ export type Database = {
       hotels: {
         Row: {
           address: string
+          address_i18n: Json
           amenities: string[]
+          amenities_i18n: Json
           area: string
+          area_i18n: Json
           contact_name: string | null
           created_at: string
           description: string
+          description_i18n: Json
           distance_to_kever_meters: number | null
           extra_services: Json
           featured: boolean
@@ -392,11 +407,15 @@ export type Database = {
         }
         Insert: {
           address?: string
+          address_i18n?: Json
           amenities?: string[]
+          amenities_i18n?: Json
           area?: string
+          area_i18n?: Json
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           distance_to_kever_meters?: number | null
           extra_services?: Json
           featured?: boolean
@@ -412,11 +431,15 @@ export type Database = {
         }
         Update: {
           address?: string
+          address_i18n?: Json
           amenities?: string[]
+          amenities_i18n?: Json
           area?: string
+          area_i18n?: Json
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           distance_to_kever_meters?: number | null
           extra_services?: Json
           featured?: boolean
@@ -500,6 +523,7 @@ export type Database = {
           created_at: string
           currency: string
           description: string
+          description_i18n: Json
           hotel_id: string
           id: string
           name: string
@@ -514,6 +538,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string
+          description_i18n?: Json
           hotel_id: string
           id?: string
           name: string
@@ -528,6 +553,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string
+          description_i18n?: Json
           hotel_id?: string
           id?: string
           name?: string
@@ -553,11 +579,13 @@ export type Database = {
           created_at: string
           currency: string
           description: string
+          description_i18n: Json
           guide_id: string
           id: string
           price: number
           status: string
           title: string
+          title_i18n: Json
           tour_date: string
         }
         Insert: {
@@ -565,11 +593,13 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string
+          description_i18n?: Json
           guide_id: string
           id?: string
           price: number
           status?: string
           title: string
+          title_i18n?: Json
           tour_date: string
         }
         Update: {
@@ -577,11 +607,13 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string
+          description_i18n?: Json
           guide_id?: string
           id?: string
           price?: number
           status?: string
           title?: string
+          title_i18n?: Json
           tour_date?: string
         }
         Relationships: [
@@ -599,6 +631,7 @@ export type Database = {
           contact_name: string | null
           created_at: string
           description: string
+          description_i18n: Json
           id: string
           name: string
           owner_id: string
@@ -613,6 +646,7 @@ export type Database = {
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           id?: string
           name: string
           owner_id: string
@@ -627,6 +661,7 @@ export type Database = {
           contact_name?: string | null
           created_at?: string
           description?: string
+          description_i18n?: Json
           id?: string
           name?: string
           owner_id?: string
@@ -819,7 +854,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       booking_status:

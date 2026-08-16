@@ -1,11 +1,13 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { tField } from "@/lib/i18n-content";
 import type { TourGuide } from "@/lib/types";
 
 export async function TourGuideCard({ guide }: { guide: TourGuide }) {
-  const t = await getTranslations();
+  const [t, locale] = await Promise.all([getTranslations(), getLocale()]);
   const photo = guide.photos[0];
+  const description = tField(guide.description, guide.description_i18n, locale);
 
   return (
     <Link
@@ -29,7 +31,7 @@ export async function TourGuideCard({ guide }: { guide: TourGuide }) {
       </div>
       <div className="p-4">
         <h3 className="font-display text-lg font-bold text-brand-navy">{guide.name}</h3>
-        <p className="mt-1 line-clamp-2 text-sm text-foreground/60">{guide.description}</p>
+        <p className="mt-1 line-clamp-2 text-sm text-foreground/60">{description}</p>
       </div>
     </Link>
   );

@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/format";
+import { tField } from "@/lib/i18n-content";
 import type { Hotel } from "@/lib/types";
 
 export async function HotelCard({
@@ -14,8 +15,9 @@ export async function HotelCard({
   fromPrice?: number | null;
   currency?: string;
 }) {
-  const t = await getTranslations();
+  const [t, locale] = await Promise.all([getTranslations(), getLocale()]);
   const photo = hotel.photos[0];
+  const area = tField(hotel.area, hotel.area_i18n, locale);
 
   return (
     <Link
@@ -44,7 +46,7 @@ export async function HotelCard({
       </div>
       <div className="p-4">
         <h3 className="font-display text-lg font-bold text-brand-navy">{hotel.name}</h3>
-        <p className="mt-1 text-sm text-foreground/60">{hotel.area}</p>
+        <p className="mt-1 text-sm text-foreground/60">{area}</p>
         <div className="mt-3 flex items-center justify-between">
           {hotel.distance_to_kever_meters != null && (
             <Badge tone="teal">{t("hotels.detail.distanceFromSite", { meters: hotel.distance_to_kever_meters })}</Badge>

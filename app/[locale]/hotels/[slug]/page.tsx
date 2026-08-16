@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
@@ -9,6 +9,7 @@ import { RatingStars } from "@/components/ui/RatingStars";
 import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/format";
+import { tField, tFieldArray } from "@/lib/i18n-content";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
 
 export async function generateMetadata({
@@ -26,10 +27,15 @@ export async function generateMetadata({
 export default async function HotelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const t = await getTranslations("hotels.detail");
+  const [t, locale] = await Promise.all([getTranslations("hotels.detail"), getLocale()]);
 
   const { data: hotel } = await supabase.from("hotels").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!hotel) notFound();
+
+  const area = tField(hotel.area, hotel.area_i18n, locale);
+  const address = tField(hotel.address, hotel.address_i18n, locale);
+  const amenities = tFieldArray(hotel.amenities, hotel.amenities_i18n, locale);
+  const description = tField(hotel.description, hotel.description_i18n, locale);
 
   const [{ data: rooms }, { data: reviews }] = await Promise.all([
     supabase.from("rooms").select("*").eq("hotel_id", hotel.id).eq("status", "active").order("price_per_night"),
@@ -55,18 +61,18 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
             <h1 className="font-display text-3xl font-extrabold text-brand-navy">{hotel.name}</h1>
             {avgRating != null && <RatingStars rating={avgRating} />}
           </div>
-          <p className="mt-1 text-foreground/60">{hotel.area} · {hotel.address}</p>
+          <p className="mt-1 text-foreground/60">{area} · {address}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             {hotel.distance_to_kever_meters != null && (
               <Badge tone="teal">{t("distanceFromSite", { meters: hotel.distance_to_kever_meters })}</Badge>
             )}
-            {hotel.amenities.map((a) => (
+            {amenities.map((a) => (
               <Badge key={a} tone="navy">{a}</Badge>
             ))}
           </div>
 
-          <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{hotel.description}</p>
+          <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{description}</p>
 
           {(hotel.whatsapp_phone || hotel.contact_name) && (
             <Card className="mt-6 p-5">

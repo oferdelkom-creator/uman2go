@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
@@ -8,6 +8,7 @@ import { RatingStars } from "@/components/ui/RatingStars";
 import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { TransportRequestForm } from "@/components/TransportRequestForm";
 import { formatCurrency } from "@/lib/format";
+import { tField } from "@/lib/i18n-content";
 
 export async function generateMetadata({
   params,
@@ -24,7 +25,7 @@ export async function generateMetadata({
 export default async function DriverDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const t = await getTranslations("transport.detail");
+  const [t, locale] = await Promise.all([getTranslations("transport.detail"), getLocale()]);
 
   const { data: driver } = await supabase.from("drivers").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!driver) notFound();
@@ -33,6 +34,9 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
     supabase.from("driver_routes").select("*").eq("driver_id", driver.id).eq("status", "active").order("price"),
     supabase.from("driver_reviews").select("*").eq("driver_id", driver.id).order("created_at", { ascending: false }),
   ]);
+
+  const vehicleType = tField(driver.vehicle_type, driver.vehicle_type_i18n, locale);
+  const description = tField(driver.description, driver.description_i18n, locale);
 
   const avgRating =
     reviews && reviews.length > 0
@@ -50,10 +54,10 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
             {avgRating != null && <RatingStars rating={avgRating} />}
           </div>
           <p className="mt-1 text-foreground/60">
-            {driver.vehicle_type}
+            {vehicleType}
             {driver.passenger_capacity ? ` · ${t("upToPassengers", { count: driver.passenger_capacity })}` : ""}
           </p>
-          <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{driver.description}</p>
+          <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{description}</p>
 
           {routes && routes.length > 0 && (
             <>
@@ -61,7 +65,7 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {routes.map((route) => (
                   <Card key={route.id} className="flex items-center justify-between p-4">
-                    <span className="font-semibold text-brand-navy">{route.destination}</span>
+                    <span className="font-semibold text-brand-navy">{tField(route.destination, route.destination_i18n, locale)}</span>
                     <span dir="ltr" className="font-display font-bold text-brand-terracotta">
                       {formatCurrency(route.price, route.currency)}
                       {route.round_trip_price && ` / ${formatCurrency(route.round_trip_price, route.currency)} ${t("roundTrip")}`}
