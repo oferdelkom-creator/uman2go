@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
@@ -21,6 +21,7 @@ export function BookingForm({
   extraServices: Extra[];
 }) {
   const t = useTranslations("hotels.booking");
+  const locale = useLocale();
   // usePathname() from @/i18n/navigation returns the locale-neutral path,
   // matching the "next" convention used by proxy.ts/LoginForm.tsx.
   const pathname = usePathname();
@@ -131,7 +132,7 @@ export function BookingForm({
                 <input type="checkbox" onChange={() => toggleExtra(extra)} className="h-4 w-4 rounded border-brand-navy/30 text-brand-terracotta" />
                 {extra.name}
               </span>
-              <span dir="ltr">{formatCurrency(extra.price, room.currency)}</span>
+              <span dir="ltr">{formatCurrency(extra.price, room.currency, locale)}</span>
             </label>
           ))}
         </div>
@@ -141,7 +142,7 @@ export function BookingForm({
         <div className="flex items-center justify-between border-t border-brand-navy/10 pt-3 text-sm">
           <span className="text-brand-navy/70">{t("nights", { count: nights })}</span>
           <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-            {formatCurrency(total, room.currency)}
+            {formatCurrency(total, room.currency, locale)}
           </span>
         </div>
       )}

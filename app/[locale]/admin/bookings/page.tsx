@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -8,8 +8,11 @@ import { BookingStatusButtons } from "@/app/[locale]/owner/bookings/BookingStatu
 
 export default async function AdminBookingsPage() {
   const supabase = await createClient();
-  const t = await getTranslations("admin.bookings");
-  const tStatus = await getTranslations("owner.bookings.status");
+  const [t, tStatus, locale] = await Promise.all([
+    getTranslations("admin.bookings"),
+    getTranslations("owner.bookings.status"),
+    getLocale(),
+  ]);
 
   const { data: bookings } = await supabase
     .from("bookings")
@@ -35,7 +38,7 @@ export default async function AdminBookingsPage() {
                   )}
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">
-                  {formatDate(booking.check_in)} - {formatDate(booking.check_out)} · {t("guestsCount", { count: booking.guests_count })}
+                  {formatDate(booking.check_in, locale)} - {formatDate(booking.check_out, locale)} · {t("guestsCount", { count: booking.guests_count })}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -44,7 +47,7 @@ export default async function AdminBookingsPage() {
                 </Badge>
                 {booking.total_price != null && (
                   <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                    {formatCurrency(booking.total_price, booking.currency)}
+                    {formatCurrency(booking.total_price, booking.currency, locale)}
                   </span>
                 )}
                 {booking.platform_fee_paid_at ? (

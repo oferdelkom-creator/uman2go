@@ -61,10 +61,10 @@ export default async function TourGuideDetailPage({ params }: { params: Promise<
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-display font-bold text-brand-navy">{tField(date.title, date.title_i18n, locale)}</p>
-                          <p dir="ltr" className="text-xs text-foreground/60">{formatDate(date.tour_date)}</p>
+                          <p dir="ltr" className="text-xs text-foreground/60">{formatDate(date.tour_date, locale)}</p>
                         </div>
                         <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                          {formatCurrency(date.price, date.currency)}
+                          {formatCurrency(date.price, date.currency, locale)}
                         </span>
                       </div>
                     </summary>

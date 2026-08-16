@@ -67,8 +67,8 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
                   <Card key={route.id} className="flex items-center justify-between p-4">
                     <span className="font-semibold text-brand-navy">{tField(route.destination, route.destination_i18n, locale)}</span>
                     <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                      {formatCurrency(route.price, route.currency)}
-                      {route.round_trip_price && ` / ${formatCurrency(route.round_trip_price, route.currency)} ${t("roundTrip")}`}
+                      {formatCurrency(route.price, route.currency, locale)}
+                      {route.round_trip_price && ` / ${formatCurrency(route.round_trip_price, route.currency, locale)} ${t("roundTrip")}`}
                     </span>
                   </Card>
                 ))}

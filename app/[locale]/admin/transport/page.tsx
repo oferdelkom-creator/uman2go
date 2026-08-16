@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/format";
 
 export default async function AdminTransportPage() {
   const supabase = await createClient();
-  const t = await getTranslations("admin.transport");
+  const [t, locale] = await Promise.all([getTranslations("admin.transport"), getLocale()]);
 
   const { data: requests } = await supabase
     .from("transport_requests")
@@ -31,7 +31,7 @@ export default async function AdminTransportPage() {
                   {req.full_name} <span dir="ltr" className="text-brand-teal">· {req.phone}</span>
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">
-                  {formatDate(req.departure_date)} · {t("passengersCount", { count: req.guests_count })}
+                  {formatDate(req.departure_date, locale)} · {t("passengersCount", { count: req.guests_count })}
                   {req.driver?.name && ` · ${req.driver.name}`}
                 </p>
                 {req.notes && <p className="mt-1 text-sm text-foreground/60">{req.notes}</p>}

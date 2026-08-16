@@ -53,7 +53,7 @@ export async function HotelCard({
           )}
           {fromPrice != null && (
             <span dir="ltr" className="font-display text-sm font-bold text-brand-terracotta">
-              {formatCurrency(fromPrice, currency)}{t("hotels.list.perNight")}
+              {formatCurrency(fromPrice, currency, locale)}{t("hotels.list.perNight")}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -11,7 +11,7 @@ const LEAD_SOURCES = [
   { table: "home_rental_leads" as const, titleKey: "homeRentalTitle" as const },
 ];
 
-function LeadRow({ row }: { row: Record<string, unknown> }) {
+function LeadRow({ row, locale }: { row: Record<string, unknown>; locale: string }) {
   const entries = Object.entries(row).filter(
     ([key, value]) => !["id", "created_at"].includes(key) && value !== null && value !== ""
   );
@@ -25,7 +25,7 @@ function LeadRow({ row }: { row: Record<string, unknown> }) {
         ))}
       </div>
       {typeof row.created_at === "string" && (
-        <p className="mt-2 text-xs text-foreground/50">{formatDate(row.created_at)}</p>
+        <p className="mt-2 text-xs text-foreground/50">{formatDate(row.created_at, locale)}</p>
       )}
     </Card>
   );
@@ -33,7 +33,7 @@ function LeadRow({ row }: { row: Record<string, unknown> }) {
 
 export default async function AdminLeadsPage() {
   const supabase = await createClient();
-  const t = await getTranslations("admin.leads");
+  const [t, locale] = await Promise.all([getTranslations("admin.leads"), getLocale()]);
 
   const results = await Promise.all(
     LEAD_SOURCES.map((source) =>
@@ -53,7 +53,7 @@ export default async function AdminLeadsPage() {
             {rows.length > 0 ? (
               <div className="mt-4 flex flex-col gap-3">
                 {rows.map((row) => (
-                  <LeadRow key={row.id as string} row={row} />
+                  <LeadRow key={row.id as string} row={row} locale={locale} />
                 ))}
               </div>
             ) : (

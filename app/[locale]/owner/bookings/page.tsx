@@ -52,7 +52,7 @@ export default async function OwnerBookingsPage() {
                   {booking.guest?.full_name || t("guest")} · {booking.room?.name}
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">
-                  {formatDate(booking.check_in)} - {formatDate(booking.check_out)} · {t("guestsCount", { count: booking.guests_count })}
+                  {formatDate(booking.check_in, locale)} - {formatDate(booking.check_out, locale)} · {t("guestsCount", { count: booking.guests_count })}
                 </p>
                 {booking.guest?.phone && (
                   <p dir="ltr" className="text-sm text-brand-teal">{booking.guest.phone}</p>
@@ -64,7 +64,7 @@ export default async function OwnerBookingsPage() {
                 </Badge>
                 {booking.total_price != null && (
                   <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                    {formatCurrency(booking.total_price, booking.currency)}
+                    {formatCurrency(booking.total_price, booking.currency, locale)}
                   </span>
                 )}
                 <BookingStatusButtons bookingId={booking.id} status={booking.status} />

@@ -1,11 +1,25 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/constants";
+import { routing } from "@/i18n/routing";
+
+function localizedUrl(path: string, locale: string): string {
+  return locale === routing.defaultLocale ? `${SITE_URL}${path}` : `${SITE_URL}/${locale}${path}`;
+}
+
+function entriesFor(path: string): MetadataRoute.Sitemap {
+  const languages = Object.fromEntries(routing.locales.map((locale) => [locale, localizedUrl(path, locale)]));
+  return routing.locales.map((locale) => ({
+    url: localizedUrl(path, locale),
+    lastModified: new Date(),
+    alternates: { languages },
+  }));
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
-  const staticRoutes: MetadataRoute.Sitemap = [
+  const staticPaths = [
     "",
     "/hotels",
     "/transport",
@@ -19,10 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/terms",
     "/login",
     "/signup",
-  ].map((path) => ({
-    url: `${SITE_URL}${path}`,
-    lastModified: new Date(),
-  }));
+  ];
 
   const [{ data: hotels }, { data: drivers }, { data: guides }] = await Promise.all([
     supabase.from("hotels").select("slug").eq("status", "active"),
@@ -30,11 +41,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase.from("tour_guides").select("slug").eq("status", "active"),
   ]);
 
-  const dynamicRoutes: MetadataRoute.Sitemap = [
-    ...(hotels ?? []).map((h) => ({ url: `${SITE_URL}/hotels/${h.slug}`, lastModified: new Date() })),
-    ...(drivers ?? []).map((d) => ({ url: `${SITE_URL}/transport/${d.slug}`, lastModified: new Date() })),
-    ...(guides ?? []).map((g) => ({ url: `${SITE_URL}/tours/${g.slug}`, lastModified: new Date() })),
+  const dynamicPaths = [
+    ...(hotels ?? []).map((h) => `/hotels/${h.slug}`),
+    ...(drivers ?? []).map((d) => `/transport/${d.slug}`),
+    ...(guides ?? []).map((g) => `/tours/${g.slug}`),
   ];
 
-  return [...staticRoutes, ...dynamicRoutes];
+  return [...staticPaths, ...dynamicPaths].flatMap(entriesFor);
 }

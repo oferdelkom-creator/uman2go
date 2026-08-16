@@ -46,7 +46,7 @@ export default async function OwnerRoomsPage() {
               <div className="flex items-center gap-3">
                 <Badge tone={room.status === "active" ? "teal" : "navy"}>{room.status === "active" ? t("active") : t("hidden")}</Badge>
                 <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                  {formatCurrency(room.price_per_night, room.currency)}
+                  {formatCurrency(room.price_per_night, room.currency, locale)}
                 </span>
                 <ButtonLink href={`/owner/rooms/${room.id}/edit`} variant="outline">{t("editAction")}</ButtonLink>
               </div>

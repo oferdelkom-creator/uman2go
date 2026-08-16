@@ -124,7 +124,7 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
                           <p className="text-xs text-foreground/60">{t("upToGuests", { count: room.capacity })}</p>
                         </div>
                         <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                          {formatCurrency(room.price_per_night, room.currency)}
+                          {formatCurrency(room.price_per_night, room.currency, locale)}
                         </span>
                       </div>
                     </summary>
