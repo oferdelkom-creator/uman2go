@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "tagline": "מלונות · הסעות · טיולים באומן",
+    "description": "פלטפורמת ההזמנות המובילה לנסיעה לאומן - מלונות מאומתים, הסעות ואוטובוסים, וטיולים מודרכים. הכל במקום אחד."
+  },
+  "nav": {
+    "hotels": "מלונות",
+    "transport": "הסעות",
+    "tours": "טיולים",
+    "vip": "VIP",
+    "myArea": "האזור שלי",
+    "searchHotels": "לחיפוש מלונות",
+    "login": "התחברות",
+    "signup": "הרשמה",
+    "menu": "תפריט"
+  },
+  "auth": {
+    "login": {
+      "email": "אימייל",
+      "password": "סיסמה",
+      "submit": "התחברות",
+      "loggingIn": "מתחבר...",
+      "invalidCredentials": "אימייל או סיסמה שגויים",
+      "forgotPassword": "שכחתי סיסמה",
+      "signup": "הרשמה"
+    }
+  },
+  "hotels": {
+    "booking": {
+      "checkIn": "הגעה",
+      "checkOut": "עזיבה",
+      "guestsCount": "מספר אורחים",
+      "extraServices": "שירותים נוספים",
+      "nights": "{count} לילות",
+      "sending": "שולח...",
+      "submit": "בקשת הזמנה",
+      "mustLogin": "יש להתחבר כדי להשלים הזמנה.",
+      "noAccountYet": "עדיין אין לכם חשבון?",
+      "sentTitle": "הבקשה נשלחה!",
+      "sentDesc": "בעל המלון יאשר את ההזמנה בקרוב. תוכלו לעקוב אחרי הסטטוס באזור האישי.",
+      "roomUnavailable": "החדר אינו זמין בתאריכים אלו",
+      "genericError": "אירעה שגיאה, נסו שוב"
+    }
+  },
+  "owner": {
+    "dashboard": {
+      "noHotelTitle": "עדיין לא הוספתם מלון",
+      "noHotelDesc": "הוסיפו את פרטי המלון שלכם כדי להתחיל לקבל הזמנות.",
+      "addHotel": "הוספת מלון",
+      "hotelDetails": "פרטי המלון",
+      "hotelDetailsDesc": "עדכון תמונות, תיאור ופרטי קשר",
+      "rooms": "חדרים",
+      "roomsDesc": "ניהול חדרים ומחירים",
+      "bookings": "הזמנות",
+      "bookingsCount": "{count} הזמנות עד כה",
+      "active": "פעיל",
+      "hidden": "מוסתר",
+      "viewHotelPage": "צפייה בדף המלון"
+    },
+    "hotelForm": {
+      "editTitle": "עריכת פרטי המלון"
+    },
+    "bookings": {
+      "title": "הזמנות",
+      "guest": "אורח",
+      "guestsCount": "{count} אורחים",
+      "noBookings": "עדיין אין הזמנות",
+      "status": {
+        "pendingDeposit": "ממתין לתשלום",
+        "depositPaid": "מקדמה שולמה",
+        "confirmed": "מאושר",
+        "cancelled": "מבוטל"
+      }
+    },
+    "rooms": {
+      "editTitle": "עריכת חדר",
+      "addTitle": "הוספת חדר",
+      "titleIn": "חדרים ב{hotelName}",
+      "capacityUnits": "עד {capacity} אורחים · {quantity} יחידות",
+      "active": "פעיל",
+      "hidden": "מוסתר",
+      "editAction": "עריכה",
+      "noRoomsTitle": "עדיין אין חדרים",
+      "noRoomsDesc": "הוסיפו חדר ראשון"
+    }
+  },
+  "home": {
+    "heroTitle": "מלונות · הסעות · טיולים באומן",
+    "heroSubtitle": "כל מה שצריך לנסיעה לאומן במקום אחד - מלונות מאומתים, הסעות אמינות וטיולים מודרכים, בלחיצה אחת.",
+    "searchHotels": "חיפוש מלונות",
+    "requestTransport": "הזמנת הסעה",
+    "viewMore": "לצפייה",
+    "featuredHotels": "מלונות מומלצים",
+    "allHotels": "לכל המלונות",
+    "featuredDrivers": "נהגים מומלצים",
+    "allDrivers": "לכל הנהגים",
+    "vipTitle": "רוצים שירות VIP?",
+    "vipDescription": "ליווי אישי, תיאום מלא של המלון, ההסעה והטיולים - כל מה שצריך לנסיעה נטולת דאגות.",
+    "vipButton": "בקשת שירות VIP",
+    "verticals": {
+      "hotels": { "title": "מלונות", "description": "מלונות וצימרים מאומתים באומן, קרוב לציון" },
+      "transport": { "title": "הסעות", "description": "נהגים ואוטובוסים מאומתים לכל יעד" },
+      "tours": { "title": "טיולים", "description": "טיולים מודרכים וחוויות באומן והסביבה" }
+    }
+  },
+  "about": {
+    "title": "אודות",
+    "tagline": "מלונות · הסעות · טיולים באומן",
+    "paragraph1": "{siteName} הוקמה כדי לפתור בעיה פשוטה: תכנון נסיעה לאומן כרוך בעשרות שיחות טלפון, קבוצות וואטסאפ ומודעות מפוזרות. אנחנו מרכזים במקום אחד את כל מה שצריך - מלונות מאומתים, נהגים אמינים וטיולים מודרכים - כדי שתוכלו להתמקד בעיקר.",
+    "paragraph2": "כל מלון, נהג ומדריך טיולים באתר עברו אימות בסיסי מטעמנו. אנחנו ממליצים תמיד לתאם ישירות מול נותן השירות לפני התשלום, ולשמור על תקשורת דרך הפלטפורמה ככל שניתן."
+  },
+  "admin": {
+    "nav": {
+      "panelTitle": "פאנל ניהול",
+      "overview": "סקירה",
+      "bookings": "הזמנות",
+      "leads": "פניות",
+      "transport": "הסעות",
+      "tours": "טיולים",
+      "team": "צוות"
+    }
+  },
+  "footer": {
+    "services": "שירותים",
+    "more": "עוד",
+    "info": "מידע",
+    "investments": "השקעות",
+    "flights": "טיסות",
+    "homeRentals": "השכרת נכסים",
+    "about": "אודות",
+    "contact": "צור קשר",
+    "terms": "תקנון"
+  }
+}

@@ -1,36 +1,39 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/Logo";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import { SITE_NAME } from "@/lib/constants";
 
-const columns = [
-  {
-    title: "שירותים",
-    links: [
-      { href: "/hotels", label: "מלונות" },
-      { href: "/transport", label: "הסעות" },
-      { href: "/tours", label: "טיולים" },
-    ],
-  },
-  {
-    title: "עוד",
-    links: [
-      { href: "/vip", label: "VIP" },
-      { href: "/investments", label: "השקעות" },
-      { href: "/flights", label: "טיסות" },
-      { href: "/home-rentals", label: "השכרת נכסים" },
-    ],
-  },
-  {
-    title: "מידע",
-    links: [
-      { href: "/about", label: "אודות" },
-      { href: "/contact", label: "צור קשר" },
-      { href: "/terms", label: "תקנון" },
-    ],
-  },
-];
+export default async function Footer() {
+  const t = await getTranslations();
 
-export default function Footer() {
+  const columns = [
+    {
+      title: t("footer.services"),
+      links: [
+        { href: "/hotels", label: t("nav.hotels") },
+        { href: "/transport", label: t("nav.transport") },
+        { href: "/tours", label: t("nav.tours") },
+      ],
+    },
+    {
+      title: t("footer.more"),
+      links: [
+        { href: "/vip", label: t("nav.vip") },
+        { href: "/investments", label: t("footer.investments") },
+        { href: "/flights", label: t("footer.flights") },
+        { href: "/home-rentals", label: t("footer.homeRentals") },
+      ],
+    },
+    {
+      title: t("footer.info"),
+      links: [
+        { href: "/about", label: t("footer.about") },
+        { href: "/contact", label: t("footer.contact") },
+        { href: "/terms", label: t("footer.terms") },
+      ],
+    },
+  ];
+
   return (
     <footer className="border-t border-brand-navy/10 bg-brand-navy text-white">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -40,7 +43,7 @@ export default function Footer() {
               <Logo className="h-9 w-auto" />
               {SITE_NAME}
             </div>
-            <p className="mt-3 text-sm text-white/70">{SITE_TAGLINE}</p>
+            <p className="mt-3 text-sm text-white/70">{t("meta.tagline")}</p>
           </div>
           {columns.map((col) => (
             <div key={col.title}>

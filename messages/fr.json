@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "tagline": "Hôtels · Transport · Excursions à Ouman",
+    "description": "La principale plateforme de réservation pour votre voyage à Ouman - hôtels vérifiés, transport et bus, et excursions guidées. Tout en un seul endroit."
+  },
+  "nav": {
+    "hotels": "Hôtels",
+    "transport": "Transport",
+    "tours": "Excursions",
+    "vip": "VIP",
+    "myArea": "Mon espace",
+    "searchHotels": "Rechercher un hôtel",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "menu": "Menu"
+  },
+  "auth": {
+    "login": {
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Connexion",
+      "loggingIn": "Connexion...",
+      "invalidCredentials": "E-mail ou mot de passe incorrect",
+      "forgotPassword": "Mot de passe oublié",
+      "signup": "Inscription"
+    }
+  },
+  "hotels": {
+    "booking": {
+      "checkIn": "Arrivée",
+      "checkOut": "Départ",
+      "guestsCount": "Nombre de personnes",
+      "extraServices": "Services supplémentaires",
+      "nights": "{count} nuits",
+      "sending": "Envoi...",
+      "submit": "Demander une réservation",
+      "mustLogin": "Vous devez vous connecter pour finaliser une réservation.",
+      "noAccountYet": "Pas encore de compte ?",
+      "sentTitle": "Demande envoyée !",
+      "sentDesc": "Le propriétaire de l'hôtel confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
+      "roomUnavailable": "Cette chambre n'est pas disponible à ces dates",
+      "genericError": "Une erreur s'est produite, veuillez réessayer"
+    }
+  },
+  "owner": {
+    "dashboard": {
+      "noHotelTitle": "Vous n'avez pas encore ajouté d'hôtel",
+      "noHotelDesc": "Ajoutez les détails de votre hôtel pour commencer à recevoir des réservations.",
+      "addHotel": "Ajouter un hôtel",
+      "hotelDetails": "Détails de l'hôtel",
+      "hotelDetailsDesc": "Mettre à jour les photos, la description et les coordonnées",
+      "rooms": "Chambres",
+      "roomsDesc": "Gérer les chambres et les prix",
+      "bookings": "Réservations",
+      "bookingsCount": "{count} réservations à ce jour",
+      "active": "Actif",
+      "hidden": "Masqué",
+      "viewHotelPage": "Voir la page de l'hôtel"
+    },
+    "hotelForm": {
+      "editTitle": "Modifier les détails de l'hôtel"
+    },
+    "bookings": {
+      "title": "Réservations",
+      "guest": "Client",
+      "guestsCount": "{count} personnes",
+      "noBookings": "Aucune réservation pour l'instant",
+      "status": {
+        "pendingDeposit": "En attente de paiement",
+        "depositPaid": "Acompte payé",
+        "confirmed": "Confirmée",
+        "cancelled": "Annulée"
+      }
+    },
+    "rooms": {
+      "editTitle": "Modifier la chambre",
+      "addTitle": "Ajouter une chambre",
+      "titleIn": "Chambres à {hotelName}",
+      "capacityUnits": "Jusqu'à {capacity} personnes · {quantity} unités",
+      "active": "Actif",
+      "hidden": "Masqué",
+      "editAction": "Modifier",
+      "noRoomsTitle": "Aucune chambre pour l'instant",
+      "noRoomsDesc": "Ajoutez votre première chambre"
+    }
+  },
+  "home": {
+    "heroTitle": "Hôtels · Transport · Excursions à Ouman",
+    "heroSubtitle": "Tout ce qu'il faut pour votre voyage à Ouman en un seul endroit - hôtels vérifiés, transport fiable et excursions guidées, en un clic.",
+    "searchHotels": "Rechercher un hôtel",
+    "requestTransport": "Réserver un transport",
+    "viewMore": "Voir plus",
+    "featuredHotels": "Hôtels recommandés",
+    "allHotels": "Tous les hôtels",
+    "featuredDrivers": "Chauffeurs recommandés",
+    "allDrivers": "Tous les chauffeurs",
+    "vipTitle": "Vous voulez un service VIP ?",
+    "vipDescription": "Accompagnement personnel, coordination complète de l'hôtel, du transport et des excursions - tout ce qu'il faut pour un voyage sans souci.",
+    "vipButton": "Demander le service VIP",
+    "verticals": {
+      "hotels": { "title": "Hôtels", "description": "Hôtels et chalets vérifiés à Ouman, près du site" },
+      "transport": { "title": "Transport", "description": "Chauffeurs et bus vérifiés vers toutes les destinations" },
+      "tours": { "title": "Excursions", "description": "Excursions guidées et expériences à Ouman et ses environs" }
+    }
+  },
+  "about": {
+    "title": "À propos",
+    "tagline": "Hôtels · Transport · Excursions à Ouman",
+    "paragraph1": "{siteName} a été créée pour résoudre un problème simple : organiser un voyage à Ouman implique des dizaines d'appels téléphoniques, de groupes WhatsApp et d'annonces éparpillées. Nous rassemblons en un seul endroit tout ce dont vous avez besoin - hôtels vérifiés, chauffeurs fiables et excursions guidées - afin que vous puissiez vous concentrer sur l'essentiel.",
+    "paragraph2": "Chaque hôtel, chauffeur et guide touristique du site a fait l'objet d'une vérification de base de notre part. Nous recommandons toujours de coordonner directement avec le prestataire avant le paiement, et de conserver autant que possible la communication via la plateforme."
+  },
+  "admin": {
+    "nav": {
+      "panelTitle": "Panneau d'administration",
+      "overview": "Aperçu",
+      "bookings": "Réservations",
+      "leads": "Demandes",
+      "transport": "Transport",
+      "tours": "Excursions",
+      "team": "Équipe"
+    }
+  },
+  "footer": {
+    "services": "Services",
+    "more": "Plus",
+    "info": "Infos",
+    "investments": "Investissements",
+    "flights": "Vols",
+    "homeRentals": "Location de biens",
+    "about": "À propos",
+    "contact": "Contact",
+    "terms": "Conditions"
+  }
+}

@@ -1,7 +1,9 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui/Button";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
 
 export default async function Navbar() {
@@ -9,6 +11,7 @@ export default async function Navbar() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const t = await getTranslations("nav");
 
   let isOwner = false;
   if (user) {
@@ -35,27 +38,28 @@ export default async function Navbar() {
               href={link.href}
               className="text-sm font-semibold text-brand-navy/80 transition-colors hover:text-brand-terracotta"
             >
-              {link.label}
+              {t(link.key)}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
           {user ? (
             <ButtonLink href={isOwner ? "/owner" : "/hotels"} variant="outline">
-              {isOwner ? "האזור שלי" : "לחיפוש מלונות"}
+              {isOwner ? t("myArea") : t("searchHotels")}
             </ButtonLink>
           ) : (
             <>
               <Link href="/login" className="text-sm font-semibold text-brand-navy/80 hover:text-brand-terracotta">
-                התחברות
+                {t("login")}
               </Link>
-              <ButtonLink href="/signup">הרשמה</ButtonLink>
+              <ButtonLink href="/signup">{t("signup")}</ButtonLink>
             </>
           )}
         </div>
 
-        <label htmlFor="mobile-menu-toggle" className="cursor-pointer md:hidden" aria-label="תפריט">
+        <label htmlFor="mobile-menu-toggle" className="cursor-pointer md:hidden" aria-label={t("menu")}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-navy">
             <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
           </svg>
@@ -66,18 +70,21 @@ export default async function Navbar() {
       <nav className="hidden flex-col gap-1 border-t border-brand-navy/10 bg-background px-4 py-3 peer-checked:flex md:hidden">
         {NAV_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-cream-deep">
-            {link.label}
+            {t(link.key)}
           </Link>
         ))}
+        <div className="mt-2 flex items-center gap-2">
+          <LanguageSwitcher />
+        </div>
         <div className="mt-2 flex gap-2">
           {user ? (
             <ButtonLink href={isOwner ? "/owner" : "/hotels"} variant="outline" className="flex-1">
-              {isOwner ? "האזור שלי" : "לחיפוש מלונות"}
+              {isOwner ? t("myArea") : t("searchHotels")}
             </ButtonLink>
           ) : (
             <>
-              <ButtonLink href="/login" variant="outline" className="flex-1">התחברות</ButtonLink>
-              <ButtonLink href="/signup" className="flex-1">הרשמה</ButtonLink>
+              <ButtonLink href="/login" variant="outline" className="flex-1">{t("login")}</ButtonLink>
+              <ButtonLink href="/signup" className="flex-1">{t("signup")}</ButtonLink>
             </>
           )}
         </div>

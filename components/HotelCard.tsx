@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/format";
 import type { Hotel } from "@/lib/types";

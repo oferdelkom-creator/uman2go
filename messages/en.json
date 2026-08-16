@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "tagline": "Hotels · Transport · Tours in Uman",
+    "description": "The leading booking platform for your trip to Uman - verified hotels, transport and buses, and guided tours. Everything in one place."
+  },
+  "nav": {
+    "hotels": "Hotels",
+    "transport": "Transport",
+    "tours": "Tours",
+    "vip": "VIP",
+    "myArea": "My Area",
+    "searchHotels": "Search Hotels",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "menu": "Menu"
+  },
+  "auth": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log In",
+      "loggingIn": "Logging in...",
+      "invalidCredentials": "Invalid email or password",
+      "forgotPassword": "Forgot password",
+      "signup": "Sign up"
+    }
+  },
+  "hotels": {
+    "booking": {
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guestsCount": "Number of guests",
+      "extraServices": "Extra services",
+      "nights": "{count} nights",
+      "sending": "Sending...",
+      "submit": "Request Booking",
+      "mustLogin": "You need to log in to complete a booking.",
+      "noAccountYet": "Don't have an account yet?",
+      "sentTitle": "Request sent!",
+      "sentDesc": "The hotel owner will confirm the booking soon. You can track the status in your account.",
+      "roomUnavailable": "This room isn't available for these dates",
+      "genericError": "Something went wrong, please try again"
+    }
+  },
+  "owner": {
+    "dashboard": {
+      "noHotelTitle": "You haven't added a hotel yet",
+      "noHotelDesc": "Add your hotel details to start receiving bookings.",
+      "addHotel": "Add Hotel",
+      "hotelDetails": "Hotel Details",
+      "hotelDetailsDesc": "Update photos, description and contact info",
+      "rooms": "Rooms",
+      "roomsDesc": "Manage rooms and prices",
+      "bookings": "Bookings",
+      "bookingsCount": "{count} bookings so far",
+      "active": "Active",
+      "hidden": "Hidden",
+      "viewHotelPage": "View Hotel Page"
+    },
+    "hotelForm": {
+      "editTitle": "Edit Hotel Details"
+    },
+    "bookings": {
+      "title": "Bookings",
+      "guest": "Guest",
+      "guestsCount": "{count} guests",
+      "noBookings": "No bookings yet",
+      "status": {
+        "pendingDeposit": "Awaiting Payment",
+        "depositPaid": "Deposit Paid",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "rooms": {
+      "editTitle": "Edit Room",
+      "addTitle": "Add Room",
+      "titleIn": "Rooms at {hotelName}",
+      "capacityUnits": "Up to {capacity} guests · {quantity} units",
+      "active": "Active",
+      "hidden": "Hidden",
+      "editAction": "Edit",
+      "noRoomsTitle": "No rooms yet",
+      "noRoomsDesc": "Add your first room"
+    }
+  },
+  "home": {
+    "heroTitle": "Hotels · Transport · Tours in Uman",
+    "heroSubtitle": "Everything you need for your trip to Uman in one place - verified hotels, reliable transport and guided tours, in one click.",
+    "searchHotels": "Search Hotels",
+    "requestTransport": "Book Transport",
+    "viewMore": "View more",
+    "featuredHotels": "Featured Hotels",
+    "allHotels": "All Hotels",
+    "featuredDrivers": "Featured Drivers",
+    "allDrivers": "All Drivers",
+    "vipTitle": "Want VIP service?",
+    "vipDescription": "Personal support, full coordination of your hotel, transport and tours - everything you need for a worry-free trip.",
+    "vipButton": "Request VIP Service",
+    "verticals": {
+      "hotels": { "title": "Hotels", "description": "Verified hotels and cabins in Uman, close to the site" },
+      "transport": { "title": "Transport", "description": "Verified drivers and buses to every destination" },
+      "tours": { "title": "Tours", "description": "Guided tours and experiences in Uman and beyond" }
+    }
+  },
+  "about": {
+    "title": "About",
+    "tagline": "Hotels · Transport · Tours in Uman",
+    "paragraph1": "{siteName} was founded to solve a simple problem: planning a trip to Uman involves dozens of phone calls, WhatsApp groups and scattered ads. We bring everything you need together in one place - verified hotels, reliable drivers and guided tours - so you can focus on what matters.",
+    "paragraph2": "Every hotel, driver and tour guide on the site has gone through basic verification by us. We always recommend coordinating directly with the service provider before payment, and keeping communication through the platform as much as possible."
+  },
+  "admin": {
+    "nav": {
+      "panelTitle": "Admin Panel",
+      "overview": "Overview",
+      "bookings": "Bookings",
+      "leads": "Leads",
+      "transport": "Transport",
+      "tours": "Tours",
+      "team": "Team"
+    }
+  },
+  "footer": {
+    "services": "Services",
+    "more": "More",
+    "info": "Info",
+    "investments": "Investments",
+    "flights": "Flights",
+    "homeRentals": "Home Rentals",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms"
+  }
+}
