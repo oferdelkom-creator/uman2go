@@ -33,9 +33,9 @@ export default async function AdminBookingsPage() {
                   {booking.hotel?.name} · {booking.room?.name}
                 </p>
                 <p className="text-sm text-foreground/70">
-                  {booking.guest?.full_name || t("guestFallback")}
-                  {booking.guest?.phone && (
-                    <span dir="ltr" className="text-brand-teal"> · {booking.guest.phone}</span>
+                  {booking.guest?.full_name || booking.guest_full_name || t("guestFallback")}
+                  {(booking.guest?.phone || booking.guest_phone) && (
+                    <span dir="ltr" className="text-brand-teal"> · {booking.guest?.phone || booking.guest_phone}</span>
                   )}
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">

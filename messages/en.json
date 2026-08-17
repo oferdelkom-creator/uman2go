@@ -78,7 +78,13 @@
       "emptyTitle": "No hotels available yet",
       "emptyDesc": "Check back soon",
       "featured": "Featured",
-      "perNight": "/night"
+      "perNight": "/night",
+      "searchCheckIn": "Check-in",
+      "searchCheckOut": "Check-out",
+      "searchGuests": "Guests",
+      "searchSubmit": "Search",
+      "noAvailabilityTitle": "No hotels available for these dates",
+      "noAvailabilityDesc": "Try different dates"
     },
     "detail": {
       "fallbackTitle": "Hotel",
@@ -88,18 +94,21 @@
       "noReviews": "No reviews for this hotel yet.",
       "rooms": "Rooms",
       "upToGuests": "Up to {count} guests",
-      "noRooms": "No rooms available right now"
+      "noRooms": "No rooms available right now",
+      "unavailableForDates": "Not available for these dates",
+      "unavailableForDatesDesc": "This room isn't available for the selected dates. Try different dates or another room."
     },
     "booking": {
       "checkIn": "Check-in",
       "checkOut": "Check-out",
       "guestsCount": "Number of guests",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
       "extraServices": "Extra services",
       "nights": "{count} nights",
       "sending": "Sending...",
       "submit": "Request Booking",
-      "mustLogin": "You need to log in to complete a booking.",
-      "noAccountYet": "Don't have an account yet?",
       "sentTitle": "Request sent!",
       "sentDesc": "The hotel owner will confirm the booking soon. You can track the status in your account.",
       "roomUnavailable": "This room isn't available for these dates",

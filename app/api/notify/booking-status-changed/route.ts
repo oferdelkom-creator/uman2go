@@ -20,16 +20,18 @@ export async function POST(request: Request) {
     .eq("id", id)
     .maybeSingle();
 
-  if (!booking?.guest?.email) return NextResponse.json({ ok: false }, { status: 404 });
+  const guestEmail = booking?.guest?.email || booking?.guest_email;
+  const guestName = booking?.guest?.full_name || booking?.guest_full_name || "";
+  if (!guestEmail) return NextResponse.json({ ok: false }, { status: 404 });
 
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
-      to: booking.guest.email,
+      to: guestEmail,
       subject: `עדכון סטטוס הזמנה - ${booking.hotel?.name}`,
       html: renderEmail(`
         <h2 style="margin:0 0 12px;color:#a0522d;">עדכון להזמנה שלכם</h2>
-        <p>שלום ${booking.guest.full_name ?? ""},</p>
+        <p>שלום ${guestName},</p>
         <p>סטטוס ההזמנה שלכם ב${booking.hotel?.name} עודכן ל: <strong>${STATUS_LABEL[status] ?? status}</strong></p>
       `),
     });

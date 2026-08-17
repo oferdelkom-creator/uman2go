@@ -13,7 +13,9 @@ export async function POST(request: Request) {
     .eq("id", id)
     .maybeSingle();
 
-  if (!booking?.guest?.email) return NextResponse.json({ ok: false }, { status: 404 });
+  const guestEmail = booking?.guest?.email || booking?.guest_email;
+  const guestName = booking?.guest?.full_name || booking?.guest_full_name || "";
+  if (!guestEmail) return NextResponse.json({ ok: false }, { status: 404 });
 
   const refundLine = refunded
     ? "<p>המקדמה ששילמתם הוחזרה במלואה.</p>"
@@ -22,11 +24,11 @@ export async function POST(request: Request) {
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
-      to: booking.guest.email,
+      to: guestEmail,
       subject: `הבקשה לא אושרה - ${booking.hotel?.name}`,
       html: renderEmail(`
         <h2 style="margin:0 0 12px;color:#a0522d;">הבקשה שלכם לא אושרה</h2>
-        <p>שלום ${booking.guest.full_name ?? ""},</p>
+        <p>שלום ${guestName},</p>
         <p>לצערנו בעל המלון ${booking.hotel?.name ?? ""} לא אישר את בקשת ההזמנה שלכם.</p>
         ${refundLine}
       `),

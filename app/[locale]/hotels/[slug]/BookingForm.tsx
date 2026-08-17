@@ -2,7 +2,6 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input } from "@/components/ui/FormField";
@@ -15,20 +14,25 @@ export function BookingForm({
   room,
   hotelId,
   extraServices,
+  initialCheckIn,
+  initialCheckOut,
+  initialGuests,
 }: {
   room: Room;
   hotelId: string;
   extraServices: Extra[];
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+  initialGuests?: number;
 }) {
   const t = useTranslations("hotels.booking");
   const locale = useLocale();
-  // usePathname() from @/i18n/navigation returns the locale-neutral path,
-  // matching the "next" convention used by proxy.ts/LoginForm.tsx.
-  const pathname = usePathname();
-  const router = useRouter();
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
+  const [checkIn, setCheckIn] = useState(initialCheckIn ?? "");
+  const [checkOut, setCheckOut] = useState(initialCheckOut ?? "");
+  const [guests, setGuests] = useState(initialGuests ?? 1);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "redirecting" | "fallback" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -50,21 +54,22 @@ export function BookingForm({
     setErrorMessage("");
 
     const supabase = createClient();
+    // If a session happens to exist we link it opportunistically, but a
+    // guest never needs to log in or sign up to book - contact details are
+    // collected directly, same pattern as transport/tour requests.
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.push(`/login?next=${encodeURIComponent(pathname)}`);
-      return;
-    }
 
     const { data, error } = await supabase
       .from("bookings")
       .insert({
         hotel_id: hotelId,
         room_id: room.id,
-        guest_id: user.id,
+        guest_id: user?.id ?? null,
+        guest_full_name: fullName,
+        guest_phone: phone,
+        guest_email: email,
         check_in: checkIn,
         check_out: checkOut,
         guests_count: guests,
@@ -139,6 +144,18 @@ export function BookingForm({
         />
       </FormField>
 
+      <div className="grid grid-cols-2 gap-3">
+        <FormField label={t("fullName")} htmlFor={`fullname-${room.id}`} required>
+          <Input id={`fullname-${room.id}`} required value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        </FormField>
+        <FormField label={t("phone")} htmlFor={`phone-${room.id}`} required>
+          <Input id={`phone-${room.id}`} type="tel" dir="ltr" required value={phone} onChange={(e) => setPhone(e.target.value)} />
+        </FormField>
+      </div>
+      <FormField label={t("email")} htmlFor={`email-${room.id}`} required>
+        <Input id={`email-${room.id}`} type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      </FormField>
+
       {extraServices.length > 0 && (
         <div className="flex flex-col gap-1.5">
           <p className="text-sm font-semibold text-brand-navy">{t("extraServices")}</p>
@@ -168,9 +185,6 @@ export function BookingForm({
       <Button type="submit" disabled={status === "loading" || nights <= 0} className="w-full">
         {status === "loading" ? t("sending") : t("submit")}
       </Button>
-      <p className="text-center text-xs text-brand-navy/50">
-        {t("mustLogin")} <Link href="/signup" className="underline">{t("noAccountYet")}</Link>
-      </p>
     </form>
   );
 }

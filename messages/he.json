@@ -78,7 +78,13 @@
       "emptyTitle": "עדיין אין מלונות זמינים",
       "emptyDesc": "חזרו בקרוב",
       "featured": "מומלץ",
-      "perNight": "/לילה"
+      "perNight": "/לילה",
+      "searchCheckIn": "הגעה",
+      "searchCheckOut": "עזיבה",
+      "searchGuests": "אורחים",
+      "searchSubmit": "חיפוש",
+      "noAvailabilityTitle": "אין מלונות זמינים בתאריכים אלו",
+      "noAvailabilityDesc": "נסו תאריכים אחרים"
     },
     "detail": {
       "fallbackTitle": "מלון",
@@ -88,18 +94,21 @@
       "noReviews": "עדיין אין חוות דעת על המלון הזה.",
       "rooms": "חדרים",
       "upToGuests": "עד {count} אורחים",
-      "noRooms": "אין חדרים זמינים כרגע"
+      "noRooms": "אין חדרים זמינים כרגע",
+      "unavailableForDates": "לא זמין בתאריכים אלו",
+      "unavailableForDatesDesc": "החדר הזה אינו זמין בתאריכים שנבחרו. נסו תאריכים אחרים או חדר אחר."
     },
     "booking": {
       "checkIn": "הגעה",
       "checkOut": "עזיבה",
       "guestsCount": "מספר אורחים",
+      "fullName": "שם מלא",
+      "phone": "טלפון",
+      "email": "אימייל",
       "extraServices": "שירותים נוספים",
       "nights": "{count} לילות",
       "sending": "שולח...",
       "submit": "בקשת הזמנה",
-      "mustLogin": "יש להתחבר כדי להשלים הזמנה.",
-      "noAccountYet": "עדיין אין לכם חשבון?",
       "sentTitle": "הבקשה נשלחה!",
       "sentDesc": "בעל המלון יאשר את ההזמנה בקרוב. תוכלו לעקוב אחרי הסטטוס באזור האישי.",
       "roomUnavailable": "החדר אינו זמין בתאריכים אלו",

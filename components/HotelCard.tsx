@@ -10,10 +10,13 @@ export async function HotelCard({
   hotel,
   fromPrice,
   currency = "USD",
+  searchQuery = "",
 }: {
   hotel: Hotel;
   fromPrice?: number | null;
   currency?: string;
+  /** Already-built "?checkIn=...&checkOut=..." string, carried over from a hotels-list search so the detail page can pre-fill the same dates. */
+  searchQuery?: string;
 }) {
   const [t, locale] = await Promise.all([getTranslations(), getLocale()]);
   const photo = hotel.photos[0];
@@ -21,7 +24,7 @@ export async function HotelCard({
 
   return (
     <Link
-      href={`/hotels/${hotel.slug}`}
+      href={`/hotels/${hotel.slug}${searchQuery}`}
       className="group block overflow-hidden rounded-3xl bg-white shadow-lg shadow-brand-terracotta/10 ring-1 ring-brand-terracotta/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-terracotta/20"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-brand-cream-deep">

@@ -78,7 +78,13 @@
       "emptyTitle": "Поки що немає доступних готелів",
       "emptyDesc": "Завітайте пізніше",
       "featured": "Рекомендовано",
-      "perNight": "/ніч"
+      "perNight": "/ніч",
+      "searchCheckIn": "Заїзд",
+      "searchCheckOut": "Виїзд",
+      "searchGuests": "Гості",
+      "searchSubmit": "Пошук",
+      "noAvailabilityTitle": "Немає доступних готелів на ці дати",
+      "noAvailabilityDesc": "Спробуйте інші дати"
     },
     "detail": {
       "fallbackTitle": "Готель",
@@ -88,18 +94,21 @@
       "noReviews": "Поки що немає відгуків про цей готель.",
       "rooms": "Номери",
       "upToGuests": "До {count} гостей",
-      "noRooms": "Наразі немає доступних номерів"
+      "noRooms": "Наразі немає доступних номерів",
+      "unavailableForDates": "Недоступно на ці дати",
+      "unavailableForDatesDesc": "Цей номер недоступний на обрані дати. Спробуйте інші дати або інший номер."
     },
     "booking": {
       "checkIn": "Заїзд",
       "checkOut": "Виїзд",
       "guestsCount": "Кількість гостей",
+      "fullName": "Повне ім'я",
+      "phone": "Телефон",
+      "email": "Електронна пошта",
       "extraServices": "Додаткові послуги",
       "nights": "{count} ночей",
       "sending": "Надсилання...",
       "submit": "Забронювати",
-      "mustLogin": "Щоб завершити бронювання, потрібно увійти в акаунт.",
-      "noAccountYet": "Ще немає акаунта?",
       "sentTitle": "Запит надіслано!",
       "sentDesc": "Власник готелю незабаром підтвердить бронювання. Статус можна відстежити в особистому кабінеті.",
       "roomUnavailable": "Цей номер недоступний на ці дати",

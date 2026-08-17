@@ -28,7 +28,10 @@ export type Database = {
           currency: string
           extras_total: number
           grow_transaction_id: string | null
-          guest_id: string
+          guest_email: string | null
+          guest_full_name: string | null
+          guest_id: string | null
+          guest_phone: string | null
           guests_count: number
           hotel_id: string
           id: string
@@ -57,7 +60,10 @@ export type Database = {
           currency?: string
           extras_total?: number
           grow_transaction_id?: string | null
-          guest_id: string
+          guest_email?: string | null
+          guest_full_name?: string | null
+          guest_id?: string | null
+          guest_phone?: string | null
           guests_count?: number
           hotel_id: string
           id?: string
@@ -86,7 +92,10 @@ export type Database = {
           currency?: string
           extras_total?: number
           grow_transaction_id?: string | null
-          guest_id?: string
+          guest_email?: string | null
+          guest_full_name?: string | null
+          guest_id?: string | null
+          guest_phone?: string | null
           guests_count?: number
           hotel_id?: string
           id?: string
@@ -873,6 +882,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      available_room_ids: {
+        Args: { p_check_in: string; p_check_out: string }
+        Returns: string[]
+      }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {

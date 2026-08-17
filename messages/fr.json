@@ -78,7 +78,13 @@
       "emptyTitle": "Aucun hôtel disponible pour l'instant",
       "emptyDesc": "Revenez bientôt",
       "featured": "Recommandé",
-      "perNight": "/nuit"
+      "perNight": "/nuit",
+      "searchCheckIn": "Arrivée",
+      "searchCheckOut": "Départ",
+      "searchGuests": "Personnes",
+      "searchSubmit": "Rechercher",
+      "noAvailabilityTitle": "Aucun hôtel disponible pour ces dates",
+      "noAvailabilityDesc": "Essayez d'autres dates"
     },
     "detail": {
       "fallbackTitle": "Hôtel",
@@ -88,18 +94,21 @@
       "noReviews": "Aucun avis pour cet hôtel pour l'instant.",
       "rooms": "Chambres",
       "upToGuests": "Jusqu'à {count} personnes",
-      "noRooms": "Aucune chambre disponible pour le moment"
+      "noRooms": "Aucune chambre disponible pour le moment",
+      "unavailableForDates": "Non disponible pour ces dates",
+      "unavailableForDatesDesc": "Cette chambre n'est pas disponible pour les dates sélectionnées. Essayez d'autres dates ou une autre chambre."
     },
     "booking": {
       "checkIn": "Arrivée",
       "checkOut": "Départ",
       "guestsCount": "Nombre de personnes",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "email": "E-mail",
       "extraServices": "Services supplémentaires",
       "nights": "{count} nuits",
       "sending": "Envoi...",
       "submit": "Demander une réservation",
-      "mustLogin": "Vous devez vous connecter pour finaliser une réservation.",
-      "noAccountYet": "Pas encore de compte ?",
       "sentTitle": "Demande envoyée !",
       "sentDesc": "Le propriétaire de l'hôtel confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
       "roomUnavailable": "Cette chambre n'est pas disponible à ces dates",

@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createPaymentLink, isGrowConfigured } from "@/lib/grow";
 import { SITE_URL } from "@/lib/constants";
 
+// Guests don't need to be logged in to book, so this route can't rely on
+// RLS/auth.uid() to scope the request - the booking's own id (an unguessable
+// UUID, only known to whoever just created it and to us) is what authorizes
+// this one action, the same way a checkout session id works elsewhere.
 export async function POST(request: Request) {
   const { bookingId, locale } = (await request.json()) as { bookingId: string; locale: string };
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ ok: false }, { status: 401 });
-
+  const supabase = createAdminClient();
   const { data: booking } = await supabase
     .from("bookings")
     .select("id, status, platform_fee, platform_fee_currency, hotel:hotels(name, slug)")
     .eq("id", bookingId)
-    .eq("guest_id", user.id)
     .maybeSingle();
 
   if (!booking) return NextResponse.json({ ok: false }, { status: 404 });

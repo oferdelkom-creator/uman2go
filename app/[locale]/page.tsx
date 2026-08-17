@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { HotelCard } from "@/components/HotelCard";
 import { DriverCard } from "@/components/DriverCard";
+import { HotelSearchBar } from "@/components/HotelSearchBar";
 import { Reveal } from "@/components/Reveal";
 
 const VERTICAL_ICONS: Record<string, React.ReactNode> = {
@@ -50,10 +51,10 @@ export default async function HomePage() {
           <p className="font-display text-sm font-bold tracking-widest text-brand-gold uppercase">Uman2Go</p>
           <h1 className="mt-4 font-display text-4xl font-extrabold sm:text-6xl">{t("heroTitle")}</h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">{t("heroSubtitle")}</p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <ButtonLink href="/hotels" className="text-base px-7 py-3">
-              {t("searchHotels")}
-            </ButtonLink>
+          <div className="mx-auto mt-8 max-w-3xl text-foreground">
+            <HotelSearchBar />
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
             <ButtonLink href="/transport" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3">
               {t("requestTransport")}
             </ButtonLink>

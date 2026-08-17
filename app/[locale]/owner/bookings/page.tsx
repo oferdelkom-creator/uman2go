@@ -49,13 +49,13 @@ export default async function OwnerBookingsPage() {
             <Card key={booking.id} className="flex flex-wrap items-center justify-between gap-4 p-5">
               <div>
                 <p className="font-display font-bold text-brand-navy">
-                  {booking.guest?.full_name || t("guest")} · {booking.room?.name}
+                  {booking.guest?.full_name || booking.guest_full_name || t("guest")} · {booking.room?.name}
                 </p>
                 <p dir="ltr" className="text-sm text-foreground/60">
                   {formatDate(booking.check_in, locale)} - {formatDate(booking.check_out, locale)} · {t("guestsCount", { count: booking.guests_count })}
                 </p>
-                {booking.guest?.phone && (
-                  <p dir="ltr" className="text-sm text-brand-teal">{booking.guest.phone}</p>
+                {(booking.guest?.phone || booking.guest_phone) && (
+                  <p dir="ltr" className="text-sm text-brand-teal">{booking.guest?.phone || booking.guest_phone}</p>
                 )}
               </div>
               <div className="flex items-center gap-3">

@@ -18,6 +18,8 @@ export async function POST(request: Request) {
 
   const { data: owner } = await supabase.from("profiles").select("email").eq("id", booking.hotel.owner_id).maybeSingle();
   const to = owner?.email || ADMIN_EMAIL;
+  const guestName = booking.guest?.full_name || booking.guest_full_name || "";
+  const guestPhone = booking.guest?.phone || booking.guest_phone || "";
 
   try {
     await resend.emails.send({
@@ -28,7 +30,7 @@ export async function POST(request: Request) {
         <h2 style="margin:0 0 12px;color:#a0522d;">הזמנה חדשה ממתינה לאישורכם</h2>
         <p>האורח שילם מקדמה מקוונת ומחכה לאישור שלכם.</p>
         <p><strong>חדר:</strong> ${booking.room?.name ?? ""}</p>
-        <p><strong>אורח:</strong> ${booking.guest?.full_name ?? ""} (${booking.guest?.phone ?? ""})</p>
+        <p><strong>אורח:</strong> ${guestName} (${guestPhone})</p>
         <p><strong>תאריכים:</strong> ${formatDate(booking.check_in)} - ${formatDate(booking.check_out)}</p>
         <p><strong>אורחים:</strong> ${booking.guests_count}</p>
         <p><strong>סה"כ:</strong> ${formatCurrency(booking.total_price ?? 0, booking.currency)}</p>

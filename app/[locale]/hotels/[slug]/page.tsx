@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -30,10 +31,10 @@ export default async function HotelDetailPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ bookingId?: string; payment?: string }>;
+  searchParams: Promise<{ bookingId?: string; payment?: string; checkIn?: string; checkOut?: string; guests?: string }>;
 }) {
   const { slug } = await params;
-  const { bookingId, payment } = await searchParams;
+  const { bookingId, payment, checkIn, checkOut, guests } = await searchParams;
   const supabase = await createClient();
   const [t, locale] = await Promise.all([getTranslations("hotels.detail"), getLocale()]);
 
@@ -42,7 +43,11 @@ export default async function HotelDetailPage({
 
   let paymentReturnStatus: string | null = null;
   if (bookingId && (payment === "success" || payment === "cancelled")) {
-    const { data: returnedBooking } = await supabase.from("bookings").select("status").eq("id", bookingId).maybeSingle();
+    // Guests aren't required to be logged in, so this can't rely on RLS -
+    // the bookingId itself (an unguessable UUID) is what authorizes reading
+    // this one row's status, same reasoning as create-deposit-link.
+    const admin = createAdminClient();
+    const { data: returnedBooking } = await admin.from("bookings").select("status").eq("id", bookingId).maybeSingle();
     paymentReturnStatus = returnedBooking?.status ?? null;
   }
 
@@ -51,10 +56,13 @@ export default async function HotelDetailPage({
   const amenities = tFieldArray(hotel.amenities, hotel.amenities_i18n, locale);
   const description = tField(hotel.description, hotel.description_i18n, locale);
 
-  const [{ data: rooms }, { data: reviews }] = await Promise.all([
+  const hasDateSearch = Boolean(checkIn && checkOut);
+  const [{ data: rooms }, { data: reviews }, availableRoomIds] = await Promise.all([
     supabase.from("rooms").select("*").eq("hotel_id", hotel.id).eq("status", "active").order("price_per_night"),
     supabase.from("hotel_reviews").select("*").eq("hotel_id", hotel.id).order("created_at", { ascending: false }),
+    hasDateSearch ? supabase.rpc("available_room_ids", { p_check_in: checkIn!, p_check_out: checkOut! }) : Promise.resolve({ data: null }),
   ]);
+  const availableIds = availableRoomIds.data ? new Set(availableRoomIds.data) : null;
 
   const avgRating =
     reviews && reviews.length > 0
@@ -131,26 +139,41 @@ export default async function HotelDetailPage({
           <h2 className="font-display text-2xl font-bold text-brand-navy">{t("rooms")}</h2>
           {rooms && rooms.length > 0 ? (
             <div className="mt-4 flex flex-col gap-4">
-              {rooms.map((room) => (
-                <Card key={room.id} className="overflow-hidden">
-                  <details>
-                    <summary className="cursor-pointer list-none p-5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-display font-bold text-brand-navy">{room.name}</p>
-                          <p className="text-xs text-foreground/60">{t("upToGuests", { count: room.capacity })}</p>
+              {rooms.map((room) => {
+                const isUnavailable = hasDateSearch && availableIds != null && !availableIds.has(room.id);
+                return (
+                  <Card key={room.id} className="overflow-hidden">
+                    <details>
+                      <summary className="cursor-pointer list-none p-5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-display font-bold text-brand-navy">{room.name}</p>
+                            <p className="text-xs text-foreground/60">{t("upToGuests", { count: room.capacity })}</p>
+                            {isUnavailable && <Badge tone="gold">{t("unavailableForDates")}</Badge>}
+                          </div>
+                          <span dir="ltr" className="font-display font-bold text-brand-terracotta">
+                            {formatCurrency(room.price_per_night, room.currency, locale)}
+                          </span>
                         </div>
-                        <span dir="ltr" className="font-display font-bold text-brand-terracotta">
-                          {formatCurrency(room.price_per_night, room.currency, locale)}
-                        </span>
+                      </summary>
+                      <div className="border-t border-brand-navy/10 p-5 pt-4">
+                        {isUnavailable ? (
+                          <p className="text-sm text-foreground/60">{t("unavailableForDatesDesc")}</p>
+                        ) : (
+                          <BookingForm
+                            room={room}
+                            hotelId={hotel.id}
+                            extraServices={extraServices}
+                            initialCheckIn={checkIn}
+                            initialCheckOut={checkOut}
+                            initialGuests={guests ? Number(guests) : undefined}
+                          />
+                        )}
                       </div>
-                    </summary>
-                    <div className="border-t border-brand-navy/10 p-5 pt-4">
-                      <BookingForm room={room} hotelId={hotel.id} extraServices={extraServices} />
-                    </div>
-                  </details>
-                </Card>
-              ))}
+                    </details>
+                  </Card>
+                );
+              })}
             </div>
           ) : (
             <EmptyState title={t("noRooms")} className="mt-4" />

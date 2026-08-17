@@ -21,7 +21,8 @@ export async function POST(request: Request) {
   const { data: row } = await supabase.from(table).select(GUEST_EMAIL_SELECT[table]).eq("id", id).maybeSingle<Record<string, never>>();
   if (!row) return NextResponse.json({ ok: false }, { status: 404 });
 
-  const guestEmail = (row as { guest?: { email?: string } }).guest?.email;
+  const typedRow = row as { guest?: { email?: string }; guest_email?: string };
+  const guestEmail = typedRow.guest?.email || typedRow.guest_email;
   const html = renderEmail(`
     <h2 style="margin:0 0 12px;color:#a0522d;">התשלום התקבל בהצלחה</h2>
     <p>תודה! העמלה עבור הבקשה שלכם שולמה ואושרה.</p>
