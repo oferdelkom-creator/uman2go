@@ -26,8 +26,9 @@ export async function POST(request: Request) {
     <h2 style="margin:0 0 12px;color:#a0522d;">בקשת הסעה חדשה</h2>
     <p><strong>שם:</strong> ${reqRow.full_name} (${reqRow.phone})</p>
     <p><strong>מסלול:</strong> ${reqRow.origin} → ${reqRow.destination}${reqRow.round_trip ? " (הלוך ושוב)" : ""}</p>
-    <p><strong>תאריך:</strong> ${formatDate(reqRow.departure_date)}</p>
+    <p><strong>תאריך:</strong> ${formatDate(reqRow.departure_date)}${reqRow.departure_time ? ` בשעה ${reqRow.departure_time}` : ""}</p>
     <p><strong>נוסעים:</strong> ${reqRow.guests_count}</p>
+    ${reqRow.vehicle_type ? `<p><strong>סוג רכב:</strong> ${reqRow.vehicle_type}</p>` : ""}
     ${reqRow.driver?.name ? `<p><strong>נהג מבוקש:</strong> ${reqRow.driver.name}</p>` : ""}
     ${reqRow.notes ? `<p><strong>הערות:</strong> ${reqRow.notes}</p>` : ""}
   `);

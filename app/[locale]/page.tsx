@@ -1,12 +1,17 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { RatingStars } from "@/components/ui/RatingStars";
 import { HotelCard } from "@/components/HotelCard";
 import { DriverCard } from "@/components/DriverCard";
 import { HotelSearchBar } from "@/components/HotelSearchBar";
+import { HomeTransportQuickForm } from "@/components/HomeTransportQuickForm";
 import { Reveal } from "@/components/Reveal";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { formatDate } from "@/lib/format";
 
 const VERTICAL_ICONS: Record<string, React.ReactNode> = {
   hotels: (
@@ -24,12 +29,55 @@ const VERTICAL_GRADIENTS: Record<string, string> = {
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const t = await getTranslations("home");
+  const [t, tCommon, locale] = await Promise.all([getTranslations("home"), getTranslations("common"), getLocale()]);
 
-  const [{ data: hotels }, { data: drivers }] = await Promise.all([
+  const [
+    { data: hotels },
+    { data: drivers },
+    { data: featuredRooms },
+    { data: hotelReviews },
+    { data: driverReviews },
+    { count: hotelsCount },
+    { count: driversCount },
+  ] = await Promise.all([
     supabase.from("hotels").select("*").eq("status", "active").order("featured", { ascending: false }).limit(3),
     supabase.from("drivers").select("*").eq("status", "active").order("featured", { ascending: false }).limit(3),
+    supabase.from("rooms").select("hotel_id, price_per_night, currency").eq("status", "active"),
+    supabase.from("hotel_reviews").select("reviewer_name, host_rating, property_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
+    supabase.from("driver_reviews").select("reviewer_name, driver_rating, vehicle_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
+    supabase.from("hotels").select("id", { count: "exact", head: true }).eq("status", "active"),
+    supabase.from("drivers").select("id", { count: "exact", head: true }).eq("status", "active"),
   ]);
+
+  const minPriceByHotel = new Map<string, { price: number; currency: string }>();
+  for (const room of featuredRooms ?? []) {
+    const current = minPriceByHotel.get(room.hotel_id);
+    if (!current || room.price_per_night < current.price) {
+      minPriceByHotel.set(room.hotel_id, { price: room.price_per_night, currency: room.currency });
+    }
+  }
+
+  const realReviews = [
+    ...(hotelReviews ?? []).map((r) => ({
+      name: r.reviewer_name,
+      rating: (r.host_rating + r.property_rating) / 2,
+      comment: r.comment,
+      createdAt: r.created_at,
+    })),
+    ...(driverReviews ?? []).map((r) => ({
+      name: r.reviewer_name,
+      rating: (r.driver_rating + r.vehicle_rating) / 2,
+      comment: r.comment,
+      createdAt: r.created_at,
+    })),
+  ]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 3);
+
+  const realPhotos = (hotels ?? [])
+    .map((h) => (Array.isArray(h.photos) ? h.photos[0] : null))
+    .filter((url): url is string => Boolean(url))
+    .slice(0, 4);
 
   const verticals = (["hotels", "transport", "tours"] as const).map((key) => ({
     key,
@@ -51,6 +99,16 @@ export default async function HomePage() {
           <p className="font-display text-sm font-bold tracking-widest text-brand-gold uppercase">Uman2Go</p>
           <h1 className="mt-4 font-display text-4xl font-extrabold sm:text-6xl">{t("heroTitle")}</h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">{t("heroSubtitle")}</p>
+          <ul className="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-white/85">
+            {["verified", "whatsapp", "secure", "languages"].map((key) => (
+              <li key={key} className="flex items-center gap-1.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-brand-gold">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                {t(`trustBar.${key}`)}
+              </li>
+            ))}
+          </ul>
           <div className="mx-auto mt-8 max-w-3xl text-foreground">
             <HotelSearchBar />
           </div>
@@ -58,6 +116,14 @@ export default async function HomePage() {
             <ButtonLink href="/transport" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3">
               {t("requestTransport")}
             </ButtonLink>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(tCommon("whatsappGenericPrefill"))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#25D366] bg-[#25D366]/10 px-7 py-3 text-base font-display font-semibold text-white transition-colors hover:bg-[#25D366] hover:text-white"
+            >
+              {tCommon("whatsappHelp")}
+            </a>
           </div>
         </div>
       </section>
@@ -96,11 +162,14 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {hotels.map((hotel) => (
-              <Reveal key={hotel.id}>
-                <HotelCard hotel={hotel} />
-              </Reveal>
-            ))}
+            {hotels.map((hotel) => {
+              const price = minPriceByHotel.get(hotel.id);
+              return (
+                <Reveal key={hotel.id}>
+                  <HotelCard hotel={hotel} fromPrice={price?.price} currency={price?.currency} />
+                </Reveal>
+              );
+            })}
           </div>
         </Section>
       )}
@@ -125,13 +194,81 @@ export default async function HomePage() {
         </Section>
       )}
 
-      <Section tinted className="text-center">
+      <Section tinted>
+        <Reveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("transportQuick.title")}</h2>
+            <p className="mt-2 text-foreground/70">{t("transportQuick.subtitle")}</p>
+          </div>
+          <div className="mx-auto mt-8 max-w-4xl">
+            <HomeTransportQuickForm />
+          </div>
+        </Reveal>
+      </Section>
+
+      <Section className="text-center">
         <Reveal>
           <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("vipTitle")}</h2>
           <p className="mx-auto mt-3 max-w-xl text-foreground/70">{t("vipDescription")}</p>
           <ButtonLink href="/vip" className="mt-6">
             {t("vipButton")}
           </ButtonLink>
+        </Reveal>
+      </Section>
+
+      <Section tinted>
+        <Reveal>
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("socialProof.title")}</h2>
+            <p className="mt-2 text-foreground/70">{t("socialProof.subtitle")}</p>
+          </div>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            <div className="flex flex-col gap-4">
+              {realReviews.length > 0 ? (
+                realReviews.map((review, i) => (
+                  <Card key={i} className="p-5">
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold text-brand-navy">{review.name.split(" ")[0]}</p>
+                      <RatingStars rating={review.rating} />
+                    </div>
+                    {review.comment && <p className="mt-2 text-sm text-foreground/70">{review.comment}</p>}
+                    <p className="mt-2 text-xs text-foreground/50">{formatDate(review.createdAt, locale)}</p>
+                  </Card>
+                ))
+              ) : (
+                <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
+                  <p className="text-sm text-foreground/70">{t("socialProof.noReviewsYet")}</p>
+                </Card>
+              )}
+            </div>
+
+            <Card className="flex flex-col items-center justify-center gap-4 p-6 text-center">
+              <div>
+                <p className="font-display text-4xl font-extrabold text-brand-terracotta">{hotelsCount ?? 0}</p>
+                <p className="mt-1 text-sm text-foreground/70">{t("socialProof.hotelsCount")}</p>
+              </div>
+              <div>
+                <p className="font-display text-4xl font-extrabold text-brand-terracotta">{driversCount ?? 0}</p>
+                <p className="mt-1 text-sm text-foreground/70">{t("socialProof.driversCount")}</p>
+              </div>
+              <p className="mt-2 text-xs text-foreground/60">{t("socialProof.checkedByTeam")}</p>
+            </Card>
+
+            {realPhotos.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {realPhotos.map((url, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={url}
+                    alt=""
+                    className={`h-full w-full rounded-2xl object-cover ${realPhotos.length === 3 && i === 0 ? "row-span-2" : ""}`}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
         </Reveal>
       </Section>
     </>

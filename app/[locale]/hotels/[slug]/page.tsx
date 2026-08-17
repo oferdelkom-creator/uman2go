@@ -11,6 +11,7 @@ import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/format";
 import { tField, tFieldArray } from "@/lib/i18n-content";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
 import { PaymentReturnBanner } from "@/app/[locale]/hotels/[slug]/PaymentReturnBanner";
 
@@ -84,9 +85,20 @@ export default async function HotelDetailPage({
         <div className="lg:col-span-2">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="font-display text-3xl font-extrabold text-brand-navy">{hotel.name}</h1>
-            {avgRating != null && <RatingStars rating={avgRating} />}
+            <Badge tone="teal">{t("verifiedProperty")}</Badge>
           </div>
           <p className="mt-1 text-foreground/60">{area} · {address}</p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {avgRating != null ? (
+              <div className="flex items-center gap-2">
+                <RatingStars rating={avgRating} />
+                <span className="text-sm text-foreground/60">{t("reviewsCount", { count: reviews?.length ?? 0 })}</span>
+              </div>
+            ) : (
+              <Badge tone="gold">{t("checkedByTeam")}</Badge>
+            )}
+          </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
             {hotel.distance_to_kever_meters != null && (
@@ -99,23 +111,33 @@ export default async function HotelDetailPage({
 
           <p className="mt-6 whitespace-pre-line leading-relaxed text-foreground/80">{description}</p>
 
-          {(hotel.whatsapp_phone || hotel.contact_name) && (
-            <Card className="mt-6 p-5">
-              <p className="font-display font-bold text-brand-navy">{t("contact")}</p>
+          <Card className="mt-6 grid gap-4 p-5 sm:grid-cols-2">
+            <div>
+              <p className="font-display text-sm font-bold text-brand-navy">{t("cancellationPolicyTitle")}</p>
+              <p className="mt-1 text-sm text-foreground/70">{t("cancellationPolicyText")}</p>
+            </div>
+            <div>
+              <p className="font-display text-sm font-bold text-brand-navy">{t("paymentMethodsTitle")}</p>
+              <p className="mt-1 text-sm text-foreground/70">{t("paymentMethodOnline")}</p>
+              <p className="text-sm text-foreground/70">{t("paymentMethodCash")}</p>
+            </div>
+            <div>
+              <p className="font-display text-sm font-bold text-brand-navy">{t("responseTimeTitle")}</p>
+              <p className="mt-1 text-sm text-foreground/70">{t("responseTimeText")}</p>
+            </div>
+            <div>
+              <p className="font-display text-sm font-bold text-brand-navy">{t("contact")}</p>
               {hotel.contact_name && <p className="mt-1 text-sm text-foreground/70">{hotel.contact_name}</p>}
-              {hotel.whatsapp_phone && (
-                <a
-                  href={`https://wa.me/${hotel.whatsapp_phone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  dir="ltr"
-                  className="mt-2 inline-block text-sm font-semibold text-brand-teal hover:underline"
-                >
-                  {hotel.whatsapp_phone}
-                </a>
-              )}
-            </Card>
-          )}
+              <a
+                href={`https://wa.me/${(hotel.whatsapp_phone || WHATSAPP_NUMBER).replace(/\D/g, "")}?text=${encodeURIComponent(t("whatsappPrefill", { hotelName: hotel.name }))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal hover:underline"
+              >
+                {t("whatsappContact")}
+              </a>
+            </div>
+          </Card>
 
           <h2 className="mt-10 font-display text-2xl font-bold text-brand-navy">{t("reviews")}</h2>
           {reviews && reviews.length > 0 ? (

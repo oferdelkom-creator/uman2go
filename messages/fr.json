@@ -3,7 +3,9 @@
     "noPhoto": "Aucune photo",
     "whatsappAriaLabel": "Contactez-nous sur WhatsApp",
     "noPhotosTitle": "Aucune photo pour l'instant",
-    "noPhotosDesc": "Les photos seront ajoutées prochainement"
+    "noPhotosDesc": "Les photos seront ajoutées prochainement",
+    "whatsappGenericPrefill": "Bonjour, je souhaite organiser un voyage à Ouman. J'aimerais de l'aide pour un hôtel / un transport / une visite.",
+    "whatsappHelp": "Vous ne savez pas quoi choisir ? Discutez avec nous sur WhatsApp"
   },
   "meta": {
     "tagline": "Hôtels · Transport · Excursions à Ouman",
@@ -79,6 +81,7 @@
       "emptyDesc": "Revenez bientôt",
       "featured": "Recommandé",
       "perNight": "/nuit",
+      "viewAndBook": "Voir et réserver",
       "searchCheckIn": "Arrivée",
       "searchCheckOut": "Départ",
       "searchGuests": "Personnes",
@@ -96,7 +99,19 @@
       "upToGuests": "Jusqu'à {count} personnes",
       "noRooms": "Aucune chambre disponible pour le moment",
       "unavailableForDates": "Non disponible pour ces dates",
-      "unavailableForDatesDesc": "Cette chambre n'est pas disponible pour les dates sélectionnées. Essayez d'autres dates ou une autre chambre."
+      "unavailableForDatesDesc": "Cette chambre n'est pas disponible pour les dates sélectionnées. Essayez d'autres dates ou une autre chambre.",
+      "verifiedProperty": "Établissement vérifié",
+      "checkedByTeam": "Vérifié par l'équipe Uman2Go",
+      "reviewsCount": "{count} avis",
+      "cancellationPolicyTitle": "Politique d'annulation",
+      "cancellationPolicyText": "Les réservations peuvent être annulées ou modifiées en coordination directe avec l'hôtel. Nous recommandons de vérifier les conditions d'annulation spécifiques avant de confirmer.",
+      "paymentMethodsTitle": "Moyens de paiement",
+      "paymentMethodOnline": "Acompte en ligne (carte bancaire)",
+      "paymentMethodCash": "Solde - espèces/virement à l'arrivée",
+      "responseTimeTitle": "Temps de réponse",
+      "responseTimeText": "Nous et l'équipe de l'hôtel essayons de vous répondre le jour même.",
+      "whatsappContact": "Contacter sur WhatsApp",
+      "whatsappPrefill": "Bonjour, je suis intéressé(e) par une réservation à {hotelName}. J'aimerais avoir plus de détails."
     },
     "booking": {
       "checkIn": "Arrivée",
@@ -128,7 +143,8 @@
       "generalRequest": "Demande de transport générale",
       "emptyTitle": "Aucun chauffeur disponible pour l'instant",
       "emptyDesc": "Revenez bientôt",
-      "defaultVehicleType": "Véhicule de transport"
+      "defaultVehicleType": "Véhicule de transport",
+      "viewAndRequest": "Voir et demander un devis"
     },
     "detail": {
       "fallbackTitle": "Chauffeur",
@@ -166,7 +182,8 @@
       "title": "Excursions à Ouman",
       "subtitle": "Excursions guidées et expériences à Ouman et ses environs.",
       "emptyTitle": "Bientôt disponible - un choix d'excursions guidées",
-      "emptyDesc": "Nous travaillons à l'ajout de guides recommandés. Laissez vos coordonnées et nous vous tiendrons informé."
+      "emptyDesc": "Nous travaillons à l'ajout de guides recommandés. Laissez vos coordonnées et nous vous tiendrons informé.",
+      "viewAndBook": "Voir les visites et réserver"
     },
     "detail": {
       "fallbackTitle": "Guide touristique",
@@ -269,8 +286,14 @@
     }
   },
   "home": {
-    "heroTitle": "Hôtels · Transport · Excursions à Ouman",
-    "heroSubtitle": "Tout ce qu'il faut pour votre voyage à Ouman en un seul endroit - hôtels vérifiés, transport fiable et excursions guidées, en un clic.",
+    "heroTitle": "Vous planifiez un voyage à Ouman ? Réservez hôtel, transport et excursions en un seul endroit.",
+    "heroSubtitle": "Hôtels vérifiés, transport fiable et service personnalisé - avant votre voyage et pendant celui-ci.",
+    "trustBar": {
+      "verified": "Hôtels et chauffeurs vérifiés",
+      "whatsapp": "Support personnel sur WhatsApp",
+      "secure": "Réservation sécurisée",
+      "languages": "Service en hébreu, anglais, français et ukrainien"
+    },
     "searchHotels": "Rechercher un hôtel",
     "requestTransport": "Réserver un transport",
     "viewMore": "Voir plus",
@@ -278,13 +301,54 @@
     "allHotels": "Tous les hôtels",
     "featuredDrivers": "Chauffeurs recommandés",
     "allDrivers": "Tous les chauffeurs",
+    "transportQuick": {
+      "title": "Obtenez un devis de transport en quelques minutes",
+      "subtitle": "Renseignez quelques informations et nous vous répondrons avec un prix adapté",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "passengers": "Nombre de passagers",
+      "origin": "Lieu de prise en charge",
+      "originPlaceholder": "Aéroport Ben Gourion, Kiev...",
+      "destination": "Destination",
+      "destinationPlaceholder": "Ouman",
+      "vehicleType": "Type de véhicule",
+      "vehicle": {
+        "private": "Voiture privée",
+        "minivan": "Minibus",
+        "bus": "Bus"
+      },
+      "departureDate": "Date de départ",
+      "departureTime": "Heure de départ",
+      "submit": "Obtenir un devis",
+      "sending": "Envoi...",
+      "genericError": "Une erreur s'est produite, veuillez réessayer.",
+      "sentTitle": "Demande envoyée !",
+      "sentDesc": "Nous vous contacterons rapidement avec un devis."
+    },
     "vipTitle": "Vous voulez un service VIP ?",
     "vipDescription": "Accompagnement personnel, coordination complète de l'hôtel, du transport et des excursions - tout ce qu'il faut pour un voyage sans souci.",
     "vipButton": "Demander le service VIP",
     "verticals": {
-      "hotels": { "title": "Hôtels", "description": "Hôtels et chalets vérifiés à Ouman, près du site" },
-      "transport": { "title": "Transport", "description": "Chauffeurs et bus vérifiés vers toutes les destinations" },
-      "tours": { "title": "Excursions", "description": "Excursions guidées et expériences à Ouman et ses environs" }
+      "hotels": {
+        "title": "Hôtels",
+        "description": "Hôtels et chalets vérifiés à Ouman, près du site"
+      },
+      "transport": {
+        "title": "Transport",
+        "description": "Chauffeurs et bus vérifiés vers toutes les destinations"
+      },
+      "tours": {
+        "title": "Excursions",
+        "description": "Excursions guidées et expériences à Ouman et ses environs"
+      }
+    },
+    "socialProof": {
+      "title": "Voyager à Ouman, l'esprit tranquille",
+      "subtitle": "Avis réels de nos clients et chiffres exacts sur nos services",
+      "noReviewsYet": "Les avis publics arrivent bientôt — chaque prestataire du site est vérifié et approuvé personnellement par notre équipe",
+      "hotelsCount": "Hôtels et appartements vérifiés à Ouman",
+      "driversCount": "Chauffeurs actifs et approuvés",
+      "checkedByTeam": "Tous nos partenaires sont vérifiés personnellement par l'équipe Uman2Go"
     }
   },
   "about": {

@@ -3,7 +3,9 @@
     "noPhoto": "אין תמונה",
     "whatsappAriaLabel": "צרו קשר בוואטסאפ",
     "noPhotosTitle": "עדיין אין תמונות",
-    "noPhotosDesc": "התמונות יתווספו בקרוב"
+    "noPhotosDesc": "התמונות יתווספו בקרוב",
+    "whatsappGenericPrefill": "שלום, אני מעוניין/ת בתכנון נסיעה לאומן. אשמח לעזרה עם מלון / הסעה / טיול.",
+    "whatsappHelp": "לא בטוחים מה לבחור? דברו איתנו ב-WhatsApp"
   },
   "meta": {
     "tagline": "מלונות · הסעות · טיולים באומן",
@@ -79,6 +81,7 @@
       "emptyDesc": "חזרו בקרוב",
       "featured": "מומלץ",
       "perNight": "/לילה",
+      "viewAndBook": "לפרטים והזמנה",
       "searchCheckIn": "הגעה",
       "searchCheckOut": "עזיבה",
       "searchGuests": "אורחים",
@@ -96,7 +99,19 @@
       "upToGuests": "עד {count} אורחים",
       "noRooms": "אין חדרים זמינים כרגע",
       "unavailableForDates": "לא זמין בתאריכים אלו",
-      "unavailableForDatesDesc": "החדר הזה אינו זמין בתאריכים שנבחרו. נסו תאריכים אחרים או חדר אחר."
+      "unavailableForDatesDesc": "החדר הזה אינו זמין בתאריכים שנבחרו. נסו תאריכים אחרים או חדר אחר.",
+      "verifiedProperty": "נכס מאומת",
+      "checkedByTeam": "נבדק על ידי צוות Uman2Go",
+      "reviewsCount": "{count} ביקורות",
+      "cancellationPolicyTitle": "מדיניות ביטול",
+      "cancellationPolicyText": "ניתן לבטל או לשנות הזמנה בתיאום ישיר מול המלון. מומלץ לברר את תנאי הביטול הספציפיים לפני האישור.",
+      "paymentMethodsTitle": "אמצעי תשלום",
+      "paymentMethodOnline": "מקדמה מקוונת (כרטיס אשראי)",
+      "paymentMethodCash": "יתרת התשלום - מזומן/העברה במעמד ההגעה",
+      "responseTimeTitle": "זמן תגובה",
+      "responseTimeText": "אנחנו וצוות המלון משתדלים לחזור אליכם באותו היום.",
+      "whatsappContact": "יצירת קשר ב-WhatsApp",
+      "whatsappPrefill": "שלום, אני מעוניין/ת בהזמנה ב-{hotelName}. אשמח לפרטים נוספים."
     },
     "booking": {
       "checkIn": "הגעה",
@@ -128,7 +143,8 @@
       "generalRequest": "בקשת הסעה כללית",
       "emptyTitle": "עדיין אין נהגים זמינים",
       "emptyDesc": "חזרו בקרוב",
-      "defaultVehicleType": "רכב הסעות"
+      "defaultVehicleType": "רכב הסעות",
+      "viewAndRequest": "צפייה ובקשת הצעה"
     },
     "detail": {
       "fallbackTitle": "נהג",
@@ -166,7 +182,8 @@
       "title": "טיולים באומן",
       "subtitle": "טיולים מודרכים וחוויות באומן והסביבה.",
       "emptyTitle": "בקרוב - מגוון טיולים מודרכים",
-      "emptyDesc": "אנחנו עובדים על הוספת מדריכי טיולים מומלצים. השאירו פרטים ונעדכן אתכם."
+      "emptyDesc": "אנחנו עובדים על הוספת מדריכי טיולים מומלצים. השאירו פרטים ונעדכן אתכם.",
+      "viewAndBook": "צפייה בטיולים והזמנה"
     },
     "detail": {
       "fallbackTitle": "מדריך טיולים",
@@ -269,8 +286,14 @@
     }
   },
   "home": {
-    "heroTitle": "מלונות · הסעות · טיולים באומן",
-    "heroSubtitle": "כל מה שצריך לנסיעה לאומן במקום אחד - מלונות מאומתים, הסעות אמינות וטיולים מודרכים, בלחיצה אחת.",
+    "heroTitle": "מתכננים נסיעה לאומן? סוגרים מלון, הסעה וטיולים במקום אחד.",
+    "heroSubtitle": "מלונות מאומתים, הסעות אמינות ושירות אישי - לפני הנסיעה ובמהלכה.",
+    "trustBar": {
+      "verified": "מלונות ונהגים מאומתים",
+      "whatsapp": "תמיכה אישית ב-WhatsApp",
+      "secure": "הזמנה מאובטחת",
+      "languages": "שירות בעברית, אנגלית, צרפתית ואוקראינית"
+    },
     "searchHotels": "חיפוש מלונות",
     "requestTransport": "הזמנת הסעה",
     "viewMore": "לצפייה",
@@ -278,13 +301,54 @@
     "allHotels": "לכל המלונות",
     "featuredDrivers": "נהגים מומלצים",
     "allDrivers": "לכל הנהגים",
+    "transportQuick": {
+      "title": "קבלו הצעת מחיר להסעה תוך דקות",
+      "subtitle": "מלאו פרטים קצרים ונחזור אליכם עם הצעת מחיר מותאמת",
+      "fullName": "שם מלא",
+      "phone": "טלפון",
+      "passengers": "מספר נוסעים",
+      "origin": "מוצא",
+      "originPlaceholder": "בן גוריון, קייב...",
+      "destination": "יעד",
+      "destinationPlaceholder": "אומן",
+      "vehicleType": "סוג רכב",
+      "vehicle": {
+        "private": "רכב פרטי",
+        "minivan": "מיניוואן",
+        "bus": "אוטובוס"
+      },
+      "departureDate": "תאריך יציאה",
+      "departureTime": "שעת יציאה",
+      "submit": "קבלו הצעת מחיר",
+      "sending": "שולח...",
+      "genericError": "אירעה שגיאה, נסו שוב.",
+      "sentTitle": "הבקשה נשלחה!",
+      "sentDesc": "ניצור איתכם קשר בהקדם עם הצעת מחיר."
+    },
     "vipTitle": "רוצים שירות VIP?",
     "vipDescription": "ליווי אישי, תיאום מלא של המלון, ההסעה והטיולים - כל מה שצריך לנסיעה נטולת דאגות.",
     "vipButton": "בקשת שירות VIP",
     "verticals": {
-      "hotels": { "title": "מלונות", "description": "מלונות וצימרים מאומתים באומן, קרוב לציון" },
-      "transport": { "title": "הסעות", "description": "נהגים ואוטובוסים מאומתים לכל יעד" },
-      "tours": { "title": "טיולים", "description": "טיולים מודרכים וחוויות באומן והסביבה" }
+      "hotels": {
+        "title": "מלונות",
+        "description": "מלונות וצימרים מאומתים באומן, קרוב לציון"
+      },
+      "transport": {
+        "title": "הסעות",
+        "description": "נהגים ואוטובוסים מאומתים לכל יעד"
+      },
+      "tours": {
+        "title": "טיולים",
+        "description": "טיולים מודרכים וחוויות באומן והסביבה"
+      }
+    },
+    "socialProof": {
+      "title": "נוסעים לאומן בראש שקט",
+      "subtitle": "ביקורות אמיתיות מלקוחות ונתונים מדויקים על השירותים שלנו",
+      "noReviewsYet": "ביקורות פומביות יתווספו בקרוב — כל נותן שירות באתר נבדק ומאושר אישית על ידי הצוות שלנו",
+      "hotelsCount": "מלונות ודירות מאומתים באומן",
+      "driversCount": "נהגים פעילים ומאושרים",
+      "checkedByTeam": "כל השותפים שלנו נבדקים אישית על ידי צוות Uman2Go"
     }
   },
   "about": {

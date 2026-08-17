@@ -45,7 +45,7 @@ export default async function DriverDetailPage({ params }: { params: Promise<{ s
 
   return (
     <Section>
-      <PhotoGallery photos={driver.photos} alt={driver.name} />
+      <PhotoGallery photos={driver.photos} alt={driver.name} kind="car" />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-3">
         <div className="lg:col-span-2">

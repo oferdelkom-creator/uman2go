@@ -786,6 +786,7 @@ export type Database = {
         Row: {
           created_at: string
           departure_date: string
+          departure_time: string | null
           destination: string
           driver_id: string | null
           full_name: string
@@ -802,10 +803,12 @@ export type Database = {
           platform_fee_currency: string
           platform_fee_paid_at: string | null
           round_trip: boolean
+          vehicle_type: string | null
         }
         Insert: {
           created_at?: string
           departure_date: string
+          departure_time?: string | null
           destination: string
           driver_id?: string | null
           full_name: string
@@ -822,10 +825,12 @@ export type Database = {
           platform_fee_currency?: string
           platform_fee_paid_at?: string | null
           round_trip?: boolean
+          vehicle_type?: string | null
         }
         Update: {
           created_at?: string
           departure_date?: string
+          departure_time?: string | null
           destination?: string
           driver_id?: string | null
           full_name?: string
@@ -842,6 +847,7 @@ export type Database = {
           platform_fee_currency?: string
           platform_fee_paid_at?: string | null
           round_trip?: boolean
+          vehicle_type?: string | null
         }
         Relationships: [
           {

@@ -3,7 +3,9 @@
     "noPhoto": "No photo",
     "whatsappAriaLabel": "Contact us on WhatsApp",
     "noPhotosTitle": "No photos yet",
-    "noPhotosDesc": "Photos will be added soon"
+    "noPhotosDesc": "Photos will be added soon",
+    "whatsappGenericPrefill": "Hi, I'm interested in planning a trip to Uman. I'd love help with a hotel / transport / tour.",
+    "whatsappHelp": "Not sure what to choose? Talk to us on WhatsApp"
   },
   "meta": {
     "tagline": "Hotels · Transport · Tours in Uman",
@@ -79,6 +81,7 @@
       "emptyDesc": "Check back soon",
       "featured": "Featured",
       "perNight": "/night",
+      "viewAndBook": "View & Book",
       "searchCheckIn": "Check-in",
       "searchCheckOut": "Check-out",
       "searchGuests": "Guests",
@@ -96,7 +99,19 @@
       "upToGuests": "Up to {count} guests",
       "noRooms": "No rooms available right now",
       "unavailableForDates": "Not available for these dates",
-      "unavailableForDatesDesc": "This room isn't available for the selected dates. Try different dates or another room."
+      "unavailableForDatesDesc": "This room isn't available for the selected dates. Try different dates or another room.",
+      "verifiedProperty": "Verified Property",
+      "checkedByTeam": "Checked by the Uman2Go team",
+      "reviewsCount": "{count} reviews",
+      "cancellationPolicyTitle": "Cancellation Policy",
+      "cancellationPolicyText": "Bookings can be cancelled or changed by coordinating directly with the hotel. We recommend checking the specific cancellation terms before confirming.",
+      "paymentMethodsTitle": "Payment Methods",
+      "paymentMethodOnline": "Online deposit (credit card)",
+      "paymentMethodCash": "Balance - cash/transfer on arrival",
+      "responseTimeTitle": "Response Time",
+      "responseTimeText": "We and the hotel team try to get back to you the same day.",
+      "whatsappContact": "Contact on WhatsApp",
+      "whatsappPrefill": "Hi, I'm interested in booking at {hotelName}. I'd love more details."
     },
     "booking": {
       "checkIn": "Check-in",
@@ -128,7 +143,8 @@
       "generalRequest": "General Transport Request",
       "emptyTitle": "No drivers available yet",
       "emptyDesc": "Check back soon",
-      "defaultVehicleType": "Transport vehicle"
+      "defaultVehicleType": "Transport vehicle",
+      "viewAndRequest": "View & Request a Quote"
     },
     "detail": {
       "fallbackTitle": "Driver",
@@ -166,7 +182,8 @@
       "title": "Tours in Uman",
       "subtitle": "Guided tours and experiences in Uman and beyond.",
       "emptyTitle": "Coming soon - a range of guided tours",
-      "emptyDesc": "We're working on adding recommended tour guides. Leave your details and we'll update you."
+      "emptyDesc": "We're working on adding recommended tour guides. Leave your details and we'll update you.",
+      "viewAndBook": "View Tours & Book"
     },
     "detail": {
       "fallbackTitle": "Tour Guide",
@@ -269,8 +286,14 @@
     }
   },
   "home": {
-    "heroTitle": "Hotels · Transport · Tours in Uman",
-    "heroSubtitle": "Everything you need for your trip to Uman in one place - verified hotels, reliable transport and guided tours, in one click.",
+    "heroTitle": "Planning a trip to Uman? Book your hotel, transport and tours in one place.",
+    "heroSubtitle": "Verified hotels, reliable transport and personal service - before your trip and during it.",
+    "trustBar": {
+      "verified": "Verified hotels and drivers",
+      "whatsapp": "Personal WhatsApp support",
+      "secure": "Secure booking",
+      "languages": "Service in Hebrew, English, French and Ukrainian"
+    },
     "searchHotels": "Search Hotels",
     "requestTransport": "Book Transport",
     "viewMore": "View more",
@@ -278,13 +301,54 @@
     "allHotels": "All Hotels",
     "featuredDrivers": "Featured Drivers",
     "allDrivers": "All Drivers",
+    "transportQuick": {
+      "title": "Get a transport quote in minutes",
+      "subtitle": "Fill in a few details and we'll get back to you with a tailored price",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "passengers": "Number of Passengers",
+      "origin": "Pickup location",
+      "originPlaceholder": "Ben Gurion Airport, Kyiv...",
+      "destination": "Destination",
+      "destinationPlaceholder": "Uman",
+      "vehicleType": "Vehicle type",
+      "vehicle": {
+        "private": "Private car",
+        "minivan": "Minivan",
+        "bus": "Bus"
+      },
+      "departureDate": "Departure Date",
+      "departureTime": "Departure Time",
+      "submit": "Get a Quote",
+      "sending": "Sending...",
+      "genericError": "Something went wrong, please try again.",
+      "sentTitle": "Request sent!",
+      "sentDesc": "We'll contact you shortly with a price quote."
+    },
     "vipTitle": "Want VIP service?",
     "vipDescription": "Personal support, full coordination of your hotel, transport and tours - everything you need for a worry-free trip.",
     "vipButton": "Request VIP Service",
     "verticals": {
-      "hotels": { "title": "Hotels", "description": "Verified hotels and cabins in Uman, close to the site" },
-      "transport": { "title": "Transport", "description": "Verified drivers and buses to every destination" },
-      "tours": { "title": "Tours", "description": "Guided tours and experiences in Uman and beyond" }
+      "hotels": {
+        "title": "Hotels",
+        "description": "Verified hotels and cabins in Uman, close to the site"
+      },
+      "transport": {
+        "title": "Transport",
+        "description": "Verified drivers and buses to every destination"
+      },
+      "tours": {
+        "title": "Tours",
+        "description": "Guided tours and experiences in Uman and beyond"
+      }
+    },
+    "socialProof": {
+      "title": "Travelers to Uman, with peace of mind",
+      "subtitle": "Real reviews from our customers and accurate numbers about our services",
+      "noReviewsYet": "Public reviews are coming soon — every provider on the site is personally checked and approved by our team",
+      "hotelsCount": "Verified hotels & apartments in Uman",
+      "driversCount": "Active, approved drivers",
+      "checkedByTeam": "All our partners are personally checked by the Uman2Go team"
     }
   },
   "about": {

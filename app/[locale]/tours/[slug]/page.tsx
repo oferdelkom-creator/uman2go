@@ -42,7 +42,7 @@ export default async function TourGuideDetailPage({ params }: { params: Promise<
 
   return (
     <Section>
-      <PhotoGallery photos={guide.photos} alt={guide.name} />
+      <PhotoGallery photos={guide.photos} alt={guide.name} kind="guide" />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-3">
         <div className="lg:col-span-2">
