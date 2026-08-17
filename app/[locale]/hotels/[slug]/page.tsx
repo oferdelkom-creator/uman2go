@@ -85,7 +85,11 @@ export default async function HotelDetailPage({
         <div className="lg:col-span-2">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="font-display text-3xl font-extrabold text-brand-navy">{hotel.name}</h1>
-            <Badge tone="teal">{t("verifiedProperty")}</Badge>
+            {hotel.verified_at ? (
+              <Badge tone="teal">{t("verifiedProperty")}</Badge>
+            ) : (
+              <Badge tone="gold">{t("checkedByTeam")}</Badge>
+            )}
           </div>
           <p className="mt-1 text-foreground/60">{area} · {address}</p>
 

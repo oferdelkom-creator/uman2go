@@ -14,17 +14,20 @@ export type LeadField = {
   required?: boolean;
 };
 
-export type LeadTable = "vip_requests" | "investment_requests" | "flight_requests" | "home_rental_leads";
+export type LeadTable = "vip_requests" | "investment_requests" | "flight_requests" | "home_rental_leads" | "provider_applications";
 
 export function LeadForm({
   table,
   leadType,
   extraFields = [],
+  hiddenFields,
   submitLabel,
 }: {
   table: LeadTable;
   leadType: LeadType;
   extraFields?: LeadField[];
+  /** Fixed values inserted alongside the visible fields, not shown to the user (e.g. a provider_type/source tag). */
+  hiddenFields?: Record<string, string>;
   submitLabel?: string;
 }) {
   const t = useTranslations("leads.form");
@@ -39,6 +42,7 @@ export function LeadForm({
       full_name: String(formData.get("full_name") ?? ""),
       phone: String(formData.get("phone") ?? ""),
       notes: String(formData.get("notes") ?? ""),
+      ...hiddenFields,
     };
     for (const field of extraFields) {
       if (field.type === "checkbox") {

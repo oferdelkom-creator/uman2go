@@ -15,6 +15,7 @@ export default async function AdminDashboardPage() {
     { count: investmentCount },
     { count: flightCount },
     { count: homeRentalCount },
+    { count: newProvidersCount },
   ] = await Promise.all([
     supabase.from("bookings").select("id", { count: "exact", head: true }),
     supabase.from("transport_requests").select("id", { count: "exact", head: true }),
@@ -23,6 +24,7 @@ export default async function AdminDashboardPage() {
     supabase.from("investment_requests").select("id", { count: "exact", head: true }),
     supabase.from("flight_requests").select("id", { count: "exact", head: true }),
     supabase.from("home_rental_leads").select("id", { count: "exact", head: true }),
+    supabase.from("provider_applications").select("id", { count: "exact", head: true }).eq("status", "new"),
   ]);
 
   const leadsCount = (vipCount ?? 0) + (investmentCount ?? 0) + (flightCount ?? 0) + (homeRentalCount ?? 0);
@@ -32,10 +34,11 @@ export default async function AdminDashboardPage() {
     { href: "/admin/transport", title: t("transportRequests"), count: transportCount ?? 0 },
     { href: "/admin/tours", title: t("tourSignups"), count: tourSignupsCount ?? 0 },
     { href: "/admin/leads", title: t("leads"), count: leadsCount },
+    { href: "/admin/providers", title: t("newProviders"), count: newProvidersCount ?? 0 },
   ];
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
       {cards.map((card) => (
         <Link key={card.href} href={card.href} className="block">
           <Card className="p-6">

@@ -11,6 +11,7 @@ export default async function Footer() {
       title: t("footer.services"),
       links: [
         { href: "/hotels", label: t("nav.hotels") },
+        { href: "/apartments", label: t("footer.apartments") },
         { href: "/transport", label: t("nav.transport") },
         { href: "/tours", label: t("nav.tours") },
       ],
@@ -21,7 +22,7 @@ export default async function Footer() {
         { href: "/vip", label: t("nav.vip") },
         { href: "/investments", label: t("footer.investments") },
         { href: "/flights", label: t("footer.flights") },
-        { href: "/home-rentals", label: t("footer.homeRentals") },
+        { href: "/join", label: t("footer.joinAsProvider") },
       ],
     },
     {

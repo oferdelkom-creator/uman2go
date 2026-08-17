@@ -6,6 +6,7 @@ const ADMIN_NAV = [
   { href: "/admin", key: "overview" },
   { href: "/admin/bookings", key: "bookings" },
   { href: "/admin/leads", key: "leads" },
+  { href: "/admin/providers", key: "providers" },
   { href: "/admin/transport", key: "transport" },
   { href: "/admin/tours", key: "tours" },
   { href: "/admin/team", key: "team" },

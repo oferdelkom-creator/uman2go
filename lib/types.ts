@@ -245,6 +245,7 @@ export type Database = {
           terms_accepted_at: string | null
           vehicle_type: string
           vehicle_type_i18n: Json
+          verified_at: string | null
           whatsapp_phone: string | null
         }
         Insert: {
@@ -264,6 +265,7 @@ export type Database = {
           terms_accepted_at?: string | null
           vehicle_type?: string
           vehicle_type_i18n?: Json
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Update: {
@@ -283,6 +285,7 @@ export type Database = {
           terms_accepted_at?: string | null
           vehicle_type?: string
           vehicle_type_i18n?: Json
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Relationships: [
@@ -297,40 +300,79 @@ export type Database = {
       }
       flight_requests: {
         Row: {
+          adults_count: number | null
+          budget_estimate: string | null
+          children_count: number | null
           created_at: string
           departure_date: string
           email: string | null
+          flight_preference: string | null
           full_name: string
           id: string
+          luggage_type: string | null
           notes: string
+          origin_city: string | null
           passengers_count: number
           phone: string
+          preferred_destination: string | null
           return_date: string | null
+          status: string
           travel_insurance: boolean
+          wants_hotel: boolean
+          wants_tour: boolean
+          wants_transport: boolean
+          wants_vip: boolean
+          whatsapp: string | null
         }
         Insert: {
+          adults_count?: number | null
+          budget_estimate?: string | null
+          children_count?: number | null
           created_at?: string
           departure_date: string
           email?: string | null
+          flight_preference?: string | null
           full_name: string
           id?: string
+          luggage_type?: string | null
           notes?: string
+          origin_city?: string | null
           passengers_count?: number
           phone: string
+          preferred_destination?: string | null
           return_date?: string | null
+          status?: string
           travel_insurance?: boolean
+          wants_hotel?: boolean
+          wants_tour?: boolean
+          wants_transport?: boolean
+          wants_vip?: boolean
+          whatsapp?: string | null
         }
         Update: {
+          adults_count?: number | null
+          budget_estimate?: string | null
+          children_count?: number | null
           created_at?: string
           departure_date?: string
           email?: string | null
+          flight_preference?: string | null
           full_name?: string
           id?: string
+          luggage_type?: string | null
           notes?: string
+          origin_city?: string | null
           passengers_count?: number
           phone?: string
+          preferred_destination?: string | null
           return_date?: string | null
+          status?: string
           travel_insurance?: boolean
+          wants_hotel?: boolean
+          wants_tour?: boolean
+          wants_transport?: boolean
+          wants_vip?: boolean
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -428,9 +470,11 @@ export type Database = {
           owner_id: string
           phone_alt: string | null
           photos: string[]
+          property_type: string
           slug: string
           status: string
           terms_accepted_at: string | null
+          verified_at: string | null
           whatsapp_phone: string | null
         }
         Insert: {
@@ -452,9 +496,11 @@ export type Database = {
           owner_id: string
           phone_alt?: string | null
           photos?: string[]
+          property_type?: string
           slug: string
           status?: string
           terms_accepted_at?: string | null
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Update: {
@@ -476,9 +522,11 @@ export type Database = {
           owner_id?: string
           phone_alt?: string | null
           photos?: string[]
+          property_type?: string
           slug?: string
           status?: string
           terms_accepted_at?: string | null
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Relationships: [
@@ -544,6 +592,104 @@ export type Database = {
           terms_accepted_at?: string | null
         }
         Relationships: []
+      }
+      provider_applications: {
+        Row: {
+          availability_notes: string | null
+          bed_count: number | null
+          created_at: string | null
+          duration: string | null
+          full_name: string
+          group_size: number | null
+          id: string
+          languages_spoken: string | null
+          location: string | null
+          max_guests: number | null
+          notes: string | null
+          passenger_capacity: number | null
+          phone: string
+          photos: string[] | null
+          preferred_language: string | null
+          price_estimate: string | null
+          provider_type: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          room_count: number | null
+          routes: string | null
+          source: string | null
+          status: string
+          telegram: string | null
+          tour_description: string | null
+          vehicle_type: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          availability_notes?: string | null
+          bed_count?: number | null
+          created_at?: string | null
+          duration?: string | null
+          full_name: string
+          group_size?: number | null
+          id?: string
+          languages_spoken?: string | null
+          location?: string | null
+          max_guests?: number | null
+          notes?: string | null
+          passenger_capacity?: number | null
+          phone: string
+          photos?: string[] | null
+          preferred_language?: string | null
+          price_estimate?: string | null
+          provider_type: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          room_count?: number | null
+          routes?: string | null
+          source?: string | null
+          status?: string
+          telegram?: string | null
+          tour_description?: string | null
+          vehicle_type?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          availability_notes?: string | null
+          bed_count?: number | null
+          created_at?: string | null
+          duration?: string | null
+          full_name?: string
+          group_size?: number | null
+          id?: string
+          languages_spoken?: string | null
+          location?: string | null
+          max_guests?: number | null
+          notes?: string | null
+          passenger_capacity?: number | null
+          phone?: string
+          photos?: string[] | null
+          preferred_language?: string | null
+          price_estimate?: string | null
+          provider_type?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          room_count?: number | null
+          routes?: string | null
+          source?: string | null
+          status?: string
+          telegram?: string | null
+          tour_description?: string | null
+          vehicle_type?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_applications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rooms: {
         Row: {
@@ -668,6 +814,7 @@ export type Database = {
           slug: string
           status: string
           terms_accepted_at: string | null
+          verified_at: string | null
           whatsapp_phone: string | null
         }
         Insert: {
@@ -683,6 +830,7 @@ export type Database = {
           slug: string
           status?: string
           terms_accepted_at?: string | null
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Update: {
@@ -698,6 +846,7 @@ export type Database = {
           slug?: string
           status?: string
           terms_accepted_at?: string | null
+          verified_at?: string | null
           whatsapp_phone?: string | null
         }
         Relationships: [
@@ -1056,3 +1205,4 @@ export type VipRequest = Tables<"vip_requests">
 export type InvestmentRequest = Tables<"investment_requests">
 export type FlightRequest = Tables<"flight_requests">
 export type HomeRentalLead = Tables<"home_rental_leads">
+export type ProviderApplication = Tables<"provider_applications">

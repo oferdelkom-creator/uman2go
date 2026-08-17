@@ -20,7 +20,8 @@
     "searchHotels": "לחיפוש מלונות",
     "login": "התחברות",
     "signup": "הרשמה",
-    "menu": "תפריט"
+    "menu": "תפריט",
+    "joinAsProvider": "הצטרפו כספקים"
   },
   "auth": {
     "login": {
@@ -90,11 +91,11 @@
       "noAvailabilityDesc": "נסו תאריכים אחרים"
     },
     "detail": {
-      "fallbackTitle": "מלון",
+      "fallbackTitle": "נכס",
       "distanceFromSite": "{meters} מ' מהציון",
       "contact": "יצירת קשר",
       "reviews": "חוות דעת",
-      "noReviews": "עדיין אין חוות דעת על המלון הזה.",
+      "noReviews": "עדיין אין חוות דעת על הנכס הזה.",
       "rooms": "חדרים",
       "upToGuests": "עד {count} אורחים",
       "noRooms": "אין חדרים זמינים כרגע",
@@ -109,7 +110,7 @@
       "paymentMethodOnline": "מקדמה מקוונת (כרטיס אשראי)",
       "paymentMethodCash": "יתרת התשלום - מזומן/העברה במעמד ההגעה",
       "responseTimeTitle": "זמן תגובה",
-      "responseTimeText": "אנחנו וצוות המלון משתדלים לחזור אליכם באותו היום.",
+      "responseTimeText": "אנחנו וצוות הנכס משתדלים לחזור אליכם באותו היום.",
       "whatsappContact": "יצירת קשר ב-WhatsApp",
       "whatsappPrefill": "שלום, אני מעוניין/ת בהזמנה ב-{hotelName}. אשמח לפרטים נוספים."
     },
@@ -125,7 +126,7 @@
       "sending": "שולח...",
       "submit": "בקשת הזמנה",
       "sentTitle": "הבקשה נשלחה!",
-      "sentDesc": "בעל המלון יאשר את ההזמנה בקרוב. תוכלו לעקוב אחרי הסטטוס באזור האישי.",
+      "sentDesc": "בעל הנכס יאשר את ההזמנה בקרוב. תוכלו לעקוב אחרי הסטטוס באזור האישי.",
       "roomUnavailable": "החדר אינו זמין בתאריכים אלו",
       "genericError": "אירעה שגיאה, נסו שוב",
       "redirectingToPayment": "מעבירים אתכם לתשלום המקדמה...",
@@ -340,6 +341,10 @@
       "tours": {
         "title": "טיולים",
         "description": "טיולים מודרכים וחוויות באומן והסביבה"
+      },
+      "flights": {
+        "title": "טיסות",
+        "description": "טיסה נוחה לאומן, כולל התאמת הסעה ומלון"
       }
     },
     "socialProof": {
@@ -365,13 +370,15 @@
       "leads": "פניות",
       "transport": "הסעות",
       "tours": "טיולים",
-      "team": "צוות"
+      "team": "צוות",
+      "providers": "ספקים"
     },
     "dashboard": {
       "hotelBookings": "הזמנות מלונות",
       "transportRequests": "בקשות הסעה",
       "tourSignups": "הרשמות לטיולים",
-      "leads": "פניות (VIP/השקעות/טיסות/נכסים)"
+      "leads": "פניות (VIP/השקעות/טיסות/נכסים)",
+      "newProviders": "בקשות ספקים חדשות"
     },
     "bookings": {
       "title": "כל ההזמנות",
@@ -418,6 +425,22 @@
       "notFoundError": "לא נמצא משתמש עם המייל הזה — עליו קודם להירשם באתר.",
       "genericError": "אירעה שגיאה, נסו שוב.",
       "removeAction": "הסרת הרשאה"
+    },
+    "providers": {
+      "types": {
+        "hotel": "מלונות / צימרים",
+        "apartment": "דירות להשכרה",
+        "driver": "נהגים / חברות הסעה",
+        "tour": "טיולים / חוויות"
+      },
+      "status": {
+        "new": "חדש",
+        "in_review": "בבדיקה",
+        "contacted": "יצרנו קשר",
+        "approved": "אושר",
+        "rejected": "נדחה"
+      },
+      "noApplications": "אין בקשות"
     }
   },
   "vip": {
@@ -445,15 +468,66 @@
     }
   },
   "flights": {
-    "metaTitle": "הזמנת טיסות",
-    "title": "הזמנת טיסות",
-    "subtitle": "נמצא עבורכם את הטיסה המשתלמת ביותר לאומן.",
+    "metaTitle": "טיסה לאומן מתחילה בתכנון נכון",
+    "title": "טיסה לאומן מתחילה בתכנון נכון",
+    "subtitle": "שלחו לנו את פרטי הנסיעה ונמצא עבורכם את אפשרות הטיסה המתאימה, יחד עם הסעה ומלון באומן.",
     "submit": "בקשת הצעת מחיר",
     "email": "אימייל",
     "departureDate": "תאריך יציאה",
     "returnDate": "תאריך חזרה",
     "passengersCount": "מספר נוסעים",
-    "travelInsurance": "מעוניינים בביטוח נסיעות"
+    "travelInsurance": "מעוניינים בביטוח נסיעות",
+    "form": {
+      "fullName": "שם מלא",
+      "phone": "טלפון",
+      "whatsapp": "WhatsApp",
+      "originCity": "עיר יציאה",
+      "preferredDestination": "יעד מועדף (אופציונלי)",
+      "departureDate": "תאריך יציאה",
+      "returnDate": "תאריך חזרה",
+      "adultsCount": "מבוגרים",
+      "childrenCount": "ילדים",
+      "luggageType": "סוג כבודה",
+      "luggage": {
+        "carryOn": "טרולי בלבד",
+        "checked": "מזוודה",
+        "both": "טרולי ומזוודה"
+      },
+      "flightPreference": "העדפת טיסה",
+      "preference": {
+        "direct": "טיסה ישירה",
+        "connection": "מוכנים לקונקשן",
+        "noPreference": "אין העדפה"
+      },
+      "budgetEstimate": "תקציב משוער (אופציונלי)",
+      "budgetEstimatePlaceholder": "לדוגמה: 500$ לנוסע",
+      "notes": "הערות",
+      "submit": "קבלו הצעת מחיר",
+      "sending": "שולח...",
+      "genericError": "אירעה שגיאה, נסו שוב.",
+      "sentTitle": "הבקשה נשלחה!",
+      "sentDesc": "ניצור איתכם קשר בהקדם עם הצעת טיסה מותאמת.",
+      "whatsappPrefill": "שלום, שלחתי בקשה להצעת טיסה לאומן דרך Uman2Go. אשמח לקבל אפשרויות טיסה וגם מידע על הסעה ומלון.",
+      "whatsappFollowUp": "המשך ב-WhatsApp",
+      "upsell": {
+        "title": "רוצים שנדאג גם להמשך הנסיעה?",
+        "wants_hotel": "מלון / דירה באומן",
+        "wants_transport": "הסעה משדה התעופה",
+        "wants_tour": "טיולים באומן והסביבה",
+        "wants_vip": "שירות VIP מלא",
+        "submit": "עדכון הבקשה"
+      }
+    },
+    "routes": {
+      "title": "לאן טסים בדרך לאומן?",
+      "disclaimer": "המסלולים הבאים משקפים את התהליך שבו אנחנו פועלים בפועל, לא לוח טיסות קבוע.",
+      "steps": {
+        "departFromIsrael": "יציאה מישראל",
+        "landNearDestination": "נחיתה ביעד הקרוב לאוקראינה",
+        "organizedTransfer": "הסעה מאורגנת לאומן",
+        "optionalStay": "אפשרות לשלב מלון או דירה"
+      }
+    }
   },
   "homeRentals": {
     "metaTitle": "השכרת נכסים",
@@ -494,6 +568,154 @@
     "homeRentals": "השכרת נכסים",
     "about": "אודות",
     "contact": "צור קשר",
-    "terms": "תקנון"
+    "terms": "תקנון",
+    "apartments": "דירות להשכרה",
+    "joinAsProvider": "הצטרפו כספקים"
+  },
+  "joinHub": {
+    "metaTitle": "הצטרפו ל-Uman2Go",
+    "title": "הצטרפו ל-Uman2Go",
+    "subtitle": "פרסמו את הנכס או השירות שלכם והגיעו לנוסעים לאומן מכל העולם",
+    "multiLanguageNote": "שירות והתכתבות בעברית, אנגלית, צרפתית ואוקראינית",
+    "tracks": {
+      "hotel": {
+        "title": "מלון / צימר",
+        "audience": "למלונות, צימרים ואכסניות באומן והסביבה",
+        "benefits": "חשיפה לנוסעים דוברי עברית ושפות נוספות, קבלת פניות והזמנות ישירות, ליווי צמוד מהצוות",
+        "cta": "התחילו לפרסם"
+      },
+      "apartment": {
+        "title": "דירה להשכרה",
+        "audience": "לבעלי דירות, חדרים ובתים המעוניינים להשכיר בתקופות השיא",
+        "benefits": "הכנסה נוספת בתקופת העלייה לרגל, ללא צורך לדעת עברית, הצוות מסייע בכל שלב",
+        "cta": "התחילו לפרסם"
+      },
+      "driver": {
+        "title": "נהג / חברת הסעות",
+        "audience": "לנהגים פרטיים וחברות הסעה המשרתים נוסעים לאומן",
+        "benefits": "קבלת פניות הסעה ישירות, חשיפה למספר שפות, גמישות מלאה בזמינות",
+        "cta": "התחילו לפרסם"
+      },
+      "tour": {
+        "title": "טיול / חוויה",
+        "audience": "למדריכי טיולים ומארגני חוויות באומן והסביבה",
+        "benefits": "הצגת הטיול לקהל חדש, ניהול הרשמות באתר, תמיכה במספר שפות",
+        "cta": "התחילו לפרסם"
+      }
+    }
+  },
+  "providerSignup": {
+    "metaTitle": "הצטרפות כספק",
+    "title": "הצטרפות כספק",
+    "subtitle": "כמה פרטים קצרים ונחזור אליכם בהקדם",
+    "fullName": "שם מלא",
+    "phone": "טלפון",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "preferredLanguage": "שפה מועדפת",
+    "notes": "הערות",
+    "back": "הקודם",
+    "next": "הבא",
+    "submitting": "שולח...",
+    "submit": "שליחת בקשה",
+    "genericError": "אירעה שגיאה, נסו שוב.",
+    "types": {
+      "hotel": {
+        "title": "מלון / צימר",
+        "desc": "יש לי מלון, צימר או אכסניה באומן"
+      },
+      "apartment": {
+        "title": "דירה להשכרה",
+        "desc": "יש לי דירה, חדר או בית להשכרה"
+      },
+      "driver": {
+        "title": "נהג / חברת הסעות",
+        "desc": "אני נהג פרטי או חברת הסעות"
+      },
+      "tour": {
+        "title": "טיול / חוויה",
+        "desc": "אני מדריך טיולים או מארגן חוויות"
+      }
+    },
+    "step1": {
+      "title": "איזה סוג ספק אתם?"
+    },
+    "step2": {
+      "title": "פרטי התקשרות"
+    },
+    "step3": {
+      "title": "פרטי השירות"
+    },
+    "step4": {
+      "title": "תמונות",
+      "desc": "העלו תמונות מהטלפון, או השאירו ריק ונחזור אליכם להשלמת הפרטים"
+    },
+    "step5": {
+      "title": "סקירה ואישור",
+      "photosCount": "{count} תמונות הועלו"
+    },
+    "property": {
+      "location": "מיקום / אזור",
+      "roomCount": "מספר חדרים",
+      "bedCount": "מספר מיטות",
+      "maxGuests": "מספר אורחים מקסימלי",
+      "priceEstimate": "מחיר משוער",
+      "priceEstimatePlaceholder": "לדוגמה: 80$ ללילה",
+      "availabilityNotes": "תקופות זמינות",
+      "availabilityNotesPlaceholder": "לדוגמה: אלול-תשרי"
+    },
+    "driver": {
+      "vehicleType": "סוג רכב",
+      "passengerCapacity": "מספר נוסעים",
+      "routes": "מסלולים",
+      "languagesSpoken": "שפות"
+    },
+    "tour": {
+      "description": "תיאור הטיול",
+      "duration": "משך הטיול",
+      "groupSize": "גודל קבוצה",
+      "price": "מחיר",
+      "languagesSpoken": "שפות"
+    },
+    "confirmation": {
+      "title": "קיבלנו את הפרטים!",
+      "desc": "צוות Uman2Go יבדוק את הבקשה ויחזור אליכם בהקדם."
+    },
+    "photos": {
+      "uploadLabel": "העלאת תמונות",
+      "uploading": "מעלה...",
+      "uploadError": "אירעה שגיאה בהעלאה, נסו שוב.",
+      "removePhoto": "הסרת תמונה",
+      "urlFallbackLabel": "או הדביקו קישורים לתמונות",
+      "urlFallbackPlaceholder": "קישור אחד בכל שורה",
+      "noPhotosNote": "אין תמונות? אין בעיה - אפשר לשלוח בכל זאת והצוות יחזור אליכם להשלמת הפרטים."
+    }
+  },
+  "host": {
+    "metaTitle": "יש לכם דירה, בית או מלון באומן? הרוויחו בעונת העלייה לרגל",
+    "title": "יש לכם דירה, בית או מלון באומן? הרוויחו בעונת העלייה לרגל",
+    "subtitle": "פרסמו את הנכס שלכם ב-Uman2Go וקבלו אורחים מכל העולם",
+    "points": {
+      "listAnyType": "אפשר לפרסם דירה, חדר, בית או מלון",
+      "peakSeasonOnly": "אפשר להשכיר רק בתקופות השיא",
+      "internationalGuests": "Uman2Go מביאה לקוחות דוברי עברית ושפות נוספות",
+      "teamHelps": "הצוות שלנו מסייע בהעלאת הנכס ובניהול הפניות",
+      "noHebrewNeeded": "אין צורך לדעת עברית"
+    },
+    "submit": "שליחת בקשה",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "location": "כתובת או אזור הנכס",
+    "maxGuests": "מספר אורחים אפשרי",
+    "availabilityNotes": "תקופות זמינות"
+  },
+  "apartments": {
+    "metaTitle": "דירות ובתים להשכרה בתקופת השיא",
+    "title": "דירות ובתים להשכרה בתקופת השיא",
+    "subtitle": "נכסים מותאמים למשפחות וקבוצות, לתאריכי העלייה לרגל",
+    "emptyTitle": "עדיין אין דירות זמינות",
+    "emptyDesc": "חזרו בקרוב",
+    "noAvailabilityTitle": "אין תוצאות לתאריכים שנבחרו",
+    "noAvailabilityDesc": "נסו תאריכים אחרים או צרו קשר לבדיקת אפשרויות נוספות"
   }
 }

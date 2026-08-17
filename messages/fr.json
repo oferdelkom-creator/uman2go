@@ -20,7 +20,8 @@
     "searchHotels": "Rechercher un hôtel",
     "login": "Connexion",
     "signup": "Inscription",
-    "menu": "Menu"
+    "menu": "Menu",
+    "joinAsProvider": "Devenir partenaire"
   },
   "auth": {
     "login": {
@@ -90,11 +91,11 @@
       "noAvailabilityDesc": "Essayez d'autres dates"
     },
     "detail": {
-      "fallbackTitle": "Hôtel",
+      "fallbackTitle": "Logement",
       "distanceFromSite": "{meters} m du site",
       "contact": "Contact",
       "reviews": "Avis",
-      "noReviews": "Aucun avis pour cet hôtel pour l'instant.",
+      "noReviews": "Aucun avis pour ce logement pour l'instant.",
       "rooms": "Chambres",
       "upToGuests": "Jusqu'à {count} personnes",
       "noRooms": "Aucune chambre disponible pour le moment",
@@ -109,7 +110,7 @@
       "paymentMethodOnline": "Acompte en ligne (carte bancaire)",
       "paymentMethodCash": "Solde - espèces/virement à l'arrivée",
       "responseTimeTitle": "Temps de réponse",
-      "responseTimeText": "Nous et l'équipe de l'hôtel essayons de vous répondre le jour même.",
+      "responseTimeText": "Nous et l'équipe du logement essayons de vous répondre le jour même.",
       "whatsappContact": "Contacter sur WhatsApp",
       "whatsappPrefill": "Bonjour, je suis intéressé(e) par une réservation à {hotelName}. J'aimerais avoir plus de détails."
     },
@@ -125,7 +126,7 @@
       "sending": "Envoi...",
       "submit": "Demander une réservation",
       "sentTitle": "Demande envoyée !",
-      "sentDesc": "Le propriétaire de l'hôtel confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
+      "sentDesc": "Le propriétaire du logement confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
       "roomUnavailable": "Cette chambre n'est pas disponible à ces dates",
       "genericError": "Une erreur s'est produite, veuillez réessayer",
       "redirectingToPayment": "Redirection vers le paiement de l'acompte...",
@@ -340,6 +341,10 @@
       "tours": {
         "title": "Excursions",
         "description": "Excursions guidées et expériences à Ouman et ses environs"
+      },
+      "flights": {
+        "title": "Vols",
+        "description": "Un vol pratique vers Ouman, avec transport et hôtel assortis"
       }
     },
     "socialProof": {
@@ -365,13 +370,15 @@
       "leads": "Demandes",
       "transport": "Transport",
       "tours": "Excursions",
-      "team": "Équipe"
+      "team": "Équipe",
+      "providers": "Partenaires"
     },
     "dashboard": {
       "hotelBookings": "Réservations d'hôtels",
       "transportRequests": "Demandes de transport",
       "tourSignups": "Inscriptions aux excursions",
-      "leads": "Demandes (VIP/Investissements/Vols/Locations)"
+      "leads": "Demandes (VIP/Investissements/Vols/Locations)",
+      "newProviders": "Nouvelles demandes partenaires"
     },
     "bookings": {
       "title": "Toutes les réservations",
@@ -418,6 +425,22 @@
       "notFoundError": "Aucun utilisateur trouvé avec cet e-mail — il doit d'abord s'inscrire sur le site.",
       "genericError": "Une erreur s'est produite, veuillez réessayer.",
       "removeAction": "Retirer l'accès"
+    },
+    "providers": {
+      "types": {
+        "hotel": "Hôtels / Gîtes",
+        "apartment": "Appartements à louer",
+        "driver": "Chauffeurs / Sociétés de transport",
+        "tour": "Visites / Expériences"
+      },
+      "status": {
+        "new": "Nouveau",
+        "in_review": "En cours d'examen",
+        "contacted": "Contacté",
+        "approved": "Approuvé",
+        "rejected": "Refusé"
+      },
+      "noApplications": "Aucune demande"
     }
   },
   "vip": {
@@ -445,15 +468,66 @@
     }
   },
   "flights": {
-    "metaTitle": "Réserver des vols",
-    "title": "Réserver des vols",
-    "subtitle": "Nous vous trouvons le vol le plus avantageux vers Ouman.",
+    "metaTitle": "Un vol vers Ouman commence par une bonne planification",
+    "title": "Un vol vers Ouman commence par une bonne planification",
+    "subtitle": "Envoyez-nous les détails de votre voyage et nous trouverons l'option de vol adaptée, ainsi qu'un transport et un hôtel à Ouman.",
     "submit": "Demander un devis",
     "email": "E-mail",
     "departureDate": "Date de départ",
     "returnDate": "Date de retour",
     "passengersCount": "Nombre de passagers",
-    "travelInsurance": "Intéressé par une assurance voyage"
+    "travelInsurance": "Intéressé par une assurance voyage",
+    "form": {
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp",
+      "originCity": "Ville de départ",
+      "preferredDestination": "Destination préférée (facultatif)",
+      "departureDate": "Date de départ",
+      "returnDate": "Date de retour",
+      "adultsCount": "Adultes",
+      "childrenCount": "Enfants",
+      "luggageType": "Type de bagage",
+      "luggage": {
+        "carryOn": "Bagage cabine uniquement",
+        "checked": "Bagage en soute",
+        "both": "Cabine et soute"
+      },
+      "flightPreference": "Préférence de vol",
+      "preference": {
+        "direct": "Vol direct",
+        "connection": "Ouvert aux correspondances",
+        "noPreference": "Aucune préférence"
+      },
+      "budgetEstimate": "Budget estimé (facultatif)",
+      "budgetEstimatePlaceholder": "ex. 500$ par passager",
+      "notes": "Remarques",
+      "submit": "Obtenir un devis de vol",
+      "sending": "Envoi...",
+      "genericError": "Une erreur s'est produite, veuillez réessayer.",
+      "sentTitle": "Demande envoyée !",
+      "sentDesc": "Nous vous recontacterons bientôt avec une offre de vol adaptée.",
+      "whatsappPrefill": "Bonjour, j'ai envoyé une demande de devis de vol pour Ouman via Uman2Go. J'aimerais recevoir des options de vol ainsi que des informations sur le transport et l'hôtel.",
+      "whatsappFollowUp": "Continuer sur WhatsApp",
+      "upsell": {
+        "title": "Voulez-vous que nous nous occupions aussi du reste du voyage ?",
+        "wants_hotel": "Hôtel / appartement à Ouman",
+        "wants_transport": "Transfert depuis l'aéroport",
+        "wants_tour": "Visites à Ouman et ses environs",
+        "wants_vip": "Service VIP complet",
+        "submit": "Mettre à jour la demande"
+      }
+    },
+    "routes": {
+      "title": "Par où passent les vols vers Ouman ?",
+      "disclaimer": "Les étapes ci-dessous reflètent notre fonctionnement réel, pas un horaire de vols fixe.",
+      "steps": {
+        "departFromIsrael": "Départ d'Israël",
+        "landNearDestination": "Atterrissage au point le plus proche de l'Ukraine",
+        "organizedTransfer": "Transfert organisé vers Ouman",
+        "optionalStay": "Possibilité d'ajouter un hôtel ou un appartement"
+      }
+    }
   },
   "homeRentals": {
     "metaTitle": "Location de biens",
@@ -494,6 +568,154 @@
     "homeRentals": "Location de biens",
     "about": "À propos",
     "contact": "Contact",
-    "terms": "Conditions"
+    "terms": "Conditions",
+    "apartments": "Appartements",
+    "joinAsProvider": "Devenir partenaire"
+  },
+  "joinHub": {
+    "metaTitle": "Rejoignez Uman2Go",
+    "title": "Rejoignez Uman2Go",
+    "subtitle": "Publiez votre bien ou votre service et touchez des voyageurs se rendant à Ouman du monde entier",
+    "multiLanguageNote": "Assistance et communication en hébreu, anglais, français et ukrainien",
+    "tracks": {
+      "hotel": {
+        "title": "Hôtel / Gîte",
+        "audience": "Pour les hôtels, gîtes et auberges à Ouman et ses environs",
+        "benefits": "Visibilité auprès de voyageurs hébréophones et autres, demandes et réservations directes, accompagnement personnalisé",
+        "cta": "Commencer à publier"
+      },
+      "apartment": {
+        "title": "Appartement à louer",
+        "audience": "Pour les propriétaires d'appartements, chambres et maisons souhaitant louer en haute saison",
+        "benefits": "Revenu supplémentaire pendant la saison de pèlerinage, aucun besoin de parler hébreu, notre équipe vous accompagne à chaque étape",
+        "cta": "Commencer à publier"
+      },
+      "driver": {
+        "title": "Chauffeur / Société de transport",
+        "audience": "Pour les chauffeurs privés et sociétés de transport au service des voyageurs vers Ouman",
+        "benefits": "Demandes de transport directes, visibilité multilingue, flexibilité totale sur les disponibilités",
+        "cta": "Commencer à publier"
+      },
+      "tour": {
+        "title": "Visite / Expérience",
+        "audience": "Pour les guides touristiques et organisateurs d'expériences à Ouman et ses environs",
+        "benefits": "Présentez votre visite à un nouveau public, gérez les inscriptions sur le site, assistance multilingue",
+        "cta": "Commencer à publier"
+      }
+    }
+  },
+  "providerSignup": {
+    "metaTitle": "Inscription partenaire",
+    "title": "Inscription partenaire",
+    "subtitle": "Quelques informations rapides et nous vous recontacterons bientôt",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "preferredLanguage": "Langue préférée",
+    "notes": "Remarques",
+    "back": "Précédent",
+    "next": "Suivant",
+    "submitting": "Envoi...",
+    "submit": "Envoyer la demande",
+    "genericError": "Une erreur s'est produite, veuillez réessayer.",
+    "types": {
+      "hotel": {
+        "title": "Hôtel / Gîte",
+        "desc": "J'ai un hôtel, un gîte ou une auberge à Ouman"
+      },
+      "apartment": {
+        "title": "Appartement à louer",
+        "desc": "J'ai un appartement, une chambre ou une maison à louer"
+      },
+      "driver": {
+        "title": "Chauffeur / Société de transport",
+        "desc": "Je suis chauffeur privé ou société de transport"
+      },
+      "tour": {
+        "title": "Visite / Expérience",
+        "desc": "Je suis guide touristique ou organisateur d'expériences"
+      }
+    },
+    "step1": {
+      "title": "Quel type de partenaire êtes-vous ?"
+    },
+    "step2": {
+      "title": "Coordonnées"
+    },
+    "step3": {
+      "title": "Détails du service"
+    },
+    "step4": {
+      "title": "Photos",
+      "desc": "Téléchargez des photos depuis votre téléphone, ou laissez vide et nous vous recontacterons pour compléter les détails"
+    },
+    "step5": {
+      "title": "Résumé et envoi",
+      "photosCount": "{count} photos téléchargées"
+    },
+    "property": {
+      "location": "Emplacement / Zone",
+      "roomCount": "Nombre de chambres",
+      "bedCount": "Nombre de lits",
+      "maxGuests": "Nombre max. d'invités",
+      "priceEstimate": "Prix estimé",
+      "priceEstimatePlaceholder": "ex. 80$ par nuit",
+      "availabilityNotes": "Périodes de disponibilité",
+      "availabilityNotesPlaceholder": "ex. haute saison de pèlerinage"
+    },
+    "driver": {
+      "vehicleType": "Type de véhicule",
+      "passengerCapacity": "Nombre de passagers",
+      "routes": "Itinéraires",
+      "languagesSpoken": "Langues"
+    },
+    "tour": {
+      "description": "Description de la visite",
+      "duration": "Durée",
+      "groupSize": "Taille du groupe",
+      "price": "Prix",
+      "languagesSpoken": "Langues"
+    },
+    "confirmation": {
+      "title": "Nous avons bien reçu vos informations !",
+      "desc": "L'équipe Uman2Go examinera votre demande et vous recontactera bientôt."
+    },
+    "photos": {
+      "uploadLabel": "Télécharger des photos",
+      "uploading": "Téléchargement...",
+      "uploadError": "Une erreur s'est produite lors du téléchargement, veuillez réessayer.",
+      "removePhoto": "Supprimer la photo",
+      "urlFallbackLabel": "Ou collez des liens vers des photos",
+      "urlFallbackPlaceholder": "Un lien par ligne",
+      "noPhotosNote": "Pas de photos ? Pas de souci - vous pouvez quand même envoyer et notre équipe vous recontactera pour compléter les détails."
+    }
+  },
+  "host": {
+    "metaTitle": "Vous avez un appartement, une maison ou un hôtel à Ouman ? Gagnez pendant la saison de pèlerinage",
+    "title": "Vous avez un appartement, une maison ou un hôtel à Ouman ? Gagnez pendant la saison de pèlerinage",
+    "subtitle": "Publiez votre bien sur Uman2Go et accueillez des voyageurs du monde entier",
+    "points": {
+      "listAnyType": "Publiez un appartement, une chambre, une maison ou un hôtel",
+      "peakSeasonOnly": "Vous pouvez louer uniquement pendant la haute saison",
+      "internationalGuests": "Uman2Go vous amène des clients hébréophones et plus",
+      "teamHelps": "Notre équipe vous aide à publier votre bien et à gérer les demandes",
+      "noHebrewNeeded": "Aucun besoin de parler hébreu"
+    },
+    "submit": "Envoyer la demande",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "location": "Adresse ou zone du bien",
+    "maxGuests": "Nombre d'invités possible",
+    "availabilityNotes": "Périodes de disponibilité"
+  },
+  "apartments": {
+    "metaTitle": "Appartements et maisons à louer en haute saison",
+    "title": "Appartements et maisons à louer en haute saison",
+    "subtitle": "Des logements adaptés aux familles et groupes, pour les dates de pèlerinage",
+    "emptyTitle": "Aucun appartement disponible pour le moment",
+    "emptyDesc": "Revenez bientôt",
+    "noAvailabilityTitle": "Aucun résultat pour les dates sélectionnées",
+    "noAvailabilityDesc": "Essayez d'autres dates ou contactez-nous pour d'autres options"
   }
 }

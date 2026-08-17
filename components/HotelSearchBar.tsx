@@ -10,10 +10,12 @@ export function HotelSearchBar({
   initialCheckIn,
   initialCheckOut,
   initialGuests,
+  basePath = "/hotels",
 }: {
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialGuests?: number;
+  basePath?: string;
 }) {
   const t = useTranslations("hotels.list");
   const router = useRouter();
@@ -27,7 +29,7 @@ export function HotelSearchBar({
     if (checkIn) params.set("checkIn", checkIn);
     if (checkOut) params.set("checkOut", checkOut);
     if (guests > 1) params.set("guests", String(guests));
-    router.push(`/hotels${params.toString() ? `?${params.toString()}` : ""}`);
+    router.push(`${basePath}${params.toString() ? `?${params.toString()}` : ""}`);
   }
 
   return (

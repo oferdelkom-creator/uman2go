@@ -19,12 +19,14 @@ const VERTICAL_ICONS: Record<string, React.ReactNode> = {
   ),
   transport: <path d="M5 17h14M5 17a2 2 0 1 0 4 0M5 17a2 2 0 1 1 4 0M15 17a2 2 0 1 0 4 0M15 17a2 2 0 1 1 4 0M3 17V9a1 1 0 0 1 1-1h14l3 5v4M3 9h18" />,
   tours: <path d="M12 2 9.5 7 4 8l4 4-1 6 5-3 5 3-1-6 4-4-5.5-1L12 2Z" />,
+  flights: <path d="M22 16.5v-2l-8.5-5V4c0-1.1-.9-2-1.5-2s-1.5.9-1.5 2v5.5L2 14.5v2l8.5-2.5v5l-2.5 2v1.5l4-1 4 1v-1.5l-2.5-2v-5L22 16.5Z" />,
 };
 
 const VERTICAL_GRADIENTS: Record<string, string> = {
   hotels: "from-brand-terracotta to-brand-terracotta-dark",
   transport: "from-brand-navy to-brand-navy-dark",
   tours: "from-brand-teal to-brand-navy",
+  flights: "from-brand-gold to-brand-terracotta-dark",
 };
 
 export default async function HomePage() {
@@ -40,12 +42,12 @@ export default async function HomePage() {
     { count: hotelsCount },
     { count: driversCount },
   ] = await Promise.all([
-    supabase.from("hotels").select("*").eq("status", "active").order("featured", { ascending: false }).limit(3),
+    supabase.from("hotels").select("*").eq("status", "active").eq("property_type", "hotel").order("featured", { ascending: false }).limit(3),
     supabase.from("drivers").select("*").eq("status", "active").order("featured", { ascending: false }).limit(3),
     supabase.from("rooms").select("hotel_id, price_per_night, currency").eq("status", "active"),
     supabase.from("hotel_reviews").select("reviewer_name, host_rating, property_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
     supabase.from("driver_reviews").select("reviewer_name, driver_rating, vehicle_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
-    supabase.from("hotels").select("id", { count: "exact", head: true }).eq("status", "active"),
+    supabase.from("hotels").select("id", { count: "exact", head: true }).eq("status", "active").eq("property_type", "hotel"),
     supabase.from("drivers").select("id", { count: "exact", head: true }).eq("status", "active"),
   ]);
 
@@ -79,7 +81,7 @@ export default async function HomePage() {
     .filter((url): url is string => Boolean(url))
     .slice(0, 4);
 
-  const verticals = (["hotels", "transport", "tours"] as const).map((key) => ({
+  const verticals = (["hotels", "transport", "tours", "flights"] as const).map((key) => ({
     key,
     href: `/${key}`,
     title: t(`verticals.${key}.title`),
@@ -129,7 +131,7 @@ export default async function HomePage() {
       </section>
 
       <Section>
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {verticals.map((v) => (
             <Reveal key={v.href}>
               <Link

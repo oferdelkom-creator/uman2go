@@ -6,6 +6,7 @@ export const LEAD_TABLES = {
   investment: { table: "investment_requests", title: "פנייה חדשה להשקעות" },
   flight: { table: "flight_requests", title: "בקשת טיסה חדשה" },
   "home-rental": { table: "home_rental_leads", title: "ליד השכרת נכס חדש" },
+  provider: { table: "provider_applications", title: "בקשת ספק חדשה" },
 } as const;
 
 export type LeadType = keyof typeof LEAD_TABLES;

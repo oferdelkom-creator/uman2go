@@ -12,11 +12,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "hotels.list" });
+  const t = await getTranslations({ locale, namespace: "apartments" });
   return { title: t("metaTitle") };
 }
 
-export default async function HotelsPage({
+export default async function ApartmentsPage({
   searchParams,
 }: {
   searchParams: Promise<{ checkIn?: string; checkOut?: string; guests?: string }>;
@@ -24,15 +24,15 @@ export default async function HotelsPage({
   const { checkIn, checkOut, guests } = await searchParams;
   const guestsCount = guests ? Number(guests) : undefined;
   const supabase = await createClient();
-  const t = await getTranslations("hotels.list");
+  const t = await getTranslations("apartments");
 
   const isSearching = Boolean(checkIn && checkOut);
   const searchQuery = isSearching
     ? `?${new URLSearchParams({ checkIn: checkIn!, checkOut: checkOut!, ...(guests ? { guests } : {}) }).toString()}`
     : "";
 
-  const [{ data: hotels }, { data: rooms }, availableRoomIds] = await Promise.all([
-    supabase.from("hotels").select("*").eq("status", "active").eq("property_type", "hotel").order("featured", { ascending: false }),
+  const [{ data: apartments }, { data: rooms }, availableRoomIds] = await Promise.all([
+    supabase.from("hotels").select("*").eq("status", "active").eq("property_type", "apartment").order("featured", { ascending: false }),
     supabase.from("rooms").select("id, hotel_id, price_per_night, currency, capacity").eq("status", "active"),
     isSearching ? supabase.rpc("available_room_ids", { p_check_in: checkIn!, p_check_out: checkOut! }) : Promise.resolve({ data: null }),
   ]);
@@ -53,21 +53,21 @@ export default async function HotelsPage({
     }
   }
 
-  const visibleHotels = isSearching ? (hotels ?? []).filter((hotel) => minPriceByHotel.has(hotel.id)) : (hotels ?? []);
+  const visibleApartments = isSearching ? (apartments ?? []).filter((a) => minPriceByHotel.has(a.id)) : (apartments ?? []);
 
   return (
     <Section>
       <h1 className="font-display text-4xl font-extrabold text-brand-navy">{t("title")}</h1>
       <p className="mt-2 max-w-2xl text-foreground/70">{t("subtitle")}</p>
 
-      <HotelSearchBar initialCheckIn={checkIn} initialCheckOut={checkOut} initialGuests={guestsCount} />
+      <HotelSearchBar initialCheckIn={checkIn} initialCheckOut={checkOut} initialGuests={guestsCount} basePath="/apartments" />
 
-      {visibleHotels.length > 0 ? (
+      {visibleApartments.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visibleHotels.map((hotel) => {
-            const price = minPriceByHotel.get(hotel.id);
+          {visibleApartments.map((apt) => {
+            const price = minPriceByHotel.get(apt.id);
             return (
-              <HotelCard key={hotel.id} hotel={hotel} fromPrice={price?.price} currency={price?.currency} searchQuery={searchQuery} />
+              <HotelCard key={apt.id} hotel={apt} fromPrice={price?.price} currency={price?.currency} searchQuery={searchQuery} />
             );
           })}
         </div>

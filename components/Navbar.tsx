@@ -44,6 +44,12 @@ export default async function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/join"
+            className="rounded-full border border-brand-navy/20 px-3.5 py-1.5 text-sm font-semibold text-brand-navy/80 transition-colors hover:border-brand-terracotta hover:text-brand-terracotta"
+          >
+            {t("joinAsProvider")}
+          </Link>
           <LanguageSwitcher />
           {user ? (
             <ButtonLink href={isOwner ? "/owner" : "/hotels"} variant="outline">
@@ -73,6 +79,9 @@ export default async function Navbar() {
             {t(link.key)}
           </Link>
         ))}
+        <Link href="/join" className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-cream-deep">
+          {t("joinAsProvider")}
+        </Link>
         <div className="mt-2 flex items-center gap-2">
           <LanguageSwitcher />
         </div>

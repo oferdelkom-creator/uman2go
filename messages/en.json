@@ -20,7 +20,8 @@
     "searchHotels": "Search Hotels",
     "login": "Log In",
     "signup": "Sign Up",
-    "menu": "Menu"
+    "menu": "Menu",
+    "joinAsProvider": "Join as a Provider"
   },
   "auth": {
     "login": {
@@ -90,11 +91,11 @@
       "noAvailabilityDesc": "Try different dates"
     },
     "detail": {
-      "fallbackTitle": "Hotel",
+      "fallbackTitle": "Property",
       "distanceFromSite": "{meters} m from the site",
       "contact": "Contact",
       "reviews": "Reviews",
-      "noReviews": "No reviews for this hotel yet.",
+      "noReviews": "No reviews for this property yet.",
       "rooms": "Rooms",
       "upToGuests": "Up to {count} guests",
       "noRooms": "No rooms available right now",
@@ -109,7 +110,7 @@
       "paymentMethodOnline": "Online deposit (credit card)",
       "paymentMethodCash": "Balance - cash/transfer on arrival",
       "responseTimeTitle": "Response Time",
-      "responseTimeText": "We and the hotel team try to get back to you the same day.",
+      "responseTimeText": "We and the property team try to get back to you the same day.",
       "whatsappContact": "Contact on WhatsApp",
       "whatsappPrefill": "Hi, I'm interested in booking at {hotelName}. I'd love more details."
     },
@@ -125,7 +126,7 @@
       "sending": "Sending...",
       "submit": "Request Booking",
       "sentTitle": "Request sent!",
-      "sentDesc": "The hotel owner will confirm the booking soon. You can track the status in your account.",
+      "sentDesc": "The property owner will confirm the booking soon. You can track the status in your account.",
       "roomUnavailable": "This room isn't available for these dates",
       "genericError": "Something went wrong, please try again",
       "redirectingToPayment": "Redirecting you to pay the deposit...",
@@ -340,6 +341,10 @@
       "tours": {
         "title": "Tours",
         "description": "Guided tours and experiences in Uman and beyond"
+      },
+      "flights": {
+        "title": "Flights",
+        "description": "A convenient flight to Uman, with matching transport and hotel"
       }
     },
     "socialProof": {
@@ -365,13 +370,15 @@
       "leads": "Leads",
       "transport": "Transport",
       "tours": "Tours",
-      "team": "Team"
+      "team": "Team",
+      "providers": "Providers"
     },
     "dashboard": {
       "hotelBookings": "Hotel Bookings",
       "transportRequests": "Transport Requests",
       "tourSignups": "Tour Signups",
-      "leads": "Leads (VIP/Investments/Flights/Rentals)"
+      "leads": "Leads (VIP/Investments/Flights/Rentals)",
+      "newProviders": "New provider applications"
     },
     "bookings": {
       "title": "All Bookings",
@@ -418,6 +425,22 @@
       "notFoundError": "No user found with this email — they need to sign up on the site first.",
       "genericError": "Something went wrong, please try again.",
       "removeAction": "Remove Access"
+    },
+    "providers": {
+      "types": {
+        "hotel": "Hotels / Guesthouses",
+        "apartment": "Apartments for Rent",
+        "driver": "Drivers / Transport Companies",
+        "tour": "Tours / Experiences"
+      },
+      "status": {
+        "new": "New",
+        "in_review": "In Review",
+        "contacted": "Contacted",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "noApplications": "No applications"
     }
   },
   "vip": {
@@ -445,15 +468,66 @@
     }
   },
   "flights": {
-    "metaTitle": "Book Flights",
-    "title": "Book Flights",
-    "subtitle": "We'll find you the best-value flight to Uman.",
+    "metaTitle": "A flight to Uman starts with the right planning",
+    "title": "A flight to Uman starts with the right planning",
+    "subtitle": "Send us your trip details and we'll find the right flight option for you, along with transport and hotel in Uman.",
     "submit": "Request a Quote",
     "email": "Email",
     "departureDate": "Departure Date",
     "returnDate": "Return Date",
     "passengersCount": "Number of Passengers",
-    "travelInsurance": "Interested in travel insurance"
+    "travelInsurance": "Interested in travel insurance",
+    "form": {
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "originCity": "Departure City",
+      "preferredDestination": "Preferred Destination (optional)",
+      "departureDate": "Departure Date",
+      "returnDate": "Return Date",
+      "adultsCount": "Adults",
+      "childrenCount": "Children",
+      "luggageType": "Luggage Type",
+      "luggage": {
+        "carryOn": "Carry-on only",
+        "checked": "Checked bag",
+        "both": "Carry-on and checked"
+      },
+      "flightPreference": "Flight Preference",
+      "preference": {
+        "direct": "Direct flight",
+        "connection": "Open to connections",
+        "noPreference": "No preference"
+      },
+      "budgetEstimate": "Estimated Budget (optional)",
+      "budgetEstimatePlaceholder": "e.g. $500 per passenger",
+      "notes": "Notes",
+      "submit": "Get a Flight Quote",
+      "sending": "Sending...",
+      "genericError": "Something went wrong, please try again.",
+      "sentTitle": "Request sent!",
+      "sentDesc": "We'll get back to you soon with a tailored flight offer.",
+      "whatsappPrefill": "Hi, I sent a request for a flight quote to Uman via Uman2Go. I'd love to get flight options and also info about transport and hotel.",
+      "whatsappFollowUp": "Continue on WhatsApp",
+      "upsell": {
+        "title": "Want us to handle the rest of the trip too?",
+        "wants_hotel": "Hotel / apartment in Uman",
+        "wants_transport": "Airport transfer",
+        "wants_tour": "Tours in and around Uman",
+        "wants_vip": "Full VIP service",
+        "submit": "Update Request"
+      }
+    },
+    "routes": {
+      "title": "Where do flights to Uman go through?",
+      "disclaimer": "The steps below reflect how we actually operate, not a fixed flight schedule.",
+      "steps": {
+        "departFromIsrael": "Departure from Israel",
+        "landNearDestination": "Landing at the nearest point to Ukraine",
+        "organizedTransfer": "Organized transfer to Uman",
+        "optionalStay": "Option to add a hotel or apartment"
+      }
+    }
   },
   "homeRentals": {
     "metaTitle": "Home Rentals",
@@ -494,6 +568,154 @@
     "homeRentals": "Home Rentals",
     "about": "About",
     "contact": "Contact",
-    "terms": "Terms"
+    "terms": "Terms",
+    "apartments": "Apartments",
+    "joinAsProvider": "Join as a Provider"
+  },
+  "joinHub": {
+    "metaTitle": "Join Uman2Go",
+    "title": "Join Uman2Go",
+    "subtitle": "List your property or service and reach travelers heading to Uman from around the world",
+    "multiLanguageNote": "Support and communication in Hebrew, English, French and Ukrainian",
+    "tracks": {
+      "hotel": {
+        "title": "Hotel / Guesthouse",
+        "audience": "For hotels, guesthouses and hostels in and around Uman",
+        "benefits": "Exposure to Hebrew and other language speaking travelers, direct inquiries and bookings, hands-on team support",
+        "cta": "Start Listing"
+      },
+      "apartment": {
+        "title": "Apartment for Rent",
+        "audience": "For owners of apartments, rooms and houses looking to rent out during peak season",
+        "benefits": "Extra income during pilgrimage season, no need to speak Hebrew, our team helps every step of the way",
+        "cta": "Start Listing"
+      },
+      "driver": {
+        "title": "Driver / Transport Company",
+        "audience": "For private drivers and transport companies serving travelers to Uman",
+        "benefits": "Direct transport requests, exposure across multiple languages, full flexibility in availability",
+        "cta": "Start Listing"
+      },
+      "tour": {
+        "title": "Tour / Experience",
+        "audience": "For tour guides and experience organizers in and around Uman",
+        "benefits": "Showcase your tour to a new audience, manage signups on the site, multi-language support",
+        "cta": "Start Listing"
+      }
+    }
+  },
+  "providerSignup": {
+    "metaTitle": "Provider Signup",
+    "title": "Provider Signup",
+    "subtitle": "A few short details and we'll get back to you soon",
+    "fullName": "Full Name",
+    "phone": "Phone",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "preferredLanguage": "Preferred Language",
+    "notes": "Notes",
+    "back": "Back",
+    "next": "Next",
+    "submitting": "Sending...",
+    "submit": "Send Application",
+    "genericError": "Something went wrong, please try again.",
+    "types": {
+      "hotel": {
+        "title": "Hotel / Guesthouse",
+        "desc": "I have a hotel, guesthouse or hostel in Uman"
+      },
+      "apartment": {
+        "title": "Apartment for Rent",
+        "desc": "I have an apartment, room or house to rent"
+      },
+      "driver": {
+        "title": "Driver / Transport Company",
+        "desc": "I'm a private driver or transport company"
+      },
+      "tour": {
+        "title": "Tour / Experience",
+        "desc": "I'm a tour guide or experience organizer"
+      }
+    },
+    "step1": {
+      "title": "What type of provider are you?"
+    },
+    "step2": {
+      "title": "Contact Details"
+    },
+    "step3": {
+      "title": "Service Details"
+    },
+    "step4": {
+      "title": "Photos",
+      "desc": "Upload photos from your phone, or leave this blank and we'll follow up to complete the details"
+    },
+    "step5": {
+      "title": "Review & Submit",
+      "photosCount": "{count} photos uploaded"
+    },
+    "property": {
+      "location": "Location / Area",
+      "roomCount": "Number of Rooms",
+      "bedCount": "Number of Beds",
+      "maxGuests": "Max Guests",
+      "priceEstimate": "Estimated Price",
+      "priceEstimatePlaceholder": "e.g. $80 per night",
+      "availabilityNotes": "Available Periods",
+      "availabilityNotesPlaceholder": "e.g. peak pilgrimage season"
+    },
+    "driver": {
+      "vehicleType": "Vehicle Type",
+      "passengerCapacity": "Passenger Capacity",
+      "routes": "Routes",
+      "languagesSpoken": "Languages"
+    },
+    "tour": {
+      "description": "Tour Description",
+      "duration": "Duration",
+      "groupSize": "Group Size",
+      "price": "Price",
+      "languagesSpoken": "Languages"
+    },
+    "confirmation": {
+      "title": "We received your details!",
+      "desc": "The Uman2Go team will review your application and get back to you soon."
+    },
+    "photos": {
+      "uploadLabel": "Upload Photos",
+      "uploading": "Uploading...",
+      "uploadError": "Something went wrong uploading, please try again.",
+      "removePhoto": "Remove photo",
+      "urlFallbackLabel": "Or paste photo links",
+      "urlFallbackPlaceholder": "One link per line",
+      "noPhotosNote": "No photos? No problem - you can still submit and our team will follow up to complete the details."
+    }
+  },
+  "host": {
+    "metaTitle": "Have an apartment, house or hotel in Uman? Earn during pilgrimage season",
+    "title": "Have an apartment, house or hotel in Uman? Earn during pilgrimage season",
+    "subtitle": "List your property on Uman2Go and welcome guests from around the world",
+    "points": {
+      "listAnyType": "List an apartment, room, house or hotel",
+      "peakSeasonOnly": "Rent out only during peak season, if you prefer",
+      "internationalGuests": "Uman2Go brings you Hebrew-speaking guests and more",
+      "teamHelps": "Our team helps you list your property and manage inquiries",
+      "noHebrewNeeded": "No need to speak Hebrew"
+    },
+    "submit": "Submit Request",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "location": "Property Address or Area",
+    "maxGuests": "Possible Number of Guests",
+    "availabilityNotes": "Available Periods"
+  },
+  "apartments": {
+    "metaTitle": "Apartments & Houses for Peak-Season Rental",
+    "title": "Apartments & Houses for Peak-Season Rental",
+    "subtitle": "Properties suited for families and groups, for pilgrimage-season dates",
+    "emptyTitle": "No apartments available yet",
+    "emptyDesc": "Check back soon",
+    "noAvailabilityTitle": "No results for the selected dates",
+    "noAvailabilityDesc": "Try different dates or contact us to check other options"
   }
 }
