@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import type { Enums } from "@/lib/types";
 
@@ -12,15 +11,9 @@ export function BookingStatusButtons({ bookingId, status }: { bookingId: string;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  async function updateStatus(next: Enums<"booking_status">) {
+  async function act(action: "approve" | "reject") {
     setLoading(true);
-    const supabase = createClient();
-    await supabase.from("bookings").update({ status: next }).eq("id", bookingId);
-    fetch("/api/notify/booking-status-changed", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: bookingId, status: next }),
-    }).catch(() => {});
+    await fetch(`/api/bookings/${bookingId}/${action}`, { method: "POST" });
     setLoading(false);
     router.refresh();
   }
@@ -29,14 +22,16 @@ export function BookingStatusButtons({ bookingId, status }: { bookingId: string;
 
   return (
     <div className="flex gap-2">
-      {status !== "confirmed" && (
-        <Button variant="outline" disabled={loading} onClick={() => updateStatus("confirmed")}>
+      {status === "deposit_paid" && (
+        <Button variant="outline" disabled={loading} onClick={() => act("approve")}>
           {t("confirmAction")}
         </Button>
       )}
-      <Button variant="ghost" disabled={loading} onClick={() => updateStatus("cancelled")}>
-        {t("cancelAction")}
-      </Button>
+      {status !== "confirmed" && (
+        <Button variant="ghost" disabled={loading} onClick={() => act("reject")}>
+          {t("rejectAction")}
+        </Button>
+      )}
     </div>
   );
 }

@@ -103,7 +103,12 @@
       "sentTitle": "Request sent!",
       "sentDesc": "The hotel owner will confirm the booking soon. You can track the status in your account.",
       "roomUnavailable": "This room isn't available for these dates",
-      "genericError": "Something went wrong, please try again"
+      "genericError": "Something went wrong, please try again",
+      "redirectingToPayment": "Redirecting you to pay the deposit...",
+      "payFallbackNotice": "Online payment will be available soon. The hotel owner will contact you to arrange payment.",
+      "paymentCancelledTitle": "Payment not completed",
+      "paymentCancelledDesc": "You cancelled the deposit payment. You can try again at any time.",
+      "retryPayment": "Try paying again"
     }
   },
   "transport": {
@@ -234,6 +239,7 @@
       "noBookings": "No bookings yet",
       "confirmAction": "Confirm Booking",
       "cancelAction": "Cancel",
+      "rejectAction": "Decline Booking",
       "status": {
         "pendingDeposit": "Awaiting Payment",
         "depositPaid": "Deposit Paid",
@@ -300,7 +306,8 @@
       "guestsCount": "{count} guests",
       "noBookings": "No bookings yet",
       "feePaid": "Fee Paid",
-      "feeNotPaid": "Fee Not Paid"
+      "feeNotPaid": "Fee Not Paid",
+      "markDepositPaid": "Mark Deposit as Paid"
     },
     "transport": {
       "title": "All Transport Requests",
@@ -389,7 +396,7 @@
     "metaTitle": "Terms of Service",
     "title": "Terms of Service",
     "paragraph1": "{siteName} serves as a platform connecting travelers with independent hotels, drivers and tour guides operating in Uman. The actual booking, payment and service are provided by the service provider (the hotel owner/driver/guide), not by the platform itself.",
-    "paragraph2": "A fixed platform fee is charged for use of the service, in addition to the price paid directly to the service provider. Fee details are shown during the booking process.",
+    "paragraph2": "At booking time, a 10% deposit of the booking price is charged upfront through the site, constituting the platform's full commission - the price shown to you already reflects this, with no added markup. The remaining balance (90%) is paid directly to the service provider on arrival, as arranged with them.",
     "paragraph3": "Cancellations and changes are subject to the specific service provider's cancellation policy. We recommend checking the cancellation policy before confirming a booking.",
     "paragraph4": "Using the site constitutes agreement to these terms. We reserve the right to update these terms from time to time."
   },

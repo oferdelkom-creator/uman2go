@@ -4,7 +4,7 @@ import { resend, EMAIL_FROM, ADMIN_EMAIL } from "@/lib/resend";
 import { renderEmail } from "@/lib/emailTemplate";
 
 const GUEST_EMAIL_SELECT = {
-  bookings: "*, hotel:hotels(name), guest:profiles(email, full_name)",
+  bookings: "*, hotel:hotels(name), guest:profiles!bookings_guest_id_fkey(email, full_name)",
   transport_requests: "*",
   tour_signups: "*, tour_date:tour_dates(title)",
 } as const;

@@ -30,7 +30,7 @@ export function BookingForm({
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(1);
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
-  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "redirecting" | "fallback" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   const nights = useMemo(() => (checkIn && checkOut ? nightsBetween(checkIn, checkOut) : 0), [checkIn, checkOut]);
@@ -83,19 +83,35 @@ export function BookingForm({
       return;
     }
 
-    setStatus("done");
-    fetch("/api/notify/new-booking", {
+    const res = await fetch("/api/bookings/create-deposit-link", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: data.id }),
-    }).catch(() => {});
+      body: JSON.stringify({ bookingId: data.id, locale }),
+    });
+    const payload = await res.json().catch(() => null);
+
+    if (payload?.url) {
+      setStatus("redirecting");
+      window.location.href = payload.url;
+      return;
+    }
+
+    setStatus("fallback");
   }
 
-  if (status === "done") {
+  if (status === "redirecting") {
+    return (
+      <div className="rounded-2xl bg-brand-teal/10 p-5 text-center text-brand-teal">
+        <p className="font-display text-base font-bold">{t("redirectingToPayment")}</p>
+      </div>
+    );
+  }
+
+  if (status === "fallback") {
     return (
       <div className="rounded-2xl bg-brand-teal/10 p-5 text-center text-brand-teal">
         <p className="font-display text-base font-bold">{t("sentTitle")}</p>
-        <p className="mt-1 text-sm">{t("sentDesc")}</p>
+        <p className="mt-1 text-sm">{t("payFallbackNotice")}</p>
       </div>
     );
   }

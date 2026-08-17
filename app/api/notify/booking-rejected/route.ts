@@ -3,15 +3,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { renderEmail } from "@/lib/emailTemplate";
 
-const STATUS_LABEL: Record<string, string> = {
-  pending_deposit: "ממתין לתשלום",
-  deposit_paid: "מקדמה שולמה",
-  confirmed: "מאושר",
-  cancelled: "מבוטל",
-};
-
 export async function POST(request: Request) {
-  const { id, status } = await request.json();
+  const { id, refunded } = (await request.json()) as { id: string; refunded: boolean };
   const supabase = createAdminClient();
 
   const { data: booking } = await supabase
@@ -22,15 +15,20 @@ export async function POST(request: Request) {
 
   if (!booking?.guest?.email) return NextResponse.json({ ok: false }, { status: 404 });
 
+  const refundLine = refunded
+    ? "<p>המקדמה ששילמתם הוחזרה במלואה.</p>"
+    : "<p>אנו מטפלים בהחזר המקדמה ששילמתם ותקבלו עדכון בהקדם.</p>";
+
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
       to: booking.guest.email,
-      subject: `עדכון סטטוס הזמנה - ${booking.hotel?.name}`,
+      subject: `הבקשה לא אושרה - ${booking.hotel?.name}`,
       html: renderEmail(`
-        <h2 style="margin:0 0 12px;color:#a0522d;">עדכון להזמנה שלכם</h2>
+        <h2 style="margin:0 0 12px;color:#a0522d;">הבקשה שלכם לא אושרה</h2>
         <p>שלום ${booking.guest.full_name ?? ""},</p>
-        <p>סטטוס ההזמנה שלכם ב${booking.hotel?.name} עודכן ל: <strong>${STATUS_LABEL[status] ?? status}</strong></p>
+        <p>לצערנו בעל המלון ${booking.hotel?.name ?? ""} לא אישר את בקשת ההזמנה שלכם.</p>
+        ${refundLine}
       `),
     });
   } catch {

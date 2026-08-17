@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyWebhookSignature } from "@/lib/grow";
+import { SITE_URL } from "@/lib/constants";
 
 // Grow calls this after a payment completes. Payload shape is a PLACEHOLDER
 // (see lib/grow.ts) pending confirmation against Grow's real webhook docs —
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
   const referenceId = String(payload.referenceId ?? "");
   const invoiceId = payload.invoiceId ? String(payload.invoiceId) : null;
   const invoicePdfUrl = payload.invoicePdfUrl ? String(payload.invoicePdfUrl) : null;
+  const transactionId = payload.transactionId ? String(payload.transactionId) : null;
 
   const [tag, rowId] = referenceId.split(":");
   const table = TABLE_BY_TAG[tag as keyof typeof TABLE_BY_TAG];
@@ -37,25 +39,43 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
   const now = new Date().toISOString();
-  const { error } = await supabase
-    .from(table)
-    .update({
-      payment_confirmed_at: now,
-      platform_fee_paid_at: now,
-      invoice_id: invoiceId,
-      invoice_pdf_url: invoicePdfUrl,
-    })
-    .eq("id", rowId);
+  const commonFields = {
+    payment_confirmed_at: now,
+    platform_fee_paid_at: now,
+    invoice_id: invoiceId,
+    invoice_pdf_url: invoicePdfUrl,
+  };
+
+  // `bookings` also transitions status (idempotent against duplicate webhook
+  // delivery: only a booking still awaiting its deposit moves forward) and
+  // records Grow's own transaction id, for a future refund call; the other
+  // two tables don't have either column.
+  const { error } =
+    table === "bookings"
+      ? await supabase
+          .from("bookings")
+          .update({ ...commonFields, status: "deposit_paid", grow_transaction_id: transactionId })
+          .eq("id", rowId)
+          .eq("status", "pending_deposit")
+      : await supabase.from(table).update(commonFields).eq("id", rowId);
 
   if (error) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  fetch(`${process.env.SITE_URL ?? "https://uman2go.com"}/api/notify/payment-confirmed`, {
+  fetch(`${SITE_URL}/api/notify/payment-confirmed`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ table, id: rowId }),
   }).catch(() => {});
+
+  if (table === "bookings") {
+    fetch(`${SITE_URL}/api/notify/owner-review-needed`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: rowId }),
+    }).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true });
 }

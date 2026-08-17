@@ -103,7 +103,12 @@
       "sentTitle": "Demande envoyée !",
       "sentDesc": "Le propriétaire de l'hôtel confirmera la réservation prochainement. Vous pouvez suivre le statut dans votre espace personnel.",
       "roomUnavailable": "Cette chambre n'est pas disponible à ces dates",
-      "genericError": "Une erreur s'est produite, veuillez réessayer"
+      "genericError": "Une erreur s'est produite, veuillez réessayer",
+      "redirectingToPayment": "Redirection vers le paiement de l'acompte...",
+      "payFallbackNotice": "Le paiement en ligne sera bientôt disponible. Le propriétaire de l'hôtel vous contactera pour organiser le paiement.",
+      "paymentCancelledTitle": "Paiement non finalisé",
+      "paymentCancelledDesc": "Vous avez annulé le paiement de l'acompte. Vous pouvez réessayer à tout moment.",
+      "retryPayment": "Réessayer le paiement"
     }
   },
   "transport": {
@@ -234,6 +239,7 @@
       "noBookings": "Aucune réservation pour l'instant",
       "confirmAction": "Confirmer la réservation",
       "cancelAction": "Annuler",
+      "rejectAction": "Refuser la réservation",
       "status": {
         "pendingDeposit": "En attente de paiement",
         "depositPaid": "Acompte payé",
@@ -300,7 +306,8 @@
       "guestsCount": "{count} personnes",
       "noBookings": "Aucune réservation pour l'instant",
       "feePaid": "Frais payés",
-      "feeNotPaid": "Frais non payés"
+      "feeNotPaid": "Frais non payés",
+      "markDepositPaid": "Marquer l'acompte comme payé"
     },
     "transport": {
       "title": "Toutes les demandes de transport",
@@ -389,7 +396,7 @@
     "metaTitle": "Conditions d'utilisation",
     "title": "Conditions générales d'utilisation",
     "paragraph1": "{siteName} sert de plateforme de mise en relation entre voyageurs et hôtels, chauffeurs et guides touristiques indépendants opérant à Ouman. La réservation, le paiement et le service sont fournis par le prestataire (le propriétaire de l'hôtel/chauffeur/guide) et non par la plateforme elle-même.",
-    "paragraph2": "Des frais de plateforme fixes sont facturés pour l'utilisation du service, en plus du prix payé directement au prestataire. Le détail des frais est affiché pendant le processus de réservation.",
+    "paragraph2": "Lors de la réservation, un acompte de 10% du prix de la réservation est facturé à l'avance via le site, constituant l'intégralité de la commission de la plateforme - le prix affiché inclut déjà cet acompte, sans majoration. Le solde restant (90%) est payé directement au prestataire à l'arrivée, selon les modalités convenues avec lui.",
     "paragraph3": "Les annulations et modifications sont soumises à la politique d'annulation du prestataire concerné. Nous vous recommandons de vérifier cette politique avant de confirmer une réservation.",
     "paragraph4": "L'utilisation du site vaut acceptation de ces conditions. Nous nous réservons le droit de mettre à jour ces conditions de temps à autre."
   },

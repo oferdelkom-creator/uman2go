@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { BookingStatusButtons } from "@/app/[locale]/owner/bookings/BookingStatusButtons";
+import { MarkDepositPaidButton } from "@/app/[locale]/admin/bookings/MarkDepositPaidButton";
 
 export default async function AdminBookingsPage() {
   const supabase = await createClient();
@@ -16,7 +17,7 @@ export default async function AdminBookingsPage() {
 
   const { data: bookings } = await supabase
     .from("bookings")
-    .select("*, hotel:hotels(name), room:rooms(name), guest:profiles(full_name, phone, email)")
+    .select("*, hotel:hotels(name), room:rooms(name), guest:profiles!bookings_guest_id_fkey(full_name, phone, email)")
     .order("created_at", { ascending: false });
 
   return (
@@ -55,6 +56,7 @@ export default async function AdminBookingsPage() {
                 ) : (
                   <Badge tone="gold">{t("feeNotPaid")}</Badge>
                 )}
+                {booking.status === "pending_deposit" && <MarkDepositPaidButton bookingId={booking.id} />}
                 <BookingStatusButtons bookingId={booking.id} status={booking.status} />
               </div>
             </Card>

@@ -27,7 +27,7 @@ export default async function OwnerBookingsPage() {
 
   const { data: bookings } = await supabase
     .from("bookings")
-    .select("*, room:rooms(name), guest:profiles(full_name, phone, email)")
+    .select("*, room:rooms(name), guest:profiles!bookings_guest_id_fkey(full_name, phone, email)")
     .eq("hotel_id", hotel.id)
     .order("created_at", { ascending: false });
 

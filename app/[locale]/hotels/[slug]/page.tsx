@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/format";
 import { tField, tFieldArray } from "@/lib/i18n-content";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
+import { PaymentReturnBanner } from "@/app/[locale]/hotels/[slug]/PaymentReturnBanner";
 
 export async function generateMetadata({
   params,
@@ -24,13 +25,26 @@ export async function generateMetadata({
   return { title: hotel?.name ?? t("fallbackTitle"), description: hotel?.description };
 }
 
-export default async function HotelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function HotelDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ bookingId?: string; payment?: string }>;
+}) {
   const { slug } = await params;
+  const { bookingId, payment } = await searchParams;
   const supabase = await createClient();
   const [t, locale] = await Promise.all([getTranslations("hotels.detail"), getLocale()]);
 
   const { data: hotel } = await supabase.from("hotels").select("*").eq("slug", slug).eq("status", "active").maybeSingle();
   if (!hotel) notFound();
+
+  let paymentReturnStatus: string | null = null;
+  if (bookingId && (payment === "success" || payment === "cancelled")) {
+    const { data: returnedBooking } = await supabase.from("bookings").select("status").eq("id", bookingId).maybeSingle();
+    paymentReturnStatus = returnedBooking?.status ?? null;
+  }
 
   const area = tField(hotel.area, hotel.area_i18n, locale);
   const address = tField(hotel.address, hotel.address_i18n, locale);
@@ -53,6 +67,9 @@ export default async function HotelDetailPage({ params }: { params: Promise<{ sl
 
   return (
     <Section>
+      {bookingId && paymentReturnStatus && (payment === "success" || payment === "cancelled") && (
+        <PaymentReturnBanner bookingId={bookingId} payment={payment} status={paymentReturnStatus} />
+      )}
       <PhotoGallery photos={hotel.photos} alt={hotel.name} />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-3">

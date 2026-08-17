@@ -68,6 +68,60 @@ export async function createPaymentLink(params: GrowPaymentLinkParams): Promise<
   }
 }
 
+export type GrowRefundParams = {
+  amount: number;
+  currency: "ILS" | "USD";
+  /** Our own row id, same value passed as referenceId when the original payment link was created. */
+  referenceId: string;
+  /** Grow's own charge/transaction id, if we captured one from the webhook payload. Prefer this over referenceId if Grow's real API requires it. */
+  transactionId?: string | null;
+  reason?: string;
+};
+
+/**
+ * Refunds a previously collected deposit (e.g. when a hotel owner rejects a
+ * booking). Same fail-soft shape as `createPaymentLink`: with missing env
+ * vars or any request error, returns null and the caller should surface a
+ * "refund pending, will be handled manually" state rather than crash.
+ */
+export async function refundPayment(params: GrowRefundParams): Promise<{ ok: boolean } | null> {
+  if (!isGrowConfigured()) {
+    console.warn("Grow is not configured (missing GROW_API_KEY/GROW_USER_ID/GROW_PAGE_CODE); skipping refund.");
+    return null;
+  }
+
+  try {
+    const res = await fetch(`${GROW_API_BASE}/reference/refund`, {
+      // TODO: confirm the real refund endpoint path against Grow's docs.
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.GROW_API_KEY!,
+      },
+      body: JSON.stringify({
+        userId: process.env.GROW_USER_ID,
+        pageCode: process.env.GROW_PAGE_CODE,
+        amount: params.amount,
+        currency: params.currency,
+        referenceId: params.referenceId,
+        transactionId: params.transactionId ?? undefined,
+        reason: params.reason,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Grow refundPayment failed", res.status, await res.text());
+      return null;
+    }
+
+    // TODO: confirm the real response shape for a successful refund.
+    return { ok: true };
+  } catch (err) {
+    console.error("Grow refundPayment threw", err);
+    return null;
+  }
+}
+
 /**
  * Verifies an inbound Grow webhook is genuinely from Grow before we trust
  * its payload to write payment_confirmed_at/platform_fee_paid_at. Fails
