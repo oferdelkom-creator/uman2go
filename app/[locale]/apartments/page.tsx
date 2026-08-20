@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { HotelCard } from "@/components/HotelCard";
 import { HotelSearchBar } from "@/components/HotelSearchBar";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -13,7 +14,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "apartments" });
-  return { title: t("metaTitle") };
+  return {
+    title: t("metaTitle"),
+    description: t("subtitle"),
+    alternates: localizedAlternates("/apartments", locale),
+  };
 }
 
 export default async function ApartmentsPage({

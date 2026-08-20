@@ -9,6 +9,7 @@ import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { TransportRequestForm } from "@/components/TransportRequestForm";
 import { formatCurrency } from "@/lib/format";
 import { tField } from "@/lib/i18n-content";
+import { localizedAlternates, localizedUrl } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -18,8 +19,20 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const supabase = await createClient();
   const t = await getTranslations({ locale, namespace: "transport.detail" });
-  const { data: driver } = await supabase.from("drivers").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: driver?.name ?? t("fallbackTitle"), description: driver?.description };
+  const { data: driver } = await supabase
+    .from("drivers")
+    .select("name, description, description_i18n, photos")
+    .eq("slug", slug)
+    .maybeSingle();
+  const description = driver ? tField(driver.description, driver.description_i18n, locale) : undefined;
+  const images = driver && Array.isArray(driver.photos) ? driver.photos.slice(0, 1) : undefined;
+  const path = `/transport/${slug}`;
+  return {
+    title: driver?.name ?? t("fallbackTitle"),
+    description,
+    alternates: localizedAlternates(path, locale),
+    openGraph: { url: localizedUrl(path, locale), title: driver?.name, description, images },
+  };
 }
 
 export default async function DriverDetailPage({ params }: { params: Promise<{ slug: string }> }) {
