@@ -8,10 +8,12 @@ function localizedUrl(path: string, locale: string): string {
 }
 
 function entriesFor(path: string): MetadataRoute.Sitemap {
-  const languages = Object.fromEntries(routing.locales.map((locale) => [locale, localizedUrl(path, locale)]));
+  const languages = {
+    ...Object.fromEntries(routing.locales.map((locale) => [locale, localizedUrl(path, locale)])),
+    "x-default": localizedUrl(path, routing.defaultLocale),
+  };
   return routing.locales.map((locale) => ({
     url: localizedUrl(path, locale),
-    lastModified: new Date(),
     alternates: { languages },
   }));
 }
@@ -30,13 +32,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/home-rentals",
     "/apartments",
     "/join",
-    "/join/apply",
     "/host",
     "/about",
     "/contact",
     "/terms",
-    "/login",
-    "/signup",
   ];
 
   const [{ data: hotels }, { data: drivers }, { data: guides }] = await Promise.all([

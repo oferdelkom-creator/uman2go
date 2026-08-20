@@ -26,6 +26,10 @@ const rubik = Rubik({
 const RTL_LOCALES = new Set(["he"]);
 const OG_LOCALE: Record<string, string> = { he: "he_IL", en: "en_US", fr: "fr_FR", uk: "uk_UA" };
 
+function localeUrl(locale: string) {
+  return locale === routing.defaultLocale ? SITE_URL : `${SITE_URL}/${locale}`;
+}
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -37,18 +41,29 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
+  const canonical = localeUrl(locale);
+  const languages = {
+    ...Object.fromEntries(routing.locales.map((item) => [item, localeUrl(item)])),
+    "x-default": SITE_URL,
+  };
 
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: `${SITE_NAME} — ${t("tagline")}`, template: `%s | ${SITE_NAME}` },
     description: t("description"),
+    alternates: { canonical, languages },
     openGraph: {
       title: SITE_NAME,
       description: t("tagline"),
-      url: SITE_URL,
+      url: canonical,
       siteName: SITE_NAME,
       locale: OG_LOCALE[locale] ?? "he_IL",
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: SITE_NAME,
+      description: t("tagline"),
     },
   };
 }
