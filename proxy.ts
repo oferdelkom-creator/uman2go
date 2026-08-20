@@ -67,5 +67,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   // Metadata routes must bypass next-intl or they are rewritten to a locale
   // page and return a translated 404 instead of robots/sitemap XML.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|google602488ab11227623.html|api).*)",
+  ],
 };
