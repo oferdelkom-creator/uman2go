@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { FlightRequestForm } from "@/components/FlightRequestForm";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -11,7 +12,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "flights" });
-  return { title: t("metaTitle") };
+  return {
+    title: t("metaTitle"),
+    description: t("subtitle"),
+    alternates: localizedAlternates("/flights", locale),
+  };
 }
 
 export default async function FlightsPage() {

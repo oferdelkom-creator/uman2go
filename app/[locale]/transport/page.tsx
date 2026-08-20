@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { DriverCard } from "@/components/DriverCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ButtonLink } from "@/components/ui/Button";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -13,7 +14,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "transport.list" });
-  return { title: t("metaTitle") };
+  return {
+    title: t("metaTitle"),
+    description: t("subtitle"),
+    alternates: localizedAlternates("/transport", locale),
+  };
 }
 
 export default async function TransportPage() {

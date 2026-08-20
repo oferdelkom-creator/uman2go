@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { tField } from "@/lib/i18n-content";
 import { TourSignupForm } from "@/components/TourSignupForm";
+import { localizedAlternates, localizedUrl } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -18,8 +19,20 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const supabase = await createClient();
   const t = await getTranslations({ locale, namespace: "tours.detail" });
-  const { data: guide } = await supabase.from("tour_guides").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: guide?.name ?? t("fallbackTitle"), description: guide?.description };
+  const { data: guide } = await supabase
+    .from("tour_guides")
+    .select("name, description, description_i18n, photos")
+    .eq("slug", slug)
+    .maybeSingle();
+  const description = guide ? tField(guide.description, guide.description_i18n, locale) : undefined;
+  const images = guide && Array.isArray(guide.photos) ? guide.photos.slice(0, 1) : undefined;
+  const path = `/tours/${slug}`;
+  return {
+    title: guide?.name ?? t("fallbackTitle"),
+    description,
+    alternates: localizedAlternates(path, locale),
+    openGraph: { url: localizedUrl(path, locale), title: guide?.name, description, images },
+  };
 }
 
 export default async function TourGuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -14,6 +14,7 @@ import { tField, tFieldArray } from "@/lib/i18n-content";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
 import { PaymentReturnBanner } from "@/app/[locale]/hotels/[slug]/PaymentReturnBanner";
+import { localizedAlternates, localizedUrl } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -23,8 +24,20 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const supabase = await createClient();
   const t = await getTranslations({ locale, namespace: "hotels.detail" });
-  const { data: hotel } = await supabase.from("hotels").select("name, description").eq("slug", slug).maybeSingle();
-  return { title: hotel?.name ?? t("fallbackTitle"), description: hotel?.description };
+  const { data: hotel } = await supabase
+    .from("hotels")
+    .select("name, description, description_i18n, photos")
+    .eq("slug", slug)
+    .maybeSingle();
+  const description = hotel ? tField(hotel.description, hotel.description_i18n, locale) : undefined;
+  const images = hotel && Array.isArray(hotel.photos) ? hotel.photos.slice(0, 1) : undefined;
+  const path = `/hotels/${slug}`;
+  return {
+    title: hotel?.name ?? t("fallbackTitle"),
+    description,
+    alternates: localizedAlternates(path, locale),
+    openGraph: { url: localizedUrl(path, locale), title: hotel?.name, description, images },
+  };
 }
 
 export default async function HotelDetailPage({

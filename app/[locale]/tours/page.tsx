@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Section } from "@/components/ui/Section";
 import { TourGuideCard } from "@/components/TourGuideCard";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -12,7 +13,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "tours.list" });
-  return { title: t("metaTitle") };
+  return {
+    title: t("metaTitle"),
+    description: t("subtitle"),
+    alternates: localizedAlternates("/tours", locale),
+  };
 }
 
 export default async function ToursPage() {
