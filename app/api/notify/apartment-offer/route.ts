@@ -21,7 +21,11 @@ export async function POST(request: Request) {
     // Ignore retries without exposing or overwriting an existing lead.
     const { error } = await db.from("home_rental_leads").insert(row);
     if (error?.code === "23505") return reply({ saved: true, emailAccepted: false });
-    if (error) { console.error("Apartment offer save failed", error.code); return reply({ saved: false }, 503); }
+    if (error) {
+      const reason = /invalid api key/i.test(error.message || "") ? "invalid_api_key" : /jwt/i.test(error.message || "") ? "jwt_error" : /fetch failed/i.test(error.message || "") ? "connection_failed" : "database_error";
+      console.error(`Apartment offer save failed: ${reason}; code=${error.code || "unavailable"}`);
+      return reply({ saved: false }, 503);
+    }
     let emailAccepted = false;
     if (process.env.RESEND_API_KEY) {
       try {
@@ -37,3 +41,4 @@ export async function POST(request: Request) {
     return reply({ saved: true, emailAccepted });
   } catch { return reply({ saved: false }, 503); }
 }
+
