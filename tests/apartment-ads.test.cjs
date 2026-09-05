@@ -1,0 +1,22 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const ts = require('typescript');
+test('conversion is consent gated and contains only an opaque id and measurement fields', () => {
+  const context = { exports: {}, window: {} };
+  const js = ts.transpileModule(fs.readFileSync('lib/apartment-ads.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+  vm.runInNewContext(js, context);
+  context.exports.recordApartmentConversion('test-id');
+  assert.equal(context.window.dataLayer, undefined);
+  context.exports.setApartmentAdsConsent(true);
+  context.exports.recordApartmentConversion('test-id');
+  const events = context.window.dataLayer.filter(x => x[0] === 'event');
+  assert.equal(events.length, 1);
+  assert.equal(events[0][2].send_to, 'AW-18348960770/bbBvCLyHhe8cEILYu61E');
+  assert.equal(events[0][2].transaction_id, 'test-id');
+  assert.deepEqual(Object.keys(events[0][2]).sort(), ['currency', 'send_to', 'transaction_id', 'value']);
+  context.exports.setApartmentAdsConsent(false);
+  context.exports.recordApartmentConversion('test-id-2');
+  assert.equal(context.window.dataLayer.filter(x => x[0] === 'event').length, 1);
+});
