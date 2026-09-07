@@ -45,6 +45,7 @@ export default async function Footer() {
               {SITE_NAME}
             </div>
             <p className="mt-3 text-sm text-white/70">{t("meta.tagline")}</p>
+            <a href="https://www.facebook.com/profile.php?id=61594441581119" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm text-white underline underline-offset-4">Uman2Go · Facebook</a>
           </div>
           {columns.map((col) => (
             <div key={col.title}>
@@ -68,3 +69,4 @@ export default async function Footer() {
     </footer>
   );
 }
+
