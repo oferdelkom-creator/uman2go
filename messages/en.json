@@ -12,6 +12,7 @@
     "description": "The leading booking platform for your trip to Uman - verified hotels, transport and buses, and guided tours. Everything in one place."
   },
   "nav": {
+    "plan": "Plan a Trip",
     "hotels": "Hotels",
     "transport": "Transport",
     "tours": "Tours",
@@ -297,6 +298,7 @@
     },
     "searchHotels": "Search Hotels",
     "requestTransport": "Book Transport",
+    "planTrip": "Plan the whole trip",
     "viewMore": "View more",
     "featuredHotels": "Featured Hotels",
     "allHotels": "All Hotels",
@@ -366,6 +368,7 @@
     "nav": {
       "panelTitle": "Admin Panel",
       "overview": "Overview",
+      "trips": "Trip Plans",
       "bookings": "Bookings",
       "leads": "Leads",
       "transport": "Transport",
@@ -374,11 +377,19 @@
       "providers": "Providers"
     },
     "dashboard": {
+      "tripRequests": "Combined Trip Requests",
       "hotelBookings": "Hotel Bookings",
       "transportRequests": "Transport Requests",
       "tourSignups": "Tour Signups",
       "leads": "Leads (VIP/Investments/Flights/Rentals)",
       "newProviders": "New provider applications"
+    },
+    "trips": {
+      "title": "Combined Trip Requests", "hotel": "Hotel", "transport": "Driver & transport", "tours": "Tours",
+      "passengers": "{count} passengers", "pickup": "Pickup", "empty": "No combined trip requests yet",
+      "pricingInputs": "{tripType} · {vehicleClass} · {luggage} bags · {childSeats} child seats · {stops} stops",
+      "tripTypes": {"one_way": "One way", "round_trip": "Round trip"}, "vehicleClasses": {"standard": "Standard", "comfort": "Comfort", "minivan": "Minivan", "van": "Van"},
+      "statuses": {"new": "New", "quoted": "Quoted", "confirmed": "Confirmed", "completed": "Completed", "cancelled": "Cancelled"}
     },
     "bookings": {
       "title": "All Bookings",
@@ -690,6 +701,20 @@
       "urlFallbackPlaceholder": "One link per line",
       "noPhotosNote": "No photos? No problem - you can still submit and our team will follow up to complete the details."
     }
+  },
+  "tripPlanner": {
+    "metaTitle": "Plan a Complete Trip to Uman", "title": "Your whole trip in one place",
+    "subtitle": "Choose a hotel, driver and tours. Send one request and Uman2Go will coordinate one proposal for you.",
+    "hotelChip": "Hotel", "driverChip": "Driver", "tourChip": "Tours", "servicesTitle": "What should we include?",
+    "services": {"hotel": {"title": "Hotel", "description": "Rooms for your dates and budget"}, "transport": {"title": "Driver & transport", "description": "From Kyiv, Odesa, Chisinau and more"}, "tours": {"title": "Tours", "description": "Routes and experiences tailored to you"}},
+    "fullName": "Full name", "phone": "Phone", "email": "Email", "passengers": "Passengers", "arrivalDate": "Arrival date", "departureDate": "Return date",
+    "hotelDetails": "Hotel details", "roomsCount": "Rooms", "hotelBudget": "Estimated budget in USD", "optional": "Optional",
+    "transportDetails": "Transport details", "pickupLocation": "Pickup location", "pickupPlaceholder": "Kyiv, Odesa, Chisinau...", "pickupTime": "Pickup time",
+    "tripType": "Trip type", "oneWay": "One way", "roundTrip": "Round trip", "vehicleClass": "Vehicle class", "vehicleClasses": {"standard": "Standard", "comfort": "Comfort", "minivan": "Minivan", "van": "Group van"},
+    "luggageCount": "Luggage", "childSeats": "Child seats", "extraStops": "Extra stops", "preferredCurrency": "Preferred currency", "priceNote": "The displayed price will be an estimate until a driver confirms availability.",
+    "tourInterests": "Which tours interest you?", "tourPlaceholder": "Heritage sites, Kyiv day tour...", "notes": "Notes and special requests", "notesPlaceholder": "Flight times, children, accessibility or anything helpful",
+    "submit": "Get a trip proposal", "sending": "Sending...", "error": "We could not send this. Select at least one service and try again.",
+    "successTitle": "Request received", "successDescription": "We will coordinate availability with hotels, drivers and tours and return with one proposal.", "newRequest": "New request"
   },
   "host": {
     "metaTitle": "Have an apartment, house or hotel in Uman? Earn during pilgrimage season",

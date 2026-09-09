@@ -1008,6 +1008,102 @@ export type Database = {
           },
         ]
       }
+      trip_requests: {
+        Row: {
+          arrival_date: string
+          child_seats: number
+          created_at: string
+          currency: string
+          departure_date: string
+          destination: string
+          email: string | null
+          full_name: string
+          hotel_budget: number | null
+          id: string
+          luggage_count: number | null
+          needs_hotel: boolean
+          needs_tours: boolean
+          needs_transport: boolean
+          notes: string | null
+          passengers: number
+          phone: string
+          preferred_currency: string
+          pickup_time: string | null
+          pickup_location: string | null
+          quoted_total: number | null
+          rooms_count: number | null
+          status: string
+          tour_interests: string[]
+          trip_type: string
+          updated_at: string
+          user_id: string | null
+          vehicle_class: string
+          extra_stops: number
+        }
+        Insert: {
+          arrival_date: string
+          child_seats?: number
+          created_at?: string
+          currency?: string
+          departure_date: string
+          destination?: string
+          email?: string | null
+          full_name: string
+          hotel_budget?: number | null
+          id?: string
+          luggage_count?: number | null
+          needs_hotel?: boolean
+          needs_tours?: boolean
+          needs_transport?: boolean
+          notes?: string | null
+          passengers?: number
+          phone: string
+          preferred_currency?: string
+          pickup_time?: string | null
+          pickup_location?: string | null
+          quoted_total?: number | null
+          rooms_count?: number | null
+          status?: string
+          tour_interests?: string[]
+          trip_type?: string
+          updated_at?: string
+          user_id?: string | null
+          vehicle_class?: string
+          extra_stops?: number
+        }
+        Update: {
+          arrival_date?: string
+          child_seats?: number
+          created_at?: string
+          currency?: string
+          departure_date?: string
+          destination?: string
+          email?: string | null
+          full_name?: string
+          hotel_budget?: number | null
+          id?: string
+          luggage_count?: number | null
+          needs_hotel?: boolean
+          needs_tours?: boolean
+          needs_transport?: boolean
+          notes?: string | null
+          passengers?: number
+          phone?: string
+          preferred_currency?: string
+          pickup_time?: string | null
+          pickup_location?: string | null
+          quoted_total?: number | null
+          rooms_count?: number | null
+          status?: string
+          tour_interests?: string[]
+          trip_type?: string
+          updated_at?: string
+          user_id?: string | null
+          vehicle_class?: string
+          extra_stops?: number
+        }
+        Relationships: []
+      }
       vip_requests: {
         Row: {
           created_at: string
@@ -1206,3 +1302,4 @@ export type InvestmentRequest = Tables<"investment_requests">
 export type FlightRequest = Tables<"flight_requests">
 export type HomeRentalLead = Tables<"home_rental_leads">
 export type ProviderApplication = Tables<"provider_applications">
+export type TripRequest = Tables<"trip_requests">

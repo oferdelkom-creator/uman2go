@@ -12,6 +12,7 @@
     "description": "La principale plateforme de réservation pour votre voyage à Ouman - hôtels vérifiés, transport et bus, et excursions guidées. Tout en un seul endroit."
   },
   "nav": {
+    "plan": "Planifier un voyage",
     "hotels": "Hôtels",
     "transport": "Transport",
     "tours": "Excursions",
@@ -297,6 +298,7 @@
     },
     "searchHotels": "Rechercher un hôtel",
     "requestTransport": "Réserver un transport",
+    "planTrip": "Planifier tout le voyage",
     "viewMore": "Voir plus",
     "featuredHotels": "Hôtels recommandés",
     "allHotels": "Tous les hôtels",
@@ -366,6 +368,7 @@
     "nav": {
       "panelTitle": "Panneau d'administration",
       "overview": "Aperçu",
+      "trips": "Voyages combinés",
       "bookings": "Réservations",
       "leads": "Demandes",
       "transport": "Transport",
@@ -374,11 +377,19 @@
       "providers": "Partenaires"
     },
     "dashboard": {
+      "tripRequests": "Demandes de voyage combinées",
       "hotelBookings": "Réservations d'hôtels",
       "transportRequests": "Demandes de transport",
       "tourSignups": "Inscriptions aux excursions",
       "leads": "Demandes (VIP/Investissements/Vols/Locations)",
       "newProviders": "Nouvelles demandes partenaires"
+    },
+    "trips": {
+      "title": "Demandes de voyage combinées", "hotel": "Hôtel", "transport": "Chauffeur et transport", "tours": "Excursions",
+      "passengers": "{count} voyageurs", "pickup": "Départ", "empty": "Aucune demande combinée pour le moment",
+      "pricingInputs": "{tripType} · {vehicleClass} · {luggage} bagages · {childSeats} sièges enfant · {stops} arrêts",
+      "tripTypes": {"one_way": "Aller simple", "round_trip": "Aller-retour"}, "vehicleClasses": {"standard": "Standard", "comfort": "Confort", "minivan": "Minivan", "van": "Van"},
+      "statuses": {"new": "Nouvelle", "quoted": "Devis envoyé", "confirmed": "Confirmée", "completed": "Terminée", "cancelled": "Annulée"}
     },
     "bookings": {
       "title": "Toutes les réservations",
@@ -690,6 +701,20 @@
       "urlFallbackPlaceholder": "Un lien par ligne",
       "noPhotosNote": "Pas de photos ? Pas de souci - vous pouvez quand même envoyer et notre équipe vous recontactera pour compléter les détails."
     }
+  },
+  "tripPlanner": {
+    "metaTitle": "Planifier un voyage complet à Ouman", "title": "Tout votre voyage au même endroit",
+    "subtitle": "Choisissez hôtel, chauffeur et excursions. Envoyez une seule demande et Uman2Go coordonne une proposition.",
+    "hotelChip": "Hôtel", "driverChip": "Chauffeur", "tourChip": "Excursions", "servicesTitle": "Que souhaitez-vous inclure ?",
+    "services": {"hotel": {"title": "Hôtel", "description": "Chambres selon vos dates et budget"}, "transport": {"title": "Chauffeur et transport", "description": "Depuis Kyiv, Odesa, Chisinau et ailleurs"}, "tours": {"title": "Excursions", "description": "Itinéraires et expériences sur mesure"}},
+    "fullName": "Nom complet", "phone": "Téléphone", "email": "E-mail", "passengers": "Voyageurs", "arrivalDate": "Date d'arrivée", "departureDate": "Date de retour",
+    "hotelDetails": "Détails de l'hôtel", "roomsCount": "Chambres", "hotelBudget": "Budget estimé en USD", "optional": "Facultatif",
+    "transportDetails": "Détails du transport", "pickupLocation": "Lieu de départ", "pickupPlaceholder": "Kyiv, Odesa, Chisinau...", "pickupTime": "Heure de départ",
+    "tripType": "Type de trajet", "oneWay": "Aller simple", "roundTrip": "Aller-retour", "vehicleClass": "Catégorie de véhicule", "vehicleClasses": {"standard": "Standard", "comfort": "Confort", "minivan": "Minivan", "van": "Van de groupe"},
+    "luggageCount": "Bagages", "childSeats": "Sièges enfant", "extraStops": "Arrêts supplémentaires", "preferredCurrency": "Devise préférée", "priceNote": "Le prix affiché sera estimatif jusqu'à confirmation du chauffeur.",
+    "tourInterests": "Quelles excursions vous intéressent ?", "tourPlaceholder": "Patrimoine, journée à Kyiv...", "notes": "Notes et demandes spéciales", "notesPlaceholder": "Vols, enfants, accessibilité ou autre détail utile",
+    "submit": "Recevoir une proposition", "sending": "Envoi...", "error": "Envoi impossible. Sélectionnez au moins un service et réessayez.",
+    "successTitle": "Demande reçue", "successDescription": "Nous coordonnerons hôtels, chauffeurs et excursions puis reviendrons avec une proposition.", "newRequest": "Nouvelle demande"
   },
   "host": {
     "metaTitle": "Vous avez un appartement, une maison ou un hôtel à Ouman ? Gagnez pendant la saison de pèlerinage",

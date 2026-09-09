@@ -115,6 +115,9 @@ export default async function HomePage() {
             <HotelSearchBar />
           </div>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+            <ButtonLink href="/plan" className="text-base px-7 py-3">
+              {t("planTrip")}
+            </ButtonLink>
             <ButtonLink href="/transport" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3">
               {t("requestTransport")}
             </ButtonLink>

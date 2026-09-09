@@ -12,6 +12,7 @@
     "description": "פלטפורמת ההזמנות המובילה לנסיעה לאומן - מלונות מאומתים, הסעות ואוטובוסים, וטיולים מודרכים. הכל במקום אחד."
   },
   "nav": {
+    "plan": "תכנון נסיעה",
     "hotels": "מלונות",
     "transport": "הסעות",
     "tours": "טיולים",
@@ -297,6 +298,7 @@
     },
     "searchHotels": "חיפוש מלונות",
     "requestTransport": "הזמנת הסעה",
+    "planTrip": "תכננו את כל הנסיעה",
     "viewMore": "לצפייה",
     "featuredHotels": "מלונות מומלצים",
     "allHotels": "לכל המלונות",
@@ -366,6 +368,7 @@
     "nav": {
       "panelTitle": "פאנל ניהול",
       "overview": "סקירה",
+      "trips": "נסיעות משולבות",
       "bookings": "הזמנות",
       "leads": "פניות",
       "transport": "הסעות",
@@ -374,11 +377,21 @@
       "providers": "ספקים"
     },
     "dashboard": {
+      "tripRequests": "בקשות נסיעה משולבות",
       "hotelBookings": "הזמנות מלונות",
       "transportRequests": "בקשות הסעה",
       "tourSignups": "הרשמות לטיולים",
       "leads": "פניות (VIP/השקעות/טיסות/נכסים)",
       "newProviders": "בקשות ספקים חדשות"
+    },
+    "trips": {
+      "title": "בקשות נסיעה משולבות",
+      "hotel": "מלון", "transport": "נהג והסעה", "tours": "טיולים",
+      "passengers": "{count} נוסעים", "pickup": "איסוף", "empty": "עדיין אין בקשות נסיעה משולבות",
+      "pricingInputs": "{tripType} · {vehicleClass} · {luggage} מזוודות · {childSeats} כיסאות ילדים · {stops} עצירות",
+      "tripTypes": {"one_way": "כיוון אחד", "round_trip": "הלוך־חזור"},
+      "vehicleClasses": {"standard": "רגיל", "comfort": "נוחות", "minivan": "מיניוואן", "van": "ואן"},
+      "statuses": {"new": "חדש", "quoted": "נשלחה הצעה", "confirmed": "מאושר", "completed": "הושלם", "cancelled": "בוטל"}
     },
     "bookings": {
       "title": "כל ההזמנות",
@@ -690,6 +703,28 @@
       "urlFallbackPlaceholder": "קישור אחד בכל שורה",
       "noPhotosNote": "אין תמונות? אין בעיה - אפשר לשלוח בכל זאת והצוות יחזור אליכם להשלמת הפרטים."
     }
+  },
+  "tripPlanner": {
+    "metaTitle": "תכנון נסיעה מלאה לאומן",
+    "title": "כל הנסיעה במקום אחד",
+    "subtitle": "בחרו מלון, נהג וטיולים. שלחו בקשה אחת וצוות Uman2Go ירכיב עבורכם הצעה מתואמת.",
+    "hotelChip": "מלון", "driverChip": "נהג", "tourChip": "טיולים", "servicesTitle": "מה תרצו לכלול?",
+    "services": {
+      "hotel": {"title": "מלון", "description": "חדרים לפי התאריכים והתקציב"},
+      "transport": {"title": "נהג והסעה", "description": "מקייב, אודסה, קישינב ומקומות נוספים"},
+      "tours": {"title": "טיולים", "description": "מסלולים וחוויות בהתאמה אישית"}
+    },
+    "fullName": "שם מלא", "phone": "טלפון", "email": "אימייל", "passengers": "מספר נוסעים",
+    "arrivalDate": "תאריך הגעה", "departureDate": "תאריך חזרה", "hotelDetails": "פרטי המלון",
+    "roomsCount": "מספר חדרים", "hotelBudget": "תקציב משוער בדולר", "optional": "לא חובה",
+    "transportDetails": "פרטי ההסעה", "pickupLocation": "מקום איסוף", "pickupPlaceholder": "קייב, אודסה, קישינב...",
+    "pickupTime": "שעת איסוף", "tripType": "סוג נסיעה", "oneWay": "כיוון אחד", "roundTrip": "הלוך־חזור",
+    "vehicleClass": "סוג רכב", "vehicleClasses": {"standard": "רגיל", "comfort": "נוחות", "minivan": "מיניוואן", "van": "ואן לקבוצה"},
+    "luggageCount": "מספר מזוודות", "childSeats": "כיסאות ילדים", "extraStops": "עצירות נוספות", "preferredCurrency": "מטבע מועדף",
+    "priceNote": "המחיר יוצג כהערכה ויהפוך לסופי לאחר אישור זמינות של הנהג.", "tourInterests": "איזה טיולים מעניינים אתכם?", "tourPlaceholder": "קברי צדיקים, יום בקייב...",
+    "notes": "הערות ובקשות מיוחדות", "notesPlaceholder": "שעות טיסה, ילדים, נגישות או כל פרט שיעזור לנו",
+    "submit": "קבלו הצעה לנסיעה", "sending": "שולחים...", "error": "לא הצלחנו לשלוח. ודאו שבחרתם לפחות שירות אחד ונסו שוב.",
+    "successTitle": "הבקשה התקבלה", "successDescription": "נרכז זמינות מהמלונות, הנהגים והטיולים ונחזור אליכם עם הצעה אחת.", "newRequest": "בקשה חדשה"
   },
   "host": {
     "metaTitle": "יש לכם דירה, בית או מלון באומן? הרוויחו בעונת העלייה לרגל",

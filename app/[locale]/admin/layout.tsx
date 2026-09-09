@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const ADMIN_NAV = [
   { href: "/admin", key: "overview" },
+  { href: "/admin/trips", key: "trips" },
   { href: "/admin/bookings", key: "bookings" },
   { href: "/admin/leads", key: "leads" },
   { href: "/admin/providers", key: "providers" },

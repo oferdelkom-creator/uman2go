@@ -5,6 +5,7 @@ export const ADMIN_EMAIL = "ofer.delkom@gmail.com";
 export const WHATSAPP_NUMBER = "972523181877";
 
 export const NAV_LINKS = [
+  { href: "/plan", key: "plan" },
   { href: "/hotels", key: "hotels" },
   { href: "/transport", key: "transport" },
   { href: "/tours", key: "tours" },
