@@ -51,7 +51,7 @@ class handler(BaseHTTPRequestHandler):
         raw=data if isinstance(data,bytes) else json.dumps(data,ensure_ascii=False).encode()
         self.send_response(status)
         for key,value in {'Content-Type':kind+'; charset=utf-8','Content-Length':str(len(raw)),
-            'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer',
+            'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin',
             'Content-Security-Policy':"default-src 'self'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; base-uri 'none'; object-src 'none'"}.items():
             self.send_header(key,value)
         self.end_headers()
