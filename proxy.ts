@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
     return intlResponse;
   }
 
-  let response = intlResponse;
+  const response = intlResponse;
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +30,8 @@ export async function proxy(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          // Keep next-intl's rewrite and locale headers during session refresh.
+          // Replacing this response would send '/' to a route that does not exist.
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
