@@ -31,7 +31,7 @@ def settings():
 
 def static_asset(name):
     if name=='setup.js':
-        return b"document.querySelector('#access').addEventListener('change',async e=>{const f=e.target.files[0];if(f){document.querySelector('[name=secret]').value=(await f.text()).trim();document.querySelector('#loaded').textContent='Access file loaded';}});",'text/javascript'
+        return b"document.querySelector('#access').addEventListener('change',async e=>{const f=e.target.files[0];if(f){document.querySelector('[name=secret]').value=(await f.text()).trim();document.querySelector('#loaded').textContent='Access file loaded';}});document.querySelector('form').addEventListener('submit',async e=>{e.preventDefault();const p=document.querySelector('#loaded');p.textContent='Running...';try{const r=await fetch('?r=ops',{method:'POST',body:new URLSearchParams(new FormData(e.target))});p.textContent=JSON.stringify(await r.json(),null,2);}catch(err){p.textContent='Request failed';}});",'text/javascript'
     if name not in ('index.html','app.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
         raise KeyError(name)
     data=(WEB/name).read_text(encoding='utf-8')
