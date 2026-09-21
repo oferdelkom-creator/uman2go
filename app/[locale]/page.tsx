@@ -12,6 +12,7 @@ import { HomeTransportQuickForm } from "@/components/HomeTransportQuickForm";
 import { Reveal } from "@/components/Reveal";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
+import TelegramLink from "@/components/TelegramLink";
 
 const VERTICAL_ICONS: Record<string, React.ReactNode> = {
   hotels: (
@@ -121,6 +122,7 @@ export default async function HomePage() {
             <ButtonLink href="/transport" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3">
               {t("requestTransport")}
             </ButtonLink>
+            <TelegramLink />
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(tCommon("whatsappGenericPrefill"))}`}
               target="_blank"
