@@ -94,7 +94,7 @@ def run(path, token, admins, currency, stop=None):
         api.call('setChatMenuButton', {'menu_button': {'type': 'web_app', 'text': 'UMAN2GO', 'web_app': {'url': mini_url}}})
     api.call('setMyCommands', {'commands': [
         {'command': 'start', 'description': 'Start / התחלה'}, {'command': 'book', 'description': 'Book ride / הזמנת נסיעה'},
-        {'command': 'status', 'description': 'Ride status / מצב נסיעה'}, {'command': 'driver', 'description': 'Driver area / אזור נהג'},
+        {'command': 'status', 'description': 'Ride status / מצב נסיעה'}, {'command': 'driver', 'description': 'Drivers / הרשמה וקבלת נסיעות'},
         {'command': 'gps', 'description': 'Share GPS / שיתוף מיקום'}, {'command': 'message', 'description': 'Ride chat / הודעה'},
         {'command': 'receipt', 'description': 'Trip summary / סיכום נסיעה'},
         {'command': 'rate', 'description': 'Rate driver / דירוג נהג'}, {'command': 'cancel', 'description': 'Cancel ride / ביטול'},
@@ -164,3 +164,4 @@ class ProcessLock:
 
     def __exit__(self, *args):
         self.file.close()
+

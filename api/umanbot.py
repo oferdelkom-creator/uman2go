@@ -163,6 +163,12 @@ class handler(BaseHTTPRequestHandler):
                 api.call('setChatMenuButton',{'menu_button':{'type':'web_app','text':'UMAN2GO','web_app':{'url':ENDPOINT}}})
                 for admin in admins:
                     api.call('setChatMenuButton',{'chat_id':admin,'menu_button':{'type':'web_app','text':'UMAN2GO','web_app':{'url':ENDPOINT}}})
+                commands=api.call('getMyCommands',{})
+                for command in commands:
+                    if command['command']=='driver':
+                        command['description']='Drivers / הרשמה וקבלת נסיעות'
+                if commands:
+                    api.call('setMyCommands',{'commands':commands})
                 api.call('setMyDescription',{'description':'UMAN2GO — הזמנת מוניות באוקראינה. משתפים מיקום, בוחרים יעד ומאשרים הצעת מחיר מנהג. התשלום לנהג לאחר ההגעה ליעד. בסיום מתקבל סיכום נסיעה עם מרחק משוער לפי נתוני המיקום שנקלטו. נהגים נרשמים לאחר אישור מנהל. הזמינות תלויה בנהגים באזור.'})
             elif operation!='status':
                 raise ValueError('Invalid operation')
