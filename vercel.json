@@ -1,0 +1,1 @@
+{"functions":{"api/umanbot.py":{"maxDuration":60,"includeFiles":"bot_service/**","excludeFiles":"node_modules/**"}}}
