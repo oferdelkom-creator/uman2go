@@ -30,6 +30,8 @@ def settings():
     return token,{int(x) for x in os.environ['ADMIN_TELEGRAM_IDS'].split(',')}
 
 def static_asset(name):
+    if name=='setup.js':
+        return b"document.querySelector('#access').addEventListener('change',async e=>{const f=e.target.files[0];if(f){document.querySelector('[name=secret]').value=(await f.text()).trim();document.querySelector('#loaded').textContent='Access file loaded';}});",'text/javascript'
     if name not in ('index.html','app.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
         raise KeyError(name)
     data=(WEB/name).read_text(encoding='utf-8')
@@ -65,7 +67,7 @@ class handler(BaseHTTPRequestHandler):
         if route=='config':
             return self.reply(200,{'demo':False})
         if route=='setup':
-            page=b'''<!doctype html><meta charset="utf-8"><title>UMAN2GO Deployment</title><h1>UMAN2GO deployment</h1><form method="post" action="?r=ops"><label>Deployment secret <input name="secret" type="password" required></label><select name="operation"><option>status</option><option>activate</option><option>pause</option></select><button>Run</button></form>'''
+            page=b'''<!doctype html><meta charset="utf-8"><title>UMAN2GO Deployment</title><h1>UMAN2GO deployment</h1><label>Access file <input id="access" type="file"></label><p id="loaded"></p><form method="post" action="?r=ops"><label>Deployment secret <input name="secret" type="password" required autocomplete="off"></label><select name="operation"><option>status</option><option>activate</option><option>pause</option></select><button>Run</button></form><script src="?r=setup.js"></script>'''
             return self.reply(200,page,'text/html')
         if route!='state':
             try:
@@ -161,4 +163,6 @@ class handler(BaseHTTPRequestHandler):
                 api.call('setChatMenuButton',{'menu_button':{'type':'web_app','text':'UMAN2GO','web_app':{'url':ENDPOINT}}})
             elif operation!='status':
                 raise ValueError('Invalid operation')
-        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_configured':bool(api.call('getWebhookInfo',{}).get('url'))})
+        info=api.call('getWebhookInfo',{})
+        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message')})
+
