@@ -161,9 +161,11 @@ class handler(BaseHTTPRequestHandler):
                 api.call('setWebhook',{'url':ENDPOINT+'?r=webhook','secret_token':os.environ['UMAN_CLOUD_SECRET'],
                     'allowed_updates':['message','edited_message','callback_query'],'max_connections':1,'drop_pending_updates':False})
                 api.call('setChatMenuButton',{'menu_button':{'type':'web_app','text':'UMAN2GO','web_app':{'url':ENDPOINT}}})
+                for admin in admins:
+                    api.call('setChatMenuButton',{'chat_id':admin,'menu_button':{'type':'web_app','text':'UMAN2GO','web_app':{'url':ENDPOINT}}})
                 api.call('setMyDescription',{'description':'UMAN2GO — הזמנת מוניות באוקראינה. משתפים מיקום, בוחרים יעד ומאשרים הצעת מחיר מנהג. התשלום לנהג לאחר ההגעה ליעד. בסיום מתקבל סיכום נסיעה עם מרחק משוער לפי נתוני המיקום שנקלטו. נהגים נרשמים לאחר אישור מנהל. הזמינות תלויה בנהגים באזור.'})
             elif operation!='status':
                 raise ValueError('Invalid operation')
         info=api.call('getWebhookInfo',{})
-        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message')})
+        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message'),'menu':api.call('getChatMenuButton',{})})
 
