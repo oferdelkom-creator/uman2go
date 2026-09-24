@@ -1,16 +1,27 @@
-"""Offline exact phrase translation: no provider, credentials or translation fees.
+"""Ride text translation billed to LingoBridge's existing Google project.
 
-Limited ride phrasebook, not a general-purpose LingoBridge integration.
-Unrecognized messages are delivered unchanged; no partial message translation.
+Common phrases remain local. Free text uses a server-only key when configured.
+No automatic paid retry; failures keep the exact original. Voice/photos excluded.
 """
 import json
+import html
+import os
 import re
 import unicodedata
+import urllib.request
 
 LANGS = ('he', 'en', 'ru', 'uk')
 LABELS = ('תרגום ביטוי נסיעה · חינם', 'Ride phrase translation · Free',
           'Перевод фразы поездки · Бесплатно', 'Переклад фрази поїздки · Безкоштовно')
 ORIGINAL = ('מקור', 'Original', 'Оригинал', 'Оригінал')
+FULL_LABELS = ('תרגום אוטומטי · LingoBridge', 'Automatic translation · LingoBridge', 'Автоперевод · LingoBridge', 'Автопереклад · LingoBridge')
+UNAVAILABLE = ('התרגום אינו זמין; ההודעה המקורית מוצגת.', 'Translation unavailable; original message shown.', 'Перевод недоступен; показан оригинал.', 'Переклад недоступний; показано оригінал.')
+FULL_NOTICE = (
+    'תרגום הודעות עד 1500 תווים באמצעות Google, על חשבון LingoBridge וללא חיוב לנהג או לנוסע. המקור נשמר. הודעות ארוכות, קול ותמונות נשלחים במקור.',
+    'Messages up to 1500 characters are translated by Google, paid by LingoBridge, at no charge to drivers or passengers. Originals are kept. Longer messages, voice and photos stay in the original.',
+    'Сообщения до 1500 символов переводятся через Google за счёт LingoBridge, без оплаты водителем или пассажиром. Оригинал сохраняется. Более длинные сообщения, голос и фото — в оригинале.',
+    'Повідомлення до 1500 символів перекладаються через Google коштом LingoBridge, без оплати водієм чи пасажиром. Оригінал зберігається. Довші повідомлення, голос і фото — в оригіналі.',
+)
 NOTICE = (
     'תרגום חינם לביטויי נסיעה נפוצים בלבד, לפי שפת הנמען. טקסט אחר, קול ותמונות נשלחים במקור.',
     'Free translation of common ride phrases only, into the recipient’s language. Other text, voice and photos stay in the original.',
@@ -51,17 +62,88 @@ def translate(text, target):
     return match[0][LANGS.index(target)]
 
 
-def prepare(db, row):
+def configured():
+    return bool(os.getenv('LINGOBRIDGE_GOOGLE_TRANSLATION_API_KEY', '').strip())
+
+
+def notice(lang):
+    return (FULL_NOTICE if configured() else NOTICE)[LANGS.index(lang)]
+
+
+ENTITY = re.compile(r'https?://\S+|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|\b(?=\w*\d)(?=\w*[^\W\d_])\w+\b|\+?\d[\d.,:/%+()\-]*(?:\s\d[\d.,:/%+()\-]*)*')
+
+
+def protect(text):
+    if '⟦LB' in text:
+        raise ValueError('Reserved marker')
+    values = []
+    def replace(match):
+        values.append(match.group())
+        return '⟦LB' + str(len(values) - 1) + '⟧'
+    return ENTITY.sub(replace, text), values
+
+
+def restore(text, values):
+    if not isinstance(text, str) or not text.strip() or len(text) > 10000:
+        raise ValueError('Invalid translation')
+    for i in range(len(values)):
+        if text.count('⟦LB' + str(i) + '⟧') != 1:
+            raise ValueError('Protected entity changed')
+    remainder = re.sub(r'⟦LB(\d+)⟧', '', text)
+    if any(c.isdigit() for c in remainder) or '⟦LB' in remainder:
+        raise ValueError('Unexpected number or marker')
+    if any(int(i) >= len(values) for i in re.findall(r'⟦LB(\d+)⟧', text)):
+        raise ValueError('Unexpected entity')
+    return re.sub(r'⟦LB(\d+)⟧', lambda m: values[int(m[1])], text).strip()
+
+
+def google_translate(text, target):
+    req = urllib.request.Request('https://translation.googleapis.com/language/translate/v2',
+        data=json.dumps({'q': text, 'target': target, 'format': 'text', 'model': 'nmt'}).encode(),
+        headers={'Content-Type': 'application/json', 'X-Goog-Api-Key': os.environ['LINGOBRIDGE_GOOGLE_TRANSLATION_API_KEY']}, method='POST')
+    with urllib.request.urlopen(req, timeout=4) as response:
+        value = json.load(response)['data']['translations'][0]['translatedText']
+    return html.unescape(value)
+
+
+def prepare(db, row, persist=None, provider=None):
     payload = json.loads(row['payload'])
     job = payload.pop('_translation', None)
     if not job:
         return payload
     source, prefix, target = job['source'], job['prefix'], job['target']
     translated = translate(source, target)
+    paid = configured() and not translated and target in LANGS and len(source) <= 1500
+    # Save original without the job BEFORE any paid call. Interrupted calls never repeat.
+    if paid:
+        i = LANGS.index(target)
+        fallback = prefix + '\n' + UNAVAILABLE[i] + '\n' + source
+        if len(fallback.encode('utf-16-le')) // 2 <= 4096:
+            payload['text'] = fallback
+    db.execute('UPDATE outbox SET payload=? WHERE id=?', (json.dumps(payload, ensure_ascii=False), row['id']))
+    if paid:
+        db.execute('CREATE TABLE IF NOT EXISTS translation_attempts (outbox_id INTEGER PRIMARY KEY, created_at TEXT DEFAULT CURRENT_TIMESTAMP, characters INTEGER NOT NULL, target TEXT NOT NULL, state TEXT NOT NULL)')
+        try:
+            protected, values = protect(source)
+        except ValueError:
+            return payload
+        db.execute('INSERT INTO translation_attempts(outbox_id,characters,target,state) VALUES (?,?,?,?)', (row['id'], len(protected), target, 'attempted'))
+        if persist:
+            persist()  # Fail closed: no provider call if the reservation cannot be saved.
+        try:
+            translated = restore((provider or google_translate)(protected, target), values)
+        except Exception:
+            # Do not log private text, API keys, URLs containing keys, or response bodies.
+            db.execute("UPDATE translation_attempts SET state='failed' WHERE outbox_id=?", (row['id'],))
+            translated = None
     if translated:
         i = LANGS.index(target)
-        text = prefix + '\n' + LABELS[i] + '\n' + translated + '\n\n' + ORIGINAL[i] + '\n' + source
+        text = prefix + '\n' + (FULL_LABELS if paid else LABELS)[i] + '\n' + translated + '\n\n' + ORIGINAL[i] + '\n' + source
         if len(text.encode('utf-16-le')) // 2 <= 4096:
             payload['text'] = text
+        if paid:
+            db.execute('UPDATE translation_attempts SET state=? WHERE outbox_id=?', ('complete' if payload['text'] == text else 'too_long', row['id']))
     db.execute('UPDATE outbox SET payload=? WHERE id=?', (json.dumps(payload, ensure_ascii=False), row['id']))
+    if paid and persist:
+        persist()
     return payload

@@ -16,7 +16,7 @@ from .i18n import LANGUAGES, route_name
 from .service import Service, InvalidAction
 from .notifications import initialize_inbox, inbox, mark_read, approve_from_notification
 from .activity import notify_activity
-from .translation import NOTICE, LANGS
+from .translation import notice
 
 WEB = Path(__file__).parent / 'web'
 
@@ -70,7 +70,7 @@ class MiniApp:
             gps = db.execute('SELECT * FROM location_access WHERE user_id=?', (uid,)).fetchone()
             allowed = self.service.has_location(db, uid)
             result = {'user': profile, 'demo': self.demo, 'gps_required': not allowed,
-                      'translation_notice': NOTICE[LANGS.index(profile['lang'])],
+                      'translation_notice': notice(profile['lang']),
                       'notifications': inbox(db, uid, self.service.admins),
                       'gps': dict(gps) if gps and allowed else None, 'driver': dict(driver) if driver else None,
                       'routes': [{'id': r, 'name': route_name(profile['lang'], r)} for r in ROUTES],

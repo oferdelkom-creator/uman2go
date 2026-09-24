@@ -2,14 +2,74 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+import sqlite3
 from uman2go.runtime import Worker
-from uman2go.translation import LANGS, PHRASES, translate
+from uman2go.translation import LANGS, PHRASES, translate, prepare, protect, restore, notice
 from uman2go.telegram import TelegramError
 from tests.test_mvp import Harness
 
 
 class TranslationTests(unittest.TestCase):
+    def test_paid_translation_and_durable_once_only_attempt(self):
+        with patch.dict('os.environ', {'LINGOBRIDGE_GOOGLE_TRANSLATION_API_KEY': 'test-only'}):
+            db = sqlite3.connect(':memory:', isolation_level=None)
+            db.row_factory = sqlite3.Row
+            db.execute('CREATE TABLE outbox(id INTEGER PRIMARY KEY,payload TEXT)')
+            source = 'My car is 148AA, phone +380939317660, price 300 UAH'
+            payload = {'chat_id': 20, 'text': 'Driver\n' + source, '_translation': {'source': source, 'prefix': 'Driver', 'target': 'he'}}
+            db.execute('INSERT INTO outbox VALUES (1,?)', (json.dumps(payload),))
+            calls = []
+            def persist():
+                saved = json.loads(db.execute('SELECT payload FROM outbox').fetchone()[0])
+                self.assertNotIn('_translation', saved)
+                calls.append('save')
+            def provider(text, target):
+                self.assertEqual(['save'], calls)
+                self.assertNotIn('+380939317660', text)
+                calls.append('provider')
+                return 'הרכב ⟦LB0⟧ טלפון ⟦LB1⟧ מחיר ⟦LB2⟧ UAH'
+            row = db.execute('SELECT * FROM outbox').fetchone()
+            result = prepare(db, row, persist, provider)
+            self.assertEqual(['save','provider','save'], calls)
+            self.assertIn(source, result['text'])
+            self.assertIn('הרכב 148AA', result['text'])
+            self.assertEqual('complete', db.execute('SELECT state FROM translation_attempts').fetchone()[0])
+            self.assertEqual(result, prepare(db, db.execute('SELECT * FROM outbox').fetchone(), persist, provider))
+            self.assertEqual(['save','provider','save'], calls)
+            self.assertIn('Google', notice('he'))
+            db.close()
+
+    def test_paid_failure_and_persistence_failure_do_not_retry(self):
+        for failure in ('provider', 'save'):
+            with patch.dict('os.environ', {'LINGOBRIDGE_GOOGLE_TRANSLATION_API_KEY': 'test-only'}):
+                db = sqlite3.connect(':memory:', isolation_level=None)
+                db.row_factory = sqlite3.Row
+                db.execute('CREATE TABLE outbox(id INTEGER PRIMARY KEY,payload TEXT)')
+                payload = {'text': 'Driver\nNew text', '_translation': {'source':'New text', 'prefix':'Driver','target':'he'}}
+                db.execute('INSERT INTO outbox VALUES (1,?)', (json.dumps(payload),))
+                provider = Mock(side_effect=TimeoutError())
+                persist = Mock(side_effect=RuntimeError() if failure == 'save' else None)
+                if failure == 'save':
+                    with self.assertRaises(RuntimeError):
+                        prepare(db, db.execute('SELECT * FROM outbox').fetchone(), persist, provider)
+                    provider.assert_not_called()
+                else:
+                    result = prepare(db, db.execute('SELECT * FROM outbox').fetchone(), persist, provider)
+                    self.assertIn('New text', result['text'])
+                    provider.assert_called_once()
+                    prepare(db, db.execute('SELECT * FROM outbox').fetchone(), persist, provider)
+                    provider.assert_called_once()
+                db.close()
+
+    def test_protected_identifiers_and_invalid_provider_results(self):
+        text = '148AA AA148BB +380939317660 https://example.com/a?id=7 x@example.com 300.00'
+        masked, values = protect(text)
+        self.assertEqual(text, restore(masked, values))
+        self.assertNotIn('148', masked)
+        for bad in ('missing tokens', masked + ' 999', masked + ' ⟦LB0⟧', masked + ' ⟦LB99⟧'):
+            with self.assertRaises(ValueError): restore(bad, values)
+
     def test_all_phrase_directions_and_original_language(self):
         for row in PHRASES:
             for source_index, source in enumerate(row):

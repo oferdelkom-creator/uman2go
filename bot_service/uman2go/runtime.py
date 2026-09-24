@@ -34,9 +34,10 @@ def settings():
     return token, {int(x) for x in admins.split(',')}, currency
 
 class Worker:
-    def __init__(self, path, api, batch_limit=25):
+    def __init__(self, path, api, batch_limit=25, persist=None):
         self.path, self.api = path, api
         self.batch_limit = batch_limit
+        self.persist = persist
 
     def flush(self, now=None, max_seconds=None):
         now = time.time() if now is None else now
@@ -60,7 +61,7 @@ class Worker:
                         db.execute('UPDATE outbox SET discarded=1 WHERE id=?', (row['id'],))
                         continue
                 try:
-                    payload = prepare_translation(db, row)
+                    payload = prepare_translation(db, row, persist=self.persist)
                     self.api.call(row['method'], payload)
                 except TelegramError as exc:
                     attempts = row['attempts'] + 1
