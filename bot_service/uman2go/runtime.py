@@ -37,12 +37,15 @@ class Worker:
         self.path, self.api = path, api
         self.batch_limit = batch_limit
 
-    def flush(self, now=None):
+    def flush(self, now=None, max_seconds=None):
         now = time.time() if now is None else now
+        deadline = time.monotonic() + max_seconds if max_seconds is not None else None
         db = connect(self.path)
         try:
             rows = db.execute('SELECT * FROM outbox WHERE sent_at IS NULL AND failed=0 AND discarded=0 AND next_attempt<=? ORDER BY id LIMIT ?', (now,self.batch_limit)).fetchall()
             for row in rows:
+                if deadline is not None and time.monotonic() >= deadline:
+                    break
                 # Re-read: GPS updates can coalesce or a ride can end after this batch was fetched.
                 row = db.execute('SELECT * FROM outbox WHERE id=?', (row['id'],)).fetchone()
                 if row['discarded'] or row['sent_at']:

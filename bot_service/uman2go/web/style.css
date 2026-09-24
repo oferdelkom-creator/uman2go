@@ -4,3 +4,23 @@
 
 .map-panel{isolation:isolate}#map{position:absolute;inset:0;width:100%;height:100%;z-index:0;background:#e6e9e6}.map-tag,.map-footer,.locate{z-index:1}.position-marker{background:#ffcf00;border:5px solid #202329;border-radius:50%;box-shadow:0 0 0 9px #ffcf0038}.leaflet-tile{filter:grayscale(.85)}.leaflet-control-attribution{font-size:10px}.leaflet-control-zoom{margin-bottom:100px!important}
 @media(max-width:760px){.leaflet-control-attribution{margin-bottom:20px!important}button[data-action="book"]{position:sticky;bottom:12px;z-index:2;box-shadow:0 4px 18px #20232920}}
+
+
+/* Persistent notifications stay separate from the changing booking form. */
+.notification-center{border-bottom:1px solid #e3e5e8;padding:14px 0;margin-bottom:16px}
+.notification-toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.notification-toolbar button,.notification-actions button{border:1px solid #d4d8de;background:#fff;color:#17191d;border-radius:12px;padding:11px 14px;font:inherit;cursor:pointer;min-height:44px}
+.notification-toolbar .has-unread{background:#ffdd24;border-color:#ffdd24;font-weight:700}
+#inbox-connection{font-size:12px;color:#5e626a;margin:8px 0}
+#inbox-connection.disconnected{color:#a61f20;font-weight:700}
+#inbox-banner{border-inline-start:5px solid #e0b500;background:#fff8cf;border-radius:12px;padding:14px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:200px;overflow:auto;font-size:14px}
+#inbox-list{max-height:65vh;overflow-y:auto;overscroll-behavior:contain;padding:8px 2px}
+#inbox-list h2{font-size:24px;margin:12px 0}
+#inbox-help{font-size:13px;line-height:1.5;color:#5e626a}
+.notification-card{border:1px solid #e1e3e6;border-radius:16px;padding:14px;margin:12px 0;background:white}
+.notification-card.unread{border-inline-start:5px solid #e0b500;background:#fffdf0}
+.notification-card p{white-space:pre-wrap;overflow-wrap:anywhere;color:#17191d;font-size:14px;line-height:1.6;margin:0 0 12px}
+.notification-actions{display:flex;flex-wrap:wrap;gap:8px}
+.notification-actions button[data-operation=approve]{background:#ffdd24;font-weight:700}
+.notification-center button:focus-visible{outline:3px solid #2867d6;outline-offset:2px}
+.notification-center [hidden]{display:none!important}
