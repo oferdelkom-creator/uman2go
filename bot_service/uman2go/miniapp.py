@@ -14,6 +14,8 @@ from urllib.parse import parse_qsl, urlparse
 from .db import connect, ROUTES
 from .i18n import LANGUAGES, route_name
 from .service import Service, InvalidAction
+from .notifications import initialize_inbox, inbox, mark_read, approve_from_notification
+from .activity import notify_activity
 
 WEB = Path(__file__).parent / 'web'
 
@@ -42,6 +44,7 @@ class MiniApp:
         self.service = Service(path, admins)
         self.path, self.token, self.demo = str(path), token, demo
         db = connect(path)
+        initialize_inbox(db)
         db.execute('CREATE TABLE IF NOT EXISTS web_actions(user_id INTEGER NOT NULL,request_id TEXT NOT NULL,body_hash TEXT NOT NULL,PRIMARY KEY(user_id,request_id))')
         db.close()
 
@@ -66,6 +69,7 @@ class MiniApp:
             gps = db.execute('SELECT * FROM location_access WHERE user_id=?', (uid,)).fetchone()
             allowed = self.service.has_location(db, uid)
             result = {'user': profile, 'demo': self.demo, 'gps_required': not allowed,
+                      'notifications': inbox(db, uid, self.service.admins),
                       'gps': dict(gps) if gps and allowed else None, 'driver': dict(driver) if driver else None,
                       'routes': [{'id': r, 'name': route_name(profile['lang'], r)} for r in ROUTES],
                       'ride': None, 'offers': [], 'jobs': [], 'history': [], 'messages': [], 'partner_location': None,
@@ -117,14 +121,19 @@ class MiniApp:
                 db.rollback()
                 return self.snapshot(user)
             action = body.get('action')
-            if action not in ('location', 'language', 'cancel') and not svc.has_location(db, uid):
+            notification_target = None
+            if action not in ('location', 'language', 'cancel', 'notification_read', 'notification_approve') and not svc.has_location(db, uid):
                 raise ValueError('GPS_REQUIRED')
             def message(text=None, data=None, **extra):
                 msg = {'from': user, 'chat': {'id': uid, 'type': 'private'}, **extra}
                 if text is not None:
                     msg['text'] = text
                 svc.handle(db, uid, msg, data)
-            if action == 'location':
+            if action == 'notification_read':
+                mark_read(db, uid, int(body['notification_id']))
+            elif action == 'notification_approve':
+                notification_target = approve_from_notification(db, svc, uid, int(body['notification_id']))
+            elif action == 'location':
                 msg = {'location': {'latitude': body['latitude'], 'longitude': body['longitude']}, 'date': int(time.time())}
                 if not svc.access_gate(db, uid, msg, None):
                     message(**msg)
@@ -170,6 +179,8 @@ class MiniApp:
                 message('/message ' + text)
             else:
                 raise ValueError('Unknown action')
+            if action != 'notification_read':
+                notify_activity(svc, db, uid, action, detail='ID ' + str(notification_target) if notification_target else '')
             db.execute('INSERT INTO web_actions VALUES (?,?,?)', (uid, request_id, fingerprint))
             db.commit()
         except BaseException:
@@ -217,7 +228,7 @@ def create_server(app, host='127.0.0.1', port=8787, public_url=''):
                     return self.reply(401, {'error': 'OPEN_IN_TELEGRAM'})
             if path == '/api/config':
                 return self.reply(200, {'demo': app.demo})
-            files = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/favicon.svg': 'favicon.svg', '/leaflet.js': 'leaflet.js', '/leaflet.css': 'leaflet.css'}
+            files = {'/': 'index.html', '/app.js': 'app.js', '/notifications.js': 'notifications.js', '/style.css': 'style.css', '/favicon.svg': 'favicon.svg', '/leaflet.js': 'leaflet.js', '/leaflet.css': 'leaflet.css'}
             if path not in files:
                 return self.reply(404, {'error': 'Not found'})
             file = WEB / files[path]

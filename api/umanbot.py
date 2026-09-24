@@ -15,7 +15,7 @@ from uman2go.runtime import Worker
 from uman2go.telegram import Telegram
 from uman2go.db import connect
 
-VERSION='uman2go-payment-distance-cloud-1'
+VERSION='uman2go-notifications-1'
 ORIGIN='https://uman2go-live.vercel.app'
 ENDPOINT=ORIGIN+'/api/umanbot'
 
@@ -32,11 +32,11 @@ def settings():
 def static_asset(name):
     if name=='setup.js':
         return b"document.querySelector('#access').addEventListener('change',async e=>{const f=e.target.files[0];if(f){document.querySelector('[name=secret]').value=(await f.text()).trim();document.querySelector('#loaded').textContent='Access file loaded';}});document.querySelector('form').addEventListener('submit',async e=>{e.preventDefault();const p=document.querySelector('#loaded');p.textContent='Running...';try{const r=await fetch('?r=ops',{method:'POST',body:new URLSearchParams(new FormData(e.target))});p.textContent=JSON.stringify(await r.json(),null,2);}catch(err){p.textContent='Request failed';}});",'text/javascript'
-    if name not in ('index.html','app.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
+    if name not in ('index.html','app.js','notifications.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
         raise KeyError(name)
     data=(WEB/name).read_text(encoding='utf-8')
     if name=='index.html':
-        for file in ('app.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
+        for file in ('app.js','notifications.js','style.css','favicon.svg','leaflet.js','leaflet.css'):
             data=data.replace('/'+file,'/api/umanbot?r='+file)
         data=data.replace('href="/"','href="/api/umanbot"')
     if name=='app.js':
@@ -130,7 +130,7 @@ class handler(BaseHTTPRequestHandler):
                     result={'ok':True}
                 # Persist business actions BEFORE network side effects. A retry is idempotent.
                 store.save()
-                Worker(store.path,Telegram(token,timeout=3),batch_limit=5).flush()
+                Worker(store.path,Telegram(token,timeout=3),batch_limit=25).flush(max_seconds=20)
                 store.save()
             self.reply(200,result)
         except PermissionError:
@@ -174,4 +174,5 @@ class handler(BaseHTTPRequestHandler):
                 raise ValueError('Invalid operation')
         info=api.call('getWebhookInfo',{})
         self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message'),'menu':api.call('getChatMenuButton',{})})
+
 

@@ -12,6 +12,7 @@ from .crm import CRM
 from .profiles import Profiles
 from .companies import Companies
 from .distance import Distance
+from .activity import notify_activity
 
 ACTIVE = "('accepted','arrived','in_progress')"
 OPEN = "('completed','cancelled')"
@@ -52,7 +53,7 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
         db.execute('INSERT INTO outbox(method,payload) VALUES (?,?)', (method, json.dumps(payload, ensure_ascii=False)))
 
     def send(self, db, uid, text, buttons=None, markup=None):
-        payload = {'chat_id': uid, 'text': text}
+        payload = {'chat_id': uid, 'text': text, 'disable_notification': False}
         if buttons:
             payload['reply_markup'] = {'inline_keyboard': [[{'text': label, 'callback_data': data}] for label, data in buttons]}
         elif markup:
@@ -159,12 +160,13 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
         ride = self.ride(db, rid)
         require(admin or (ride['passenger_id'] == uid and ride['status'] != 'in_progress'))
         require(ride['status'] not in ('completed', 'cancelled'))
+        notified_drivers = {r['driver_id'] for r in db.execute("SELECT driver_id FROM offers WHERE ride_id=? AND status IN ('offered','priced')", (rid,))}
         db.execute("UPDATE rides SET status='cancelled',updated_at=CURRENT_TIMESTAMP WHERE id=?", (rid,))
         db.execute("UPDATE offers SET status='closed' WHERE ride_id=? AND status IN ('offered','priced')", (rid,))
         self.event(db, rid, uid, 'cancelled')
         self.communication_closed(db, rid)
-        for target in {ride['passenger_id'], ride['driver_id']} - {None}:
-            self.say(db, target, 'cancelled')
+        for target in ({ride['passenger_id'], ride['driver_id']} | notified_drivers) - {None}:
+            self.send(db, target, t(self.language(db, target), 'cancelled') + f' · #{rid}')
 
     def process(self, update):
         """Durably handle one private-chat Telegram update, once, in a write transaction."""
@@ -186,19 +188,34 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
                 if callback:
                     self.enqueue(db, 'answerCallbackQuery', {'callback_query_id': callback['id']})
                 db.execute('SAVEPOINT action')
+                previous_state = db.execute('SELECT state FROM users WHERE id=?', (uid,)).fetchone()['state']
+                activity = (callback.get('data', '').split(':')[0] if callback else
+                            'location' if msg.get('location') else
+                            msg.get('text', '').split()[0].split('@')[0] if msg.get('text', '').startswith('/') else
+                            'photo' if msg.get('photo') else previous_state)
+                succeeded = True
                 try:
                     self.track_customer(db, uid, msg, callback)
                     if self.access_gate(db, uid, msg, callback.get('data') if callback else None, edited):
-                        pass
+                        succeeded = bool(msg.get('location'))
                     elif edited:
                         if msg.get('location'):
                             self.receive_location(db, uid, msg, edited=True)
                     else:
                         self.handle(db, uid, msg, callback.get('data') if callback else None)
                 except (InvalidAction, ValueError, KeyError, TypeError, IndexError):
+                    succeeded = False
                     db.execute('ROLLBACK TO action')
                     self.say(db, uid, 'invalid')
                 db.execute('RELEASE action')
+                details = ''
+                if callback and len(callback.get('data', '').split(':')) > 1 and callback.get('data', '').split(':')[0] in ('choose','cancel','move','accept','decline','rate'):
+                    details = '#' + callback['data'].split(':')[1]
+                elif msg.get('text', '').split() and activity in ('/approve','/reject','/approvecompany','/rejectcompany','/cancelride'):
+                    args = msg['text'].split()
+                    if len(args) > 1 and args[1].isdigit():
+                        details = 'ID ' + args[1]
+                notify_activity(self, db, uid, activity, succeeded, details)
             db.execute('INSERT INTO updates(id) VALUES (?)', (update['update_id'],))
             db.execute("INSERT INTO metadata(key,value) VALUES ('offset',?) ON CONFLICT(key) DO UPDATE SET value=MAX(CAST(metadata.value AS INTEGER),CAST(excluded.value AS INTEGER))", (str(update['update_id'] + 1),))
             db.commit()
