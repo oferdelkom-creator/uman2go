@@ -15,7 +15,7 @@ from uman2go.runtime import Worker
 from uman2go.telegram import Telegram
 from uman2go.db import connect
 
-VERSION='uman2go-notifications-1'
+VERSION='uman2go-free-phrases-1'
 ORIGIN='https://uman2go-live.vercel.app'
 ENDPOINT=ORIGIN+'/api/umanbot'
 

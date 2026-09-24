@@ -3,6 +3,7 @@ import json
 import time
 from datetime import datetime, timezone
 from .i18n import t
+from .translation import NOTICE, LANGS
 
 TRIP_STATES = ('accepted', 'arrived', 'in_progress')
 
@@ -128,6 +129,7 @@ class Interaction:
                 else:
                     self.state(db, uid, 'chat', {'ride_id': ride['id']})
                     self.say(db, uid, 'chat_prompt')
+                    self.send(db, uid, NOTICE[LANGS.index(self.language(db, uid))])
             elif action == 'gps' or command == '/gps':
                 self.send(db, uid, t(lang, 'gps_prompt'), markup={'keyboard': [[{'text': t(lang, 'share'), 'request_location': True}]], 'resize_keyboard': True, 'one_time_keyboard': True})
             else:
@@ -184,6 +186,7 @@ class Interaction:
             if len(msg['text'].encode('utf-16-le')) // 2 > 3500:
                 raise ValueError('Message too long')
             method, payload = 'sendMessage', {'text': prefix + '\n' + msg['text']}
+            payload['_translation'] = {'source': msg['text'], 'prefix': prefix, 'target': lang}
         elif msg.get('voice'):
             method, payload = 'sendVoice', {'voice': msg['voice']['file_id'], 'caption': prefix + '\n' + msg.get('caption', '')[:800]}
         elif msg.get('photo'):

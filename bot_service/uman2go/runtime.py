@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 from .db import connect
 from .service import Service
 from .telegram import Telegram, TelegramError
+from .translation import prepare as prepare_translation
 
 log = logging.getLogger('uman2go')
 
@@ -59,7 +60,8 @@ class Worker:
                         db.execute('UPDATE outbox SET discarded=1 WHERE id=?', (row['id'],))
                         continue
                 try:
-                    self.api.call(row['method'], json.loads(row['payload']))
+                    payload = prepare_translation(db, row)
+                    self.api.call(row['method'], payload)
                 except TelegramError as exc:
                     attempts = row['attempts'] + 1
                     permanent = exc.code in (400, 403, 404) or attempts >= 20
@@ -167,4 +169,3 @@ class ProcessLock:
 
     def __exit__(self, *args):
         self.file.close()
-
