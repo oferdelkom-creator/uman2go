@@ -41,6 +41,8 @@ def inbox(db, uid, admins):
             continue
         target = pending_driver(db, text) if uid in admins else None
         display_text = re.sub(r'/(?:approve|reject) \d+', '', text).strip() if uid in admins else text
+        if not display_text:
+            display_text = 'Driver / נהג: ' + text.split()[1]
         items.append({'id': row['id'], 'text': display_text, 'read': row['read_id'] is not None,
                       'approve_driver': target,
                       'delivery': 'failed' if row['failed'] else 'sent' if row['sent_at'] else 'pending'})

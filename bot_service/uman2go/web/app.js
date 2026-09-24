@@ -23,7 +23,14 @@ const rideMap=L.map('map',{zoomControl:false}).setView([49.0,31.0],6);L.tileLaye
 function headers(){return {'Content-Type':'application/json','X-Telegram-Init-Data':tg?.initData||'',...(demo?{'X-Demo-Role':role}:{})};}
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
 function toast(message){$('#toast').textContent=message;$('#toast').hidden=false;setTimeout(()=>$('#toast').hidden=true,2800);}
-async function request(url,body){const res=await fetch(url,{method:body?'POST':'GET',headers:headers(),...(body?{body:JSON.stringify(body)}:{})});const data=await res.json();if(!res.ok)throw new Error(data.error||'ACTION_UNAVAILABLE');return data;}
+async function request(url,body){
+ const options={method:body?'POST':'GET',headers:headers(),...(body?{body:JSON.stringify(body)}:{})};
+ for(let attempt=0;attempt<4;attempt++){
+  const res=await fetch(url,options);
+  if(res.status===503&&attempt<3){await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));continue;}
+  const data=await res.json();if(!res.ok)throw new Error(data.error||'ACTION_UNAVAILABLE');return data;
+ }
+}
 async function act(action,values={}){if(busy)return;busy=true;stateGeneration++;$('#error').hidden=true;$('#content').querySelectorAll('button').forEach(b=>b.disabled=true);try{state=await request('/api/action',{action,request_id:crypto.randomUUID(),...values});snapshotKey='';render();return true;}catch(e){error(e.message==='OPEN_IN_TELEGRAM'?tr('auth'):e.message==='GPS_REQUIRED'?tr('gpsText'):tr('error'));return false;}finally{busy=false;$('#content').querySelectorAll('button').forEach(b=>b.disabled=false);}}
 async function refresh(){
  if(busy||refreshing)return;
