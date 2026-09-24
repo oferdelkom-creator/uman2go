@@ -34,6 +34,9 @@ class Companies:
         return company
 
     def company_view(self, db, uid):
+        if self.fleet_account(db,uid):
+            self.fleet_view(db,uid)
+            return
         c = db.execute('SELECT * FROM companies WHERE owner_id=?', (uid,)).fetchone()
         if not c:
             self.state(db,uid,'company_name')

@@ -63,14 +63,19 @@ class Interaction:
         if edited:
             return True
         command = msg.get('text', '').split(' ')[0].split('@')[0]
-        admin_command = command in ('/admin', '/drivers', '/approve', '/reject', '/rides', '/prices', '/cancelride', '/health', '/customers', '/customer', '/tag', '/note', '/setcommunity', '/companies', '/approvecompany', '/rejectcompany')
+        admin_command = command in ('/admin', '/drivers', '/approve', '/reject', '/rides', '/prices', '/cancelride', '/health', '/customers', '/customer', '/tag', '/note', '/setcommunity', '/companies', '/approvecompany', '/rejectcompany', '/fleet_enable', '/fleet_approve')
         exempt = (uid in self.admins and admin_command) or command in ('/start', '/language', '/cancel', '/stopgps', '/unsubscribe', '/leavecompany', '/receipt') or data == 'language' or (data and data.startswith(('lang:', 'cancel:')))
+        if self.fleet_account(db,uid):
+            state=db.execute('SELECT state FROM users WHERE id=?',(uid,)).fetchone()['state']
+            exempt = exempt or command in ('/fleet','/driver','/company','/status','/message','/where') or data in ('fleet','driver','company') or (data and data.startswith(('fleet:','accept:','decline:','move:','chat:','where:','available:'))) or (not command and not data and (state.startswith('fleet_') or state=='chat'))
         if not exempt and not self.has_location(db, uid):
             self.require_location_prompt(db, uid)
             return True
         return False
 
     def peer(self, db, uid, rid=None):
+        if rid is None and db.execute("SELECT COUNT(*) FROM rides WHERE driver_id=? AND status IN ('accepted','arrived','in_progress')",(uid,)).fetchone()[0]>1:
+            raise ValueError(self.ft(db,uid,'chooseRide'))
         ride = self.ride(db, rid) if rid is not None else (self.active_driver(db, uid) or self.active_passenger(db, uid))
         if not ride or ride['status'] not in TRIP_STATES or uid not in (ride['driver_id'], ride['passenger_id']):
             raise ValueError('No assigned ride')
@@ -80,8 +85,10 @@ class Interaction:
         if ride['status'] not in TRIP_STATES:
             return []
         lang, rid = self.language(db, uid), ride['id']
-        return [(t(lang, 'chat_button'), f'chat:{rid}'), (t(lang, 'gps_button'), f'gps:{rid}'),
-                (t(lang, 'where_button'), f'where:{rid}')]
+        buttons=[(t(lang, 'chat_button'), f'chat:{rid}'), (t(lang, 'where_button'), f'where:{rid}')]
+        if not (ride['fleet_vehicle_id'] and uid==ride['driver_id']):
+            buttons.insert(1,(t(lang, 'gps_button'), f'gps:{rid}'))
+        return buttons
 
     def relay_queue(self, db, ride, uid, method, payload):
         db.execute('INSERT INTO outbox(method,payload,ride_id,actor_id) VALUES (?,?,?,?)',
@@ -131,6 +138,9 @@ class Interaction:
                     self.say(db, uid, 'chat_prompt')
                     self.send(db, uid, notice(self.language(db, uid)))
             elif action == 'gps' or command == '/gps':
+                if ride['fleet_vehicle_id'] and uid==ride['driver_id']:
+                    self.send(db,uid,self.ft(db,uid,'noGPS'))
+                    return True
                 self.send(db, uid, t(lang, 'gps_prompt'), markup={'keyboard': [[{'text': t(lang, 'share'), 'request_location': True}]], 'resize_keyboard': True, 'one_time_keyboard': True})
             else:
                 loc = db.execute('SELECT * FROM ride_locations WHERE ride_id=? AND user_id=?', (ride['id'], other)).fetchone()
@@ -180,6 +190,8 @@ class Interaction:
     def relay_message(self, db, uid, ride, other, msg):
         lang = self.language(db, other)
         role = t(lang, 'from_driver' if uid == ride['driver_id'] else 'from_passenger')
+        if ride['fleet_vehicle_id'] and uid==ride['driver_id']:
+            role=self.ft(db,other,'coordinator')
         prefix = t(lang, 'chat_header', role=role, id=ride['id'])
         markup = {'inline_keyboard': [[{'text': t(lang, 'reply_button'), 'callback_data': f'chat:{ride["id"]}'}]]}
         if msg.get('text'):
@@ -199,6 +211,8 @@ class Interaction:
         return True
 
     def receive_location(self, db, uid, msg, edited=False):
+        if self.fleet_registered(db,uid):
+            return  # Coordinator GPS never represents either vehicle.
         mid = msg.get('message_id')
         if edited:
             source = db.execute('SELECT * FROM location_sources WHERE user_id=? AND message_id=? AND enabled=1', (uid, mid)).fetchone()
