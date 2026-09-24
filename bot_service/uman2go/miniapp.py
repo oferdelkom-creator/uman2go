@@ -68,7 +68,7 @@ class MiniApp:
             profile = dict(db.execute('SELECT id,name,lang FROM users WHERE id=?', (uid,)).fetchone())
             driver = db.execute('SELECT * FROM drivers WHERE id=?', (uid,)).fetchone()
             gps = db.execute('SELECT * FROM location_access WHERE user_id=?', (uid,)).fetchone()
-            allowed = self.service.has_location(db, uid)
+            allowed = self.service.has_location(db, uid) or bool(self.service.fleet_account(db,uid))
             result = {'user': profile, 'demo': self.demo, 'gps_required': not allowed,
                       'translation_notice': notice(profile['lang']),
                       'notifications': inbox(db, uid, self.service.admins),
@@ -78,15 +78,29 @@ class MiniApp:
                       'payment': 'on_arrival'}
             if not allowed:
                 return result
+            fleet=self.service.fleet_account(db,uid)
+            if fleet:
+                from .fleet import WORDS
+                result['fleet']={'labels':{k:self.service.ft(db,uid,k) for k in WORDS},'limit':fleet['vehicle_limit'],
+                    'vehicles':[dict(v) for v in db.execute('SELECT * FROM fleet_vehicles WHERE owner_id=? ORDER BY id',(uid,))],
+                    'free_vehicle_ids':[v['id'] for v in self.service.fleet_free(db,uid)],
+                    'rides':[dict(r) for r in db.execute("SELECT r.*,v.vehicle,v.plate,v.driver_name FROM rides r JOIN fleet_vehicles v ON v.id=r.fleet_vehicle_id WHERE r.driver_id=? AND r.status IN ('accepted','arrived','in_progress') ORDER BY r.id",(uid,))]}
             ride = self.service.active_driver(db, uid) or self.service.active_passenger(db, uid)
             if ride:
                 result['ride'] = dict(ride)
                 if ride['passenger_id'] == uid:
                     offers = db.execute("SELECT o.*,d.name,d.vehicle,d.seats FROM offers o JOIN drivers d ON d.id=o.driver_id WHERE ride_id=? AND o.status='priced' AND d.approval='approved' AND d.available=1", (ride['id'],)).fetchall()
-                    result['offers'] = [dict(o, rating=self.service.driver_rating(db, uid, o['driver_id'])) for o in offers if self.service.has_location(db, o['driver_id'])]
+                    result['offers'] = [dict(o, rating=self.service.driver_rating(db, uid, o['driver_id'])) for o in offers if self.service.has_location(db, o['driver_id']) or (o['fleet_vehicle_id'] and self.service.fleet_ready(db,o['driver_id']))]
+                    for o in result['offers']:
+                        if o.get('fleet_vehicle_id'):
+                            v=db.execute('SELECT * FROM fleet_vehicles WHERE id=?',(o['fleet_vehicle_id'],)).fetchone()
+                            o.update(name=v['driver_name'],vehicle=v['vehicle']+' · '+v['plate'],seats=v['seats'])
                 if ride['driver_id']:
                     d = db.execute('SELECT name,phone,vehicle,plate,id FROM drivers WHERE id=?', (ride['driver_id'],)).fetchone()
                     result['ride']['assigned_driver'] = dict(d)
+                    v=self.service.fleet_profile(db,ride)
+                    if v:
+                        result['ride']['assigned_driver'].update(name=v['driver_name']+' · '+self.service.ft(db,uid,'coordinator')+': '+v['coordinator'],vehicle=v['vehicle'],plate=v['plate'],coordinator_label=self.service.ft(db,uid,'coordinator'))
                     peer = ride['driver_id'] if uid == ride['passenger_id'] else ride['passenger_id']
                     loc = db.execute('SELECT latitude,longitude,updated_at FROM ride_locations WHERE ride_id=? AND user_id=?', (ride['id'], peer)).fetchone()
                     result['partner_location'] = dict(loc) if loc else None
@@ -98,6 +112,12 @@ class MiniApp:
                                                        'text': payload.get('text', payload.get('caption', '')), 'media': row['method'] != 'sendMessage'})
             if driver and driver['approval'] == 'approved':
                 result['jobs'] = [dict(r) for r in db.execute("SELECT r.*,o.status offer_status,o.price offered_price FROM offers o JOIN rides r ON r.id=o.ride_id WHERE o.driver_id=? AND r.status='searching' AND o.status IN ('offered','priced') ORDER BY r.id DESC LIMIT 20", (uid,))]
+            if fleet:
+                for r in result['fleet']['rides']:
+                    r['messages']=[]
+                    for row in reversed(db.execute("SELECT actor_id,payload FROM outbox WHERE ride_id=? AND method='sendMessage' AND discarded=0 ORDER BY id DESC LIMIT 10",(r['id'],)).fetchall()):
+                        p=json.loads(row['payload'])
+                        if uid in (row['actor_id'],p.get('chat_id')): r['messages'].append({'mine':row['actor_id']==uid,'text':p.get('text','')})
             result['history'] = [dict(r) for r in db.execute("SELECT r.*,s.stars FROM rides r LEFT JOIN ratings s ON s.ride_id=r.id WHERE (r.passenger_id=? OR r.driver_id=?) AND r.status IN ('completed','cancelled') ORDER BY r.id DESC LIMIT 10", (uid, uid))]
             for past in result['history']:
                 if past['status'] == 'completed':
@@ -124,7 +144,8 @@ class MiniApp:
                 return self.snapshot(user)
             action = body.get('action')
             notification_target = None
-            if action not in ('location', 'language', 'cancel', 'notification_read', 'notification_approve') and not svc.has_location(db, uid):
+            fleet_action=svc.fleet_account(db,uid) and action in ('fleet_add','fleet_available','fleet_quote','move','message','available','decline')
+            if action not in ('location', 'language', 'cancel', 'notification_read', 'notification_approve') and not fleet_action and not svc.has_location(db, uid):
                 raise ValueError('GPS_REQUIRED')
             def message(text=None, data=None, **extra):
                 msg = {'from': user, 'chat': {'id': uid, 'type': 'private'}, **extra}
@@ -165,6 +186,8 @@ class MiniApp:
             elif action in ('choose', 'cancel', 'move', 'rate', 'decline'):
                 rid = int(body['ride_id'])
                 suffix = {'choose': str(body.get('driver_id', '')), 'move': str(body.get('status', '')), 'rate': str(body.get('stars', ''))}.get(action)
+                if action=='choose' and body.get('fleet_vehicle_id'):
+                    suffix+=f":{int(body['fleet_vehicle_id'])}:{int(body['expected_price'])}"
                 message(data=f'{action}:{rid}' + (f':{suffix}' if suffix is not None else ''))
             elif action == 'available':
                 if type(body.get('available')) is not bool:
@@ -173,12 +196,21 @@ class MiniApp:
             elif action == 'quote':
                 message(data=f'accept:{int(body["ride_id"])}')
                 message(str(body['price']))
+            elif action=='fleet_quote':
+                svc.fleet_quote(db,uid,int(body['ride_id']),int(body['vehicle_id']),str(body['price']))
+            elif action=='fleet_available':
+                if type(body.get('available')) is not bool: raise ValueError('Invalid availability')
+                message(data=f"fleet:available:{int(body['vehicle_id'])}:{int(body['available'])}")
+            elif action=='fleet_add':
+                message(data='fleet:add')
+                for key in ('vehicle','plate','seats','driver'):
+                    message(str(body[key]))
             elif action == 'message':
-                svc.peer(db, uid, int(body['ride_id']))
+                ride,other=svc.peer(db, uid, int(body['ride_id']))
                 text = str(body.get('text', '')).strip()
                 if not text:
                     raise ValueError('Message is empty')
-                message('/message ' + text)
+                svc.relay_message(db,uid,ride,other,{'text':text})
             else:
                 raise ValueError('Unknown action')
             if action != 'notification_read':

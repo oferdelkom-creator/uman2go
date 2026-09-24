@@ -13,6 +13,7 @@ from .profiles import Profiles
 from .companies import Companies
 from .distance import Distance
 from .activity import notify_activity
+from .fleet import Fleet
 
 ACTIVE = "('accepted','arrived','in_progress')"
 OPEN = "('completed','cancelled')"
@@ -40,7 +41,7 @@ def integer(value, low=1, high=50):
     except (ValueError, TypeError):
         raise InvalidAction() from None
 
-class Service(Distance, Companies, Profiles, Interaction, CRM):
+class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
     def __init__(self, path, admins=(), currency='UAH'):
         self.path, self.admins, self.currency = str(path), set(admins), currency
         initialize(path)
@@ -126,9 +127,16 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
 
     def bid_view(self, db, uid, ride, offer):
         lang = self.language(db, uid)
+        offer=dict(offer)
+        suffix=''
+        if offer.get('fleet_vehicle_id'):
+            v=db.execute('SELECT * FROM fleet_vehicles WHERE id=?',(offer['fleet_vehicle_id'],)).fetchone()
+            if not v: return
+            offer.update(name=v['driver_name'],vehicle=v['vehicle']+' · '+v['plate'])
+            suffix=f":{v['id']}:{offer['price']}"
         self.send(db, uid, t(lang, 'bid_offer', id=ride['id'], name=offer['name'], vehicle=offer['vehicle'],
                   price=self.money({'price': offer['price'], 'currency': ride['currency']}, lang)) + '\n' + self.driver_rating(db, uid, offer['driver_id']),
-                  [(t(lang, 'choose_bid'), f'choose:{ride["id"]}:{offer["driver_id"]}')])
+                  [(t(lang, 'choose_bid'), f'choose:{ride["id"]}:{offer["driver_id"]}'+suffix)])
 
     def driver_view(self, db, uid, ride):
         lang = self.language(db, uid)
@@ -138,15 +146,19 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
             label, status = steps[ride['status']]
             buttons = [(t(lang, label), f'move:{ride["id"]}:{status}')]
         buttons.extend(self.interaction_buttons(db, uid, ride))
-        self.send(db, uid, self.summary(db, uid, ride), buttons)
+        v=self.fleet_profile(db,ride)
+        self.send(db, uid, (f"{v['vehicle']} · {v['plate']} · {v['driver_name']}\n" if v else '') + self.summary(db, uid, ride), buttons)
 
     def dispatch(self, db, ride):
+        self.fleet_dispatch(db,ride)
         drivers = db.execute(f'''SELECT d.* FROM drivers d WHERE approval='approved' AND available=1
             AND seats>=? AND d.id!=? AND NOT EXISTS
             (SELECT 1 FROM rides r WHERE r.driver_id=d.id AND r.status IN {ACTIVE}) AND NOT EXISTS
             (SELECT 1 FROM rides r WHERE r.passenger_id=d.id AND r.status NOT IN {OPEN})''',
             (ride['passengers'], ride['passenger_id'])).fetchall()
         for d in drivers:
+            if self.fleet_registered(db,d['id']):
+                continue
             if not self.has_location(db, d['id']):
                 continue
             cursor = db.execute('INSERT OR IGNORE INTO offers(ride_id,driver_id) VALUES (?,?)', (ride['id'], d['id']))
@@ -230,6 +242,8 @@ class Service(Distance, Companies, Profiles, Interaction, CRM):
         lang, state, draft = user['lang'], user['state'], json.loads(user['draft'])
         text = msg.get('text', '').strip()
         command = text.split()[0].split('@')[0] if text.startswith('/') else ''
+        if self.handle_fleet(db,uid,msg,data,command,state,draft):
+            return
         if self.handle_company(db, uid, msg, data, command, state, draft):
             return
         if self.handle_profile(db, uid, msg, data, command, state):

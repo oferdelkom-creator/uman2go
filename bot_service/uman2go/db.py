@@ -49,8 +49,6 @@ CREATE TABLE IF NOT EXISTS rides (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS one_passenger_ride ON rides(passenger_id)
  WHERE status NOT IN ('completed','cancelled');
-CREATE UNIQUE INDEX IF NOT EXISTS one_driver_ride ON rides(driver_id)
- WHERE status IN ('accepted','arrived','in_progress');
 CREATE TABLE IF NOT EXISTS offers (
  ride_id INTEGER NOT NULL REFERENCES rides(id), driver_id INTEGER NOT NULL REFERENCES drivers(id),
  status TEXT NOT NULL DEFAULT 'offered', price INTEGER CHECK(price>0), PRIMARY KEY(ride_id,driver_id)
@@ -108,6 +106,16 @@ def connect(path):
 def initialize(path):
     db = connect(path)
     db.executescript(SCHEMA)
+    db.executescript('''
+    CREATE TABLE IF NOT EXISTS fleet_accounts (owner_id INTEGER PRIMARY KEY REFERENCES drivers(id), company_id INTEGER NOT NULL UNIQUE REFERENCES companies(id), vehicle_limit INTEGER NOT NULL DEFAULT 2);
+    CREATE TABLE IF NOT EXISTS fleet_vehicles (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER NOT NULL REFERENCES fleet_accounts(owner_id), vehicle TEXT NOT NULL, plate TEXT NOT NULL, seats INTEGER NOT NULL CHECK(seats BETWEEN 1 AND 50), driver_name TEXT NOT NULL, approval TEXT NOT NULL DEFAULT 'pending' CHECK(approval IN ('pending','approved','rejected')), available INTEGER NOT NULL DEFAULT 0 CHECK(available IN (0,1)), UNIQUE(owner_id,plate));
+    ''')
+    for table in ('rides', 'offers'):
+        if 'fleet_vehicle_id' not in {r['name'] for r in db.execute('PRAGMA table_info('+table+')')}:
+            db.execute('ALTER TABLE '+table+' ADD COLUMN fleet_vehicle_id INTEGER REFERENCES fleet_vehicles(id)')
+    db.execute('DROP INDEX IF EXISTS one_driver_ride')
+    db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_individual_driver_ride ON rides(driver_id) WHERE fleet_vehicle_id IS NULL AND status IN ('accepted','arrived','in_progress')")
+    db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_fleet_vehicle_ride ON rides(fleet_vehicle_id) WHERE fleet_vehicle_id IS NOT NULL AND status IN ('accepted','arrived','in_progress')")
     # Additive migration: existing MVP data remains intact.
     columns = {r['name'] for r in db.execute('PRAGMA table_info(outbox)')}
     for name, kind in (('ride_id', 'INTEGER REFERENCES rides(id)'), ('actor_id', 'INTEGER REFERENCES users(id)'), ('discarded', 'INTEGER NOT NULL DEFAULT 0')):
