@@ -3,7 +3,7 @@ import json
 import time
 from datetime import datetime, timezone
 from .i18n import t
-from .translation import NOTICE, LANGS
+from .translation import notice
 
 TRIP_STATES = ('accepted', 'arrived', 'in_progress')
 
@@ -129,7 +129,7 @@ class Interaction:
                 else:
                     self.state(db, uid, 'chat', {'ride_id': ride['id']})
                     self.say(db, uid, 'chat_prompt')
-                    self.send(db, uid, NOTICE[LANGS.index(self.language(db, uid))])
+                    self.send(db, uid, notice(self.language(db, uid)))
             elif action == 'gps' or command == '/gps':
                 self.send(db, uid, t(lang, 'gps_prompt'), markup={'keyboard': [[{'text': t(lang, 'share'), 'request_location': True}]], 'resize_keyboard': True, 'one_time_keyboard': True})
             else:

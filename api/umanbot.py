@@ -15,7 +15,7 @@ from uman2go.runtime import Worker
 from uman2go.telegram import Telegram
 from uman2go.db import connect
 
-VERSION='uman2go-free-phrases-1'
+VERSION='uman2go-lingobridge-1'
 ORIGIN='https://uman2go-live.vercel.app'
 ENDPOINT=ORIGIN+'/api/umanbot'
 
@@ -130,7 +130,7 @@ class handler(BaseHTTPRequestHandler):
                     result={'ok':True}
                 # Persist business actions BEFORE network side effects. A retry is idempotent.
                 store.save()
-                Worker(store.path,Telegram(token,timeout=3),batch_limit=25).flush(max_seconds=20)
+                Worker(store.path,Telegram(token,timeout=3),batch_limit=25,persist=store.save).flush(max_seconds=20)
                 store.save()
             self.reply(200,result)
         except PermissionError:
