@@ -4,7 +4,9 @@ All state changes, the inbound update receipt, audit events and outbound message
 commit together. Transport retries do not duplicate bookings or assignments.
 """
 import json
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
+from zoneinfo import ZoneInfo
 from .db import connect, initialize, ROUTES
 from .i18n import LANGUAGES, t, route_name
 from .interaction import Interaction
@@ -17,6 +19,7 @@ from .fleet import Fleet
 
 ACTIVE = "('accepted','arrived','in_progress')"
 OPEN = "('completed','cancelled')"
+KYIV = ZoneInfo('Europe/Kyiv')
 
 class InvalidAction(Exception):
     pass
@@ -40,6 +43,16 @@ def integer(value, low=1, high=50):
         return n
     except (ValueError, TypeError):
         raise InvalidAction() from None
+
+def future_time(value, now=None):
+    try:
+        local = datetime.strptime(str(value).strip(), '%d.%m.%Y %H:%M').replace(tzinfo=KYIV)
+    except ValueError:
+        raise InvalidAction() from None
+    current = now or datetime.now(timezone.utc)
+    utc = local.astimezone(timezone.utc)
+    require(current + timedelta(minutes=30) <= utc <= current + timedelta(days=90))
+    return utc.isoformat(timespec='minutes')
 
 class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
     def __init__(self, path, admins=(), currency='UAH'):
@@ -76,12 +89,24 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
         if ride is not None and action.startswith('price_accepted:'):
             self.company_assignment(db, ride)
 
+    def create_ride(self, db, uid, draft, passengers, scheduled_for=None):
+        cur = db.execute('''INSERT INTO rides(
+            passenger_id,pickup,destination,route_id,passengers,price,currency,status,scheduled_for
+        ) VALUES (?,?,?,?,?,?,?,?,?)''', (
+            uid, draft['pickup'], draft['destination'], draft.get('route_id'), passengers,
+            None, self.currency, 'quoted', scheduled_for
+        ))
+        self.event(db, cur.lastrowid, uid, 'created_future' if scheduled_for else 'created')
+        self.state(db, uid, 'home')
+        self.passenger_view(db, uid, self.ride(db, cur.lastrowid))
+
     def home(self, db, uid):
         if uid not in self.admins and not self.has_location(db, uid):
             self.require_location_prompt(db, uid)
             return
         lang = self.language(db, uid)
-        buttons = [(t(lang, 'book'), 'book'), (t(lang, 'driver'), 'driver'), (t(lang, 'language'), 'language')]
+        buttons = [(t(lang, 'book'), 'book'), (t(lang, 'future_book'), 'future_book'),
+                   (t(lang, 'driver'), 'driver'), (t(lang, 'language'), 'language')]
         buttons.append((self.ct(db, uid, 'area'), 'company'))
         if db.execute("SELECT 1 FROM metadata WHERE key IN ('community_telegram','community_facebook')").fetchone():
             buttons.append((t(lang, 'community_button'), 'community'))
@@ -94,9 +119,13 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
     def summary(self, db, uid, ride):
         lang = self.language(db, uid)
         status = t(lang, 'searching', id=ride['id']) if ride['status'] == 'searching' else t(lang, ride['status'])
-        return t(lang, 'summary', id=ride['id'], pickup=ride['pickup'],
+        text = t(lang, 'summary', id=ride['id'], pickup=ride['pickup'],
                  destination=route_name(lang, ride['route_id']) if ride['route_id'] else ride['destination'],
-                 passengers=ride['passengers'], price=self.money(ride, lang), status=status) + '\n' + t(lang, 'payment_terms')
+                 passengers=ride['passengers'], price=self.money(ride, lang), status=status)
+        if ride['scheduled_for']:
+            when = datetime.fromisoformat(ride['scheduled_for']).astimezone(KYIV).strftime('%d.%m.%Y %H:%M')
+            text += '\n' + t(lang, 'scheduled_for', value=when)
+        return text + '\n' + t(lang, 'payment_terms')
 
     def ride(self, db, rid):
         row = db.execute('SELECT * FROM rides WHERE id=?', (rid,)).fetchone()
@@ -287,13 +316,13 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             self.state(db, uid, 'home')
             self.home(db, uid)
             return
-        if data == 'book' or command == '/book':
+        if data in ('book', 'future_book') or command in ('/book', '/future'):
             ride = self.active_passenger(db, uid)
             if ride:
                 self.passenger_view(db, uid, ride)
                 return
             require(not self.active_driver(db, uid))
-            self.state(db, uid, 'pickup')
+            self.state(db, uid, 'pickup', {'future': data == 'future_book' or command == '/future'})
             self.send(db, uid, t(lang, 'pickup'), markup={'keyboard': [[{'text': t(lang, 'share'), 'request_location': True}]], 'resize_keyboard': True, 'one_time_keyboard': True})
             return
         if data == 'driver' or command == '/driver':
@@ -398,7 +427,8 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             else:
                 self.require_location_prompt(db, uid)
                 return
-            self.state(db, uid, 'destination', {'pickup': pickup})
+            draft['pickup'] = pickup
+            self.state(db, uid, 'destination', draft)
             self.send(db, uid, t(lang, 'destination'), markup={'remove_keyboard': True})
             self.send(db, uid, t(lang, 'route_choice'),
                       [(route_name(lang, route), 'route:' + route) for route in ROUTES])
@@ -410,13 +440,15 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
         elif state == 'passengers':
             count = integer(text)
             require(not self.active_passenger(db, uid) and not self.active_driver(db, uid))
-            price, status = None, 'quoted'
-            cur = db.execute('''INSERT INTO rides(passenger_id,pickup,destination,route_id,passengers,price,currency,status)
-                                VALUES (?,?,?,?,?,?,?,?)''', (uid, draft['pickup'], draft['destination'], draft['route_id'], count, price, self.currency, status))
-            self.event(db, cur.lastrowid, uid, 'created')
-            self.state(db, uid, 'home')
-            ride = self.ride(db, cur.lastrowid)
-            self.passenger_view(db, uid, ride)
+            if draft.get('future'):
+                draft['passengers'] = count
+                self.state(db, uid, 'schedule', draft)
+                self.say(db, uid, 'schedule_prompt')
+                return
+            self.create_ride(db, uid, draft, count)
+        elif state == 'schedule':
+            scheduled_for = future_time(text)
+            self.create_ride(db, uid, draft, integer(draft['passengers']), scheduled_for)
         elif state == 'bid':
             rid = draft['ride_id']
             ride = self.ride(db, rid)
@@ -497,3 +529,4 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             require(len(args) == 1)
             self.cancel(db, uid, integer(args[0], 1, 2**63 - 1), admin=True)
             self.say(db, uid, 'saved')
+
