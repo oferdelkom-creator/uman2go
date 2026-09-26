@@ -41,6 +41,9 @@ ROWS = {
  'offer_price': ('הצעת מחיר לנוסע', 'Offer a price', 'Предложить цену', 'Запропонувати ціну'),
  'welcome': ('ברוכים הבאים ל־UMAN2GO. בחרו פעולה:', 'Welcome to UMAN2GO. Choose an action:', 'Добро пожаловать в UMAN2GO. Выберите действие:', 'Вітаємо в UMAN2GO. Виберіть дію:'),
  'book': ('הזמנת נסיעה', 'Book a ride', 'Заказать поездку', 'Замовити поїздку'),
+ 'future_book': ('הזמנה עתידית', 'Schedule a ride', 'Запланировать поездку', 'Запланувати поїздку'),
+ 'schedule_prompt': ('הזינו תאריך ושעה לפי שעון אוקראינה בפורמט DD.MM.YYYY HH:MM. ניתן להזמין מ־30 דקות ועד 90 יום מראש.', 'Enter the pickup date and time in Ukraine time as DD.MM.YYYY HH:MM. Schedule from 30 minutes to 90 days ahead.', 'Введите дату и время подачи по времени Украины в формате DD.MM.YYYY HH:MM. От 30 минут до 90 дней заранее.', 'Введіть дату й час подачі за часом України у форматі DD.MM.YYYY HH:MM. Від 30 хвилин до 90 днів наперед.'),
+ 'scheduled_for': ('מועד איסוף מתוכנן (שעון אוקראינה): {value}', 'Scheduled pickup (Ukraine time): {value}', 'Запланированная подача (время Украины): {value}', 'Запланована подача (час України): {value}'),
  'driver': ('נהגים: הרשמה וקבלת נסיעות', 'Driver area', 'Кабинет водителя', 'Кабінет водія'),
  'language': ('שפה', 'Language', 'Язык', 'Мова'),
  'pickup': ('שתפו מיקום GPS לאיסוף באמצעות הכפתור. לא ניתן להזמין באמצעות כתובת איסוף כתובה בלבד.', 'Share your pickup GPS location using the button. A typed pickup address alone is not accepted.', 'Отправьте GPS места подачи кнопкой. Одного текстового адреса недостаточно.', 'Надішліть GPS місця подачі кнопкою. Лише текстової адреси недостатньо.'),
@@ -113,4 +116,5 @@ ROWS.update({
  'distance_partial': ('מדידה חלקית בלבד: {km} ק״מ בין נקודות GPS שהתקבלו. חסרים נתוני מיקום; זה אינו המרחק הכולל.', 'Partial measurement only: {km} km between received GPS points. Location data is missing; this is not the total distance.', 'Только частичное измерение: {km} км между GPS-точками. Есть пропуски; это не полное расстояние.', 'Лише часткове вимірювання: {km} км між GPS-точками. Є пропуски; це не повна відстань.'),
  'distance_start': ('לסיכום מרחק בסיום, שתפו עדכוני GPS במהלך הנסיעה. ניתן להשתמש בשיתוף מיקום חי בטלגרם אם זמין. אין מעקב רקע אוטומטי.', 'For a distance summary, share GPS updates during the ride. Use Telegram live location if available. There is no automatic background tracking.', 'Для подсчёта расстояния отправляйте GPS во время поездки. Используйте трансляцию геопозиции Telegram, если доступна. Автоматического фонового отслеживания нет.', 'Для підрахунку відстані надсилайте GPS під час поїздки. Використовуйте трансляцію геопозиції Telegram, якщо доступна. Автоматичного фонового стеження немає.')
 })
+
 
