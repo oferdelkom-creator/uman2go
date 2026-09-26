@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from uman2go.db import connect
@@ -252,6 +253,31 @@ class MVPTests(unittest.TestCase):
         self.h.send(20, '/book')
         self.assertEqual(1, len(self.h.rows('SELECT * FROM rides')))
 
+    def test_future_booking_is_stored_and_shown_to_drivers(self):
+        self.h.driver()
+        self.h.send(20, data='lang:uk')
+        self.h.send(20, data='future_book')
+        self.h.send(20, location={'latitude': 47.01, 'longitude': 28.86})
+        self.h.send(20, data='route:uman_kyiv')
+        self.h.send(20, '2')
+        when = (datetime.now(timezone.utc) + timedelta(days=2)).astimezone().strftime('%d.%m.%Y %H:%M')
+        self.h.send(20, when)
+        ride = self.ride()
+        self.assertIsNotNone(ride['scheduled_for'])
+        self.h.send(20, data=f'confirm:{ride["id"]}')
+        driver_messages = [r['payload'] for r in self.h.rows("SELECT payload FROM outbox WHERE method='sendMessage'") if 'Запланована подача' in r['payload']]
+        self.assertTrue(driver_messages)
+
+    def test_future_booking_rejects_bad_or_immediate_time(self):
+        self.h.send(20, data='future_book')
+        self.h.send(20, location={'latitude': 47.01, 'longitude': 28.86})
+        self.h.send(20, data='route:uman_kyiv')
+        self.h.send(20, '2')
+        self.h.send(20, 'tomorrow')
+        self.h.send(20, datetime.now().strftime('%d.%m.%Y %H:%M'))
+        self.assertEqual([], self.h.rows('SELECT * FROM rides'))
+        self.assertEqual('schedule', self.h.rows('SELECT state FROM users WHERE id=20')[0]['state'])
+
     def test_nonprivate_updates_ignored(self):
         update = self.h.update(20, '/book')
         update['message']['chat']['type'] = 'group'
@@ -299,3 +325,4 @@ class MVPTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
