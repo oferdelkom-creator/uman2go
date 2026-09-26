@@ -113,6 +113,8 @@ def initialize(path):
     for table in ('rides', 'offers'):
         if 'fleet_vehicle_id' not in {r['name'] for r in db.execute('PRAGMA table_info('+table+')')}:
             db.execute('ALTER TABLE '+table+' ADD COLUMN fleet_vehicle_id INTEGER REFERENCES fleet_vehicles(id)')
+    if 'scheduled_for' not in {r['name'] for r in db.execute('PRAGMA table_info(rides)')}:
+        db.execute('ALTER TABLE rides ADD COLUMN scheduled_for TEXT')
     db.execute('DROP INDEX IF EXISTS one_driver_ride')
     db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_individual_driver_ride ON rides(driver_id) WHERE fleet_vehicle_id IS NULL AND status IN ('accepted','arrived','in_progress')")
     db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_fleet_vehicle_ride ON rides(fleet_vehicle_id) WHERE fleet_vehicle_id IS NOT NULL AND status IN ('accepted','arrived','in_progress')")
@@ -125,3 +127,4 @@ def initialize(path):
         db.execute("ALTER TABLE drivers ADD COLUMN photo_id TEXT")
     db.executemany('INSERT OR IGNORE INTO routes(id) VALUES (?)', [(r,) for r in ROUTES])
     db.close()
+
