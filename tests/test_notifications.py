@@ -39,7 +39,7 @@ class NotificationTests(unittest.TestCase):
         db.execute('DELETE FROM location_access WHERE user_id=20')
         db.close()
         self.act(20, 'notification_read', notification_id=nid)
-        self.assertTrue(self.state(20)['gps_required'])
+        self.assertFalse(self.state(20)['gps_required'])  # Existing ride updates remain visible.
         fresh = MiniApp(self.path, admins={900}).snapshot({'id': 20})
         self.assertTrue(next(x for x in fresh['notifications']['items'] if x['id'] == nid)['read'])
 

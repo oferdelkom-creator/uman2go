@@ -57,7 +57,7 @@ class Fleet:
             if uid==ride['passenger_id'] or not self.fleet_ready(db,uid) or not self.fleet_free(db,uid,ride['passengers']): continue
             cur=db.execute("INSERT INTO offers(ride_id,driver_id) VALUES (?,?) ON CONFLICT(ride_id,driver_id) DO UPDATE SET status='offered',price=NULL,fleet_vehicle_id=NULL WHERE offers.status='closed'",(ride['id'],uid))
             if cur.rowcount:
-                self.send(db,uid,t(self.language(db,uid),'offer')+'\n'+self.summary(db,uid,ride),[(self.ft(db,uid,'select'),f"accept:{ride['id']}"),(t(self.language(db,uid),'decline'),f"decline:{ride['id']}")])
+                self.notice(db,uid,t(self.language(db,uid),'offer')+'\n'+self.summary(db,uid,ride),[(self.ft(db,uid,'select'),f"accept:{ride['id']}"),(t(self.language(db,uid),'decline'),f"decline:{ride['id']}")], 'request', ride['id'], uid)
 
     def fleet_quote(self, db, uid, rid, vid, price):
         from .service import amount
@@ -66,7 +66,9 @@ class Fleet:
         offer=db.execute("SELECT * FROM offers WHERE ride_id=? AND driver_id=? AND status IN ('offered','priced')",(rid,uid)).fetchone()
         if not self.fleet_ready(db,uid) or not vehicle or not offer or ride['status']!='searching': raise ValueError('Vehicle unavailable')
         price=amount(price)
-        db.execute("UPDATE offers SET price=?,fleet_vehicle_id=?,status='priced' WHERE ride_id=? AND driver_id=?",(price,vid,rid,uid))
+        if offer['status']=='priced' and offer['price']==price and offer['fleet_vehicle_id']==vid:
+            return
+        db.execute("UPDATE offers SET price=?,fleet_vehicle_id=?,status='priced',version=version+1 WHERE ride_id=? AND driver_id=?",(price,vid,rid,uid))
         self.event(db,rid,uid,f'fleet_price:{vid}:{price}')
         self.state(db,uid,'home')
         self.say(db,uid,'bid_sent')

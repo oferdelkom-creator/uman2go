@@ -45,7 +45,7 @@ def inbox(db, uid, admins):
             display_text = 'Driver / נהג: ' + text.split()[1]
         items.append({'id': row['id'], 'text': display_text, 'read': row['read_id'] is not None,
                       'approve_driver': target,
-                      'delivery': 'failed' if row['failed'] else 'sent' if row['sent_at'] else 'pending'})
+                      'delivery': 'failed' if row['failed'] else 'sent' if row['sent_at'] else 'unknown' if row['sending_at'] is not None else 'pending'})
         if len(items) == 50:
             break
     return {'items': items, 'unread': sum(not item['read'] for item in items)}

@@ -120,9 +120,15 @@ def initialize(path):
     db.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_fleet_vehicle_ride ON rides(fleet_vehicle_id) WHERE fleet_vehicle_id IS NOT NULL AND status IN ('accepted','arrived','in_progress')")
     # Additive migration: existing MVP data remains intact.
     columns = {r['name'] for r in db.execute('PRAGMA table_info(outbox)')}
-    for name, kind in (('ride_id', 'INTEGER REFERENCES rides(id)'), ('actor_id', 'INTEGER REFERENCES users(id)'), ('discarded', 'INTEGER NOT NULL DEFAULT 0')):
+    for name, kind in (('ride_id', 'INTEGER REFERENCES rides(id)'), ('actor_id', 'INTEGER REFERENCES users(id)'), ('discarded', 'INTEGER NOT NULL DEFAULT 0'),
+                       ('event_key', 'TEXT'), ('notice_kind', 'TEXT'), ('notice_ride', 'INTEGER'),
+                       ('notice_driver', 'INTEGER'), ('notice_version', 'INTEGER'),
+                       ('sending_at', 'REAL'), ('telegram_message_id', 'INTEGER'), ('last_error', 'INTEGER')):
         if name not in columns:
             db.execute(f'ALTER TABLE outbox ADD COLUMN {name} {kind}')
+    db.execute('CREATE UNIQUE INDEX IF NOT EXISTS outbox_event_key ON outbox(event_key) WHERE event_key IS NOT NULL')
+    if 'version' not in {r['name'] for r in db.execute('PRAGMA table_info(offers)')}:
+        db.execute('ALTER TABLE offers ADD COLUMN version INTEGER NOT NULL DEFAULT 0')
     if 'photo_id' not in {r['name'] for r in db.execute('PRAGMA table_info(drivers)')}:
         db.execute("ALTER TABLE drivers ADD COLUMN photo_id TEXT")
     db.executemany('INSERT OR IGNORE INTO routes(id) VALUES (?)', [(r,) for r in ROUTES])
