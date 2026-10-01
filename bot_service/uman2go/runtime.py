@@ -10,6 +10,7 @@ from .db import connect
 from .service import Service
 from .telegram import Telegram, TelegramError
 from .translation import prepare as prepare_translation
+from .delivery import relevant
 
 log = logging.getLogger('uman2go')
 
@@ -43,14 +44,22 @@ class Worker:
         now = time.time() if now is None else now
         deadline = time.monotonic() + max_seconds if max_seconds is not None else None
         db = connect(self.path)
+        service = Service(self.path)
         try:
-            rows = db.execute('SELECT * FROM outbox WHERE sent_at IS NULL AND failed=0 AND discarded=0 AND next_attempt<=? ORDER BY id LIMIT ?', (now,self.batch_limit)).fetchall()
+            rows = db.execute('''SELECT * FROM outbox WHERE sent_at IS NULL AND sending_at IS NULL
+                AND failed=0 AND discarded=0 AND next_attempt<=?
+                ORDER BY (notice_kind IS NOT NULL) DESC,id LIMIT ?''', (now,max(250,self.batch_limit*10))).fetchall()
+            attempted=0
             for row in rows:
-                if deadline is not None and time.monotonic() >= deadline:
+                if attempted >= self.batch_limit or (deadline is not None and time.monotonic() >= deadline):
                     break
                 # Re-read: GPS updates can coalesce or a ride can end after this batch was fetched.
                 row = db.execute('SELECT * FROM outbox WHERE id=?', (row['id'],)).fetchone()
-                if row['discarded'] or row['sent_at']:
+                if row['discarded'] or row['sent_at'] or row['sending_at'] is not None:
+                    continue
+                if not relevant(service, db, row):
+                    db.execute('UPDATE outbox SET discarded=1 WHERE id=?', (row['id'],))
+                    if self.persist: self.persist()
                     continue
                 if row['ride_id'] is not None:
                     ride = db.execute('SELECT * FROM rides WHERE id=?', (row['ride_id'],)).fetchone()
@@ -62,19 +71,31 @@ class Worker:
                         continue
                 try:
                     payload = prepare_translation(db, row, persist=self.persist)
-                    self.api.call(row['method'], payload)
+                    # Persist a claim before delivery. Unknown outcomes are never blindly
+                    # retried: Telegram sendMessage has no idempotency key.
+                    claimed=db.execute('UPDATE outbox SET sending_at=? WHERE id=? AND sending_at IS NULL AND sent_at IS NULL', (now,row['id']))
+                    if not claimed.rowcount:
+                        continue
+                    if self.persist: self.persist()
+                    attempted+=1
+                    result=self.api.call(row['method'], payload)
                 except TelegramError as exc:
                     attempts = row['attempts'] + 1
                     permanent = exc.code in (400, 403, 404) or attempts >= 20
                     delay = max(exc.retry_after, min(300, 2 ** min(attempts, 8)))
-                    db.execute('UPDATE outbox SET attempts=?,failed=?,next_attempt=? WHERE id=?', (attempts, int(permanent), now + delay, row['id']))
+                    db.execute('UPDATE outbox SET attempts=?,failed=?,next_attempt=?,last_error=?,sending_at=? WHERE id=?',
+                               (attempts, int(permanent), now + delay, exc.code, now if exc.code == 0 else None, row['id']))
+                    if self.persist: self.persist()
                     log.warning('Notification %s failed: code=%s; permanent=%s', row['id'], exc.code, permanent)
                     if exc.code == 429:
                         # Respect Telegram's flood wait globally for pending messages.
                         db.execute('UPDATE outbox SET next_attempt=MAX(next_attempt,?) WHERE sent_at IS NULL AND failed=0', (now + delay,))
+                        if self.persist: self.persist()
                         break
                 else:
-                    db.execute('UPDATE outbox SET sent_at=CURRENT_TIMESTAMP WHERE id=?', (row['id'],))
+                    mid=result.get('message_id') if isinstance(result,dict) else None
+                    db.execute('UPDATE outbox SET sent_at=CURRENT_TIMESTAMP,sending_at=NULL,telegram_message_id=?,last_error=NULL WHERE id=?', (mid,row['id']))
+                    if self.persist: self.persist()
         finally:
             db.close()
 

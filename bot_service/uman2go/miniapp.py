@@ -69,14 +69,15 @@ class MiniApp:
             driver = db.execute('SELECT * FROM drivers WHERE id=?', (uid,)).fetchone()
             gps = db.execute('SELECT * FROM location_access WHERE user_id=?', (uid,)).fetchone()
             allowed = self.service.has_location(db, uid) or bool(self.service.fleet_account(db,uid))
-            result = {'user': profile, 'demo': self.demo, 'gps_required': not allowed,
+            active = self.service.active_driver(db, uid) or self.service.active_passenger(db, uid)
+            result = {'user': profile, 'demo': self.demo, 'gps_required': not allowed and not active,
                       'translation_notice': notice(profile['lang']),
                       'notifications': inbox(db, uid, self.service.admins),
                       'gps': dict(gps) if gps and allowed else None, 'driver': dict(driver) if driver else None,
                       'routes': [{'id': r, 'name': route_name(profile['lang'], r)} for r in ROUTES],
                       'ride': None, 'offers': [], 'jobs': [], 'history': [], 'messages': [], 'partner_location': None,
                       'payment': 'on_arrival'}
-            if not allowed:
+            if not allowed and not active:
                 return result
             fleet=self.service.fleet_account(db,uid)
             if fleet:

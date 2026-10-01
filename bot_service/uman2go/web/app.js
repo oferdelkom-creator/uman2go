@@ -26,7 +26,8 @@ function toast(message){$('#toast').textContent=message;$('#toast').hidden=false
 async function request(url,body){
  const options={method:body?'POST':'GET',headers:headers(),...(body?{body:JSON.stringify(body)}:{})};
  for(let attempt=0;attempt<4;attempt++){
-  const res=await fetch(url,options);
+  const controller=new AbortController(), timeout=setTimeout(()=>controller.abort(),body?55000:10000);
+  let res;try{res=await fetch(url,{...options,cache:'no-store',signal:controller.signal});}finally{clearTimeout(timeout);}
   if(res.status===503&&attempt<3){await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));continue;}
   const data=await res.json();if(!res.ok)throw new Error(data.error||'ACTION_UNAVAILABLE');return data;
  }
@@ -36,7 +37,7 @@ async function refresh(){
  if(busy||refreshing)return;
  refreshing=true;
  const generation=stateGeneration;
- try{const next=await request('/api/state');if(generation!==stateGeneration)return;state=next;render();inboxUI.connection(true);}
+ try{const next=await request('/api/state');if(generation!==stateGeneration)return;state=next;render();inboxUI.connection(true);$('#error').hidden=true;}
  catch(e){if(generation!==stateGeneration)return;inboxUI.connection(false);error(e.message==='OPEN_IN_TELEGRAM'?tr('auth'):tr('error'));if(!state)$('#content').innerHTML=`<div class="gps-icon">↗</div><h1>UMAN2GO</h1><p>${tr('auth')}</p>`;}
  finally{refreshing=false;}
 }
@@ -55,7 +56,18 @@ $('#content').addEventListener('change',ev=>{if(ev.target.id==='route-select'){s
 $('#content').addEventListener('submit',async ev=>{if(ev.target.id==='chat-form'){ev.preventDefault();if(await act('message',{ride_id:state.ride.id,text:$('#message').value}))$('#message').value='';}});
 $('.tabs').addEventListener('click',ev=>{if(ev.target.dataset.tab){tab=ev.target.dataset.tab;render();}});$('#language').addEventListener('change',ev=>act('language',{language:ev.target.value}));$('#recenter').addEventListener('click',gps);
 $('#switch-role').addEventListener('click',()=>{stateGeneration++;role=role==='driver'?'passenger':'driver';$('#switch-role').textContent=role==='driver'?'מעבר לנוסע':'מעבר לנהג';tab='ride';state=null;snapshotKey='';refresh();});
-(async()=>{tg?.ready();tg?.expand();try{const config=await request('/api/config');demo=config.demo;$('#demo').hidden=!demo;await refresh();setInterval(()=>{if(!document.hidden)refresh();},3000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});window.addEventListener('online',refresh);}catch{error(tr('error'));}})();
+// Install recovery before the first network request; a failed startup must not stop updates.
+let configured=false;
+async function syncState(){
+ if(!configured){try{const config=await request('/api/config');demo=config.demo;$('#demo').hidden=!demo;configured=true;}catch{error(tr('error'));return;}}
+ return refresh();
+}
+tg?.ready();tg?.expand();
+setInterval(()=>{if(!document.hidden)syncState();},2000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncState();});
+window.addEventListener('online',syncState);
+window.addEventListener('pageshow',syncState);
+syncState();
 
 
 

@@ -66,6 +66,10 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
     def enqueue(self, db, method, payload):
         db.execute('INSERT INTO outbox(method,payload) VALUES (?,?)', (method, json.dumps(payload, ensure_ascii=False)))
 
+    def notice(self, db, uid, text, buttons, kind, ride, driver=None, version=0):
+        from .delivery import enqueue_notice
+        enqueue_notice(self, db, uid, text, buttons, kind, ride, driver, version)
+
     def send(self, db, uid, text, buttons=None, markup=None):
         payload = {'chat_id': uid, 'text': text, 'disable_notification': False}
         if buttons:
@@ -149,7 +153,10 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
         text = self.summary(db, uid, ride)
         if ride['status'] == 'quoted':
             text += '\n\n' + t(lang, 'driver_prices')
-        self.send(db, uid, text, buttons)
+        if ride['status'] in ('accepted', 'arrived', 'in_progress'):
+            self.notice(db, uid, text, buttons, 'status', rid, version=('accepted','arrived','in_progress').index(ride['status']))
+        else:
+            self.send(db, uid, text, buttons)
         if ride['status'] == 'searching':
             for offer in db.execute("SELECT o.*,d.name,d.vehicle FROM offers o JOIN drivers d ON d.id=o.driver_id WHERE o.ride_id=? AND o.status='priced' AND d.approval='approved' AND d.available=1", (rid,)).fetchall():
                 self.bid_view(db, uid, ride, offer)
@@ -163,9 +170,11 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             if not v: return
             offer.update(name=v['driver_name'],vehicle=v['vehicle']+' · '+v['plate'])
             suffix=f":{v['id']}:{offer['price']}"
-        self.send(db, uid, t(lang, 'bid_offer', id=ride['id'], name=offer['name'], vehicle=offer['vehicle'],
+        current = db.execute('SELECT version FROM offers WHERE ride_id=? AND driver_id=?', (ride['id'], offer['driver_id'])).fetchone()
+        self.notice(db, uid, t(lang, 'bid_offer', id=ride['id'], name=offer['name'], vehicle=offer['vehicle'],
                   price=self.money({'price': offer['price'], 'currency': ride['currency']}, lang)) + '\n' + self.driver_rating(db, uid, offer['driver_id']),
-                  [(t(lang, 'choose_bid'), f'choose:{ride["id"]}:{offer["driver_id"]}'+suffix)])
+                  [(t(lang, 'choose_bid'), f'choose:{ride["id"]}:{offer["driver_id"]}'+suffix)],
+                  'quote', ride['id'], offer['driver_id'], current['version'] if current else 0)
 
     def driver_view(self, db, uid, ride):
         lang = self.language(db, uid)
@@ -193,8 +202,9 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             cursor = db.execute('INSERT OR IGNORE INTO offers(ride_id,driver_id) VALUES (?,?)', (ride['id'], d['id']))
             if cursor.rowcount:
                 lang = self.language(db, d['id'])
-                self.send(db, d['id'], t(lang, 'offer') + '\n' + self.summary(db, d['id'], ride),
-                          [(t(lang, 'offer_price'), f'accept:{ride["id"]}'), (t(lang, 'decline'), f'decline:{ride["id"]}')])
+                self.notice(db, d['id'], t(lang, 'offer') + '\n' + self.summary(db, d['id'], ride),
+                          [(t(lang, 'offer_price'), f'accept:{ride["id"]}'), (t(lang, 'decline'), f'decline:{ride["id"]}')],
+                          'request', ride['id'], d['id'])
         return db.execute("SELECT COUNT(*) FROM offers WHERE ride_id=? AND status IN ('offered','priced')", (ride['id'],)).fetchone()[0]
 
     def cancel(self, db, uid, rid, admin=False):
@@ -456,7 +466,7 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             offer = db.execute("SELECT 1 FROM offers WHERE ride_id=? AND driver_id=? AND status='offered'", (rid, uid)).fetchone()
             require(ride['status'] == 'searching' and offer and d and d['approval'] == 'approved' and d['available'] and not self.active_driver(db, uid))
             price = amount(text)
-            db.execute("UPDATE offers SET price=?,status='priced' WHERE ride_id=? AND driver_id=?", (price, rid, uid))
+            db.execute("UPDATE offers SET price=?,status='priced',version=version+1 WHERE ride_id=? AND driver_id=?", (price, rid, uid))
             self.event(db, rid, uid, f'price_offered:{price}')
             self.state(db, uid, 'home')
             self.say(db, uid, 'bid_sent')

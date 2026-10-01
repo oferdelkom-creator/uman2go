@@ -37,7 +37,8 @@ def restore_database(path, encoded):
         source.backup(target)
 
 class CloudStore:
-    def __init__(self):
+    def __init__(self, read_only=False):
+        self.read_only=read_only
         self.owner=str(uuid.uuid4())
         self.url=os.environ['NEXT_PUBLIC_SUPABASE_URL'].rstrip('/')+'/rest/v1/rpc/'
         self.key=os.environ['SUPABASE_SERVICE_ROLE_KEY']
@@ -53,7 +54,16 @@ class CloudStore:
             raise RuntimeError('Cloud persistence unavailable') from None
 
     def __enter__(self):
-        state=self.rpc('uman_bot_acquire',{'owner_id':self.owner})
+        if self.read_only:
+            req=urllib.request.Request(self.url.replace('/rpc/', '/uman_bot_state?id=eq.1&select=revision,snapshot'),
+                headers={'apikey':self.key,'Authorization':'Bearer '+self.key})
+            try:
+                with urllib.request.urlopen(req,timeout=8) as r:
+                    state=json.load(r)[0]
+            except Exception:
+                raise RuntimeError('Cloud persistence unavailable') from None
+        else:
+            state=self.rpc('uman_bot_acquire',{'owner_id':self.owner})
         if state is None:
             raise Busy()
         self.revision=state['revision']
@@ -69,10 +79,13 @@ class CloudStore:
         return self
 
     def save(self):
+        if self.read_only:
+            raise RuntimeError('Read-only snapshot cannot be saved')
         self.revision=self.rpc('uman_bot_save',{'owner_id':self.owner,'expected_revision':self.revision,'new_snapshot':encode_database(self.path)})
 
     def __exit__(self,*args):
         try:
-            self.rpc('uman_bot_release',{'owner_id':self.owner})
+            if not self.read_only:
+                self.rpc('uman_bot_release',{'owner_id':self.owner})
         finally:
             self.tmp.cleanup()

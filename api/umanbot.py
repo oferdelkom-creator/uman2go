@@ -15,7 +15,7 @@ from uman2go.runtime import Worker
 from uman2go.telegram import Telegram
 from uman2go.db import connect
 
-VERSION='uman2go-fleet-1'
+VERSION='uman2go-notifications-p0-1'
 ORIGIN='https://uman2go-live.vercel.app'
 ENDPOINT=ORIGIN+'/api/umanbot'
 
@@ -78,9 +78,8 @@ class handler(BaseHTTPRequestHandler):
         try:
             token,admins=settings()
             user=authenticate(self.headers.get('X-Telegram-Init-Data',''),token)
-            with CloudStore() as store:
+            with CloudStore(read_only=True) as store:
                 result=MiniApp(store.path,admins,token).snapshot(user)
-                store.save()
             self.reply(200,result)
         except PermissionError:
             self.reply(401,{'error':'OPEN_IN_TELEGRAM'})
@@ -95,7 +94,7 @@ class handler(BaseHTTPRequestHandler):
                 return self.reply(400,{'error':'INVALID_BODY'})
             raw=self.rfile.read(size)
             if route=='ops':
-                body={k:v[0] for k,v in parse_qs(raw.decode()).items()}
+                body=json.loads(raw) if self.headers.get('Content-Type','').startswith('application/json') else {k:v[0] for k,v in parse_qs(raw.decode()).items()}
                 if not equal_secret(body.get('secret')):
                     return self.reply(403,{'error':'DENIED'})
                 return self.ops(body.get('operation'))
@@ -153,6 +152,9 @@ class handler(BaseHTTPRequestHandler):
             Service(store.path,admins)
             db=connect(store.path)
             counts={name:db.execute('SELECT COUNT(*) FROM '+name).fetchone()[0] for name in ('users','rides','drivers')}
+            delivery=[dict(r) for r in db.execute('''SELECT failed,discarded,sent_at IS NOT NULL sent,
+                sending_at IS NOT NULL uncertain,last_error,COUNT(*) count FROM outbox
+                GROUP BY failed,discarded,sent,uncertain,last_error''')]
             ready=db.execute("SELECT value FROM metadata WHERE key='cloud_ready'").fetchone()
             db.close()
             if operation=='activate':
@@ -170,9 +172,27 @@ class handler(BaseHTTPRequestHandler):
                 if commands:
                     api.call('setMyCommands',{'commands':commands})
                 api.call('setMyDescription',{'description':'UMAN2GO — הזמנת מוניות באוקראינה. משתפים מיקום, בוחרים יעד ומאשרים הצעת מחיר מנהג. התשלום לנהג לאחר ההגעה ליעד. בסיום מתקבל סיכום נסיעה עם מרחק משוער לפי נתוני המיקום שנקלטו. נהגים נרשמים לאחר אישור מנהל. הזמינות תלויה בנהגים באזור.'})
+            elif operation=='notification_test':
+                # One explicit, labelled transport probe per release, only to the
+                # configured administrator. No production rides or drivers changed.
+                db=connect(store.path)
+                admin=min(admins)
+                for kind,text in (
+                    ('driver','בדיקת UMAN2GO — התראת נהג. נסיעת בדיקה בלבד, אין הזמנה אמיתית. איסוף: TEST A; יעד: TEST B; נוסעים: 1.'),
+                    ('passenger','בדיקת UMAN2GO — התראת מחיר לנוסע: 345.00 UAH. בדיקה בלבד, אין הזמנה או חיוב.')):
+                    payload={'chat_id':admin,'text':text,'disable_notification':False,
+                        'reply_markup':{'inline_keyboard':[[{'text':'פתיחת UMAN2GO','web_app':{'url':ENDPOINT}}]]}}
+                    db.execute("INSERT OR IGNORE INTO outbox(method,payload,event_key) VALUES ('sendMessage',?,?)",(json.dumps(payload,ensure_ascii=False),VERSION+':probe:'+kind))
+                db.close()
+                store.save()
+                Worker(store.path,api,batch_limit=100,persist=store.save).flush(max_seconds=20)
+                store.save()
+                db=connect(store.path)
+                delivery=[dict(r) for r in db.execute('SELECT event_key,sent_at,telegram_message_id,last_error,sending_at IS NOT NULL uncertain FROM outbox WHERE event_key LIKE ?', (VERSION+':probe:%',))]
+                db.close()
             elif operation!='status':
                 raise ValueError('Invalid operation')
         info=api.call('getWebhookInfo',{})
-        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message'),'menu':api.call('getChatMenuButton',{})})
+        self.reply(200,{'bot':identity['username'],'release':VERSION,'counts':counts,'delivery':delivery,'operation':operation,'webhook_url':info.get('url'),'pending_updates':info.get('pending_update_count'),'last_error':info.get('last_error_message'),'menu':api.call('getChatMenuButton',{})})
 
 

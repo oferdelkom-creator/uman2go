@@ -7,6 +7,19 @@ from uman2go.db import connect
 from tests.test_mvp import Harness
 
 class CloudTests(unittest.TestCase):
+    def test_readonly_snapshot_does_not_acquire_or_save_lease(self):
+        import io,json
+        with tempfile.TemporaryDirectory() as d:
+            h=Harness(Path(d)/'source.db'); h.driver(); h.booking()
+            encoded=encode_database(h.path)
+            with patch.dict('os.environ',{'NEXT_PUBLIC_SUPABASE_URL':'https://example.test','SUPABASE_SERVICE_ROLE_KEY':'test'}):
+                store=CloudStore(read_only=True)
+                with patch.object(store,'rpc') as rpc, patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps([{'revision':1,'snapshot':encoded}]).encode())):
+                    with store:
+                        self.assertTrue(store.path.exists())
+                        with self.assertRaises(RuntimeError):store.save()
+                    rpc.assert_not_called()
+
     def test_snapshot_preserves_wal_and_complete_trip(self):
         with tempfile.TemporaryDirectory() as d:
             h=Harness(Path(d)/'source.db')

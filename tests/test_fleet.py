@@ -42,6 +42,28 @@ class FleetTests(unittest.TestCase):
     def choose(self,passenger,rid,vid,price=30000):
         return self.act(passenger,'choose',ride_id=rid,driver_id=10,fleet_vehicle_id=vid,expected_price=price)
 
+    def test_price_updates_notify_once_and_skip_superseded_quotes(self):
+        from unittest.mock import Mock
+        from uman2go.runtime import Worker
+        rid=self.quote(20,self.first,'300')
+        self.act(10,'fleet_quote',ride_id=rid,vehicle_id=self.first,price='345')
+        self.act(10,'fleet_quote',ride_id=rid,vehicle_id=self.first,price='345')
+        notices=self.h.rows("SELECT * FROM outbox WHERE notice_kind='quote'")
+        self.assertEqual(2,len(notices))
+        self.assertEqual(34500,self.app.snapshot({'id':20})['offers'][0]['price'])
+        api=Mock(); Worker(self.path,api,batch_limit=1).flush()
+        self.assertEqual(20,api.call.call_args.args[1]['chat_id'])
+        self.assertIn('345.00',api.call.call_args.args[1]['text'])
+        self.assertEqual(1,self.h.rows('SELECT discarded FROM outbox WHERE id=?',(notices[0]['id'],))[0]['discarded'])
+
+    def test_unavailable_fleet_vehicle_receives_no_request(self):
+        from unittest.mock import Mock
+        from uman2go.runtime import Worker
+        self.h.booking()
+        self.act(10,'fleet_available',vehicle_id=self.first,available=False)
+        api=Mock(); Worker(self.path,api,batch_limit=500).flush()
+        self.assertEqual(1,self.h.rows("SELECT discarded FROM outbox WHERE notice_kind='request'")[0]['discarded'])
+
     def test_enable_preserves_driver_and_requires_owner_admin(self):
         self.assertEqual(10,self.h.rows('SELECT owner_id FROM fleet_accounts')[0]['owner_id'])
         self.assertEqual('approved',self.h.rows('SELECT approval FROM drivers')[0]['approval'])
