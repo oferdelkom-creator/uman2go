@@ -1,6 +1,6 @@
 # Sales assistant infrastructure
 
-Customer page: `/assistant` (localized like the rest of the site). Admin inbox: `/admin/ai-conversations`. No floating chat or automatic invitations are added; the foundation can be reached by its direct URL.
+Customer page: `/assistant` (localized like the rest of the site). Admin inbox: `/admin/ai-conversations`. The shared desktop and mobile navigation links to the assistant in all four site languages. Desktop navigation uses its own row to keep all links accessible without crowding the account controls.
 
 Uses the existing server-side `ANTHROPIC_API_KEY`, with AI SDK 7 and `@ai-sdk/anthropic`. The default model is the newest Haiku returned by the authenticated Anthropic Models API. Set `SALES_ASSISTANT_MODEL` to a valid Anthropic model to override discovery. Set `SALES_ASSISTANT_ENABLED=false` to disable session creation and generation. Missing credentials fail closed. `SUPABASE_SERVICE_ROLE_KEY` stays on the server; preview environments without it do not process customer conversations. Failure diagnostics contain only the processing stage and HTTP status, never credentials or customer content.
 
