@@ -8,6 +8,7 @@ import {
   salesCatalogue,
   salesEnabled,
   salesInstructions,
+  salesModelId,
   validOrigin,
 } from "@/lib/sales-assistant";
 
@@ -16,6 +17,7 @@ const fail = (error: string, status: number) =>
   NextResponse.json({ error }, { status });
 export async function POST(request: Request) {
   let conversationId: string | undefined;
+  let stage = "validation";
   try {
     if (!validOrigin(request)) return fail("בקשה לא מורשית.", 403);
     if (!salesEnabled()) return fail("השירות אינו זמין כרגע.", 503);
@@ -40,6 +42,7 @@ export async function POST(request: Request) {
         429,
       );
     conversationId = session.id;
+    stage = "save";
     const saved = await db
       .from("sales_messages")
       .insert({ conversation_id: session.id, role: "user", content: message });
@@ -56,20 +59,22 @@ export async function POST(request: Request) {
       .order("id", { ascending: false })
       .limit(12);
     if (history.error) throw new Error("History unavailable");
+    stage = "catalogue";
     const catalogue = await salesCatalogue(session.locale);
+    stage = "model-discovery";
+    const modelId = await salesModelId();
+    stage = "generation";
     const result = await generateText({
-      model: anthropic(process.env.SALES_ASSISTANT_MODEL ?? "claude-haiku-5-5"),
+      model: anthropic(modelId),
       messages: [
         {
           role: "system",
           content: salesInstructions(session.locale, catalogue),
         },
-        ...(history.data ?? [])
-          .reverse()
-          .map((row) => ({
-            role: row.role as "user" | "assistant",
-            content: row.content,
-          })),
+        ...(history.data ?? []).reverse().map((row) => ({
+          role: row.role as "user" | "assistant",
+          content: row.content,
+        })),
       ],
       maxOutputTokens: 700,
       maxRetries: 0,
@@ -77,17 +82,23 @@ export async function POST(request: Request) {
     });
     const reply = result.text.trim().slice(0, 6000);
     if (!reply) throw new Error("Empty reply");
-    const answer = await db
-      .from("sales_messages")
-      .insert({
-        conversation_id: session.id,
-        role: "assistant",
-        content: reply,
-      });
+    const answer = await db.from("sales_messages").insert({
+      conversation_id: session.id,
+      role: "assistant",
+      content: reply,
+    });
     if (answer.error) throw new Error("Reply save failed");
     return NextResponse.json({ reply });
-  } catch {
+  } catch (error) {
     // Never log provider request objects: they can contain secrets or customer messages.
+    const statusCode =
+      error &&
+      typeof error === "object" &&
+      "statusCode" in error &&
+      typeof error.statusCode === "number"
+        ? error.statusCode
+        : undefined;
+    console.error("Sales assistant request failed", { stage, statusCode });
     return fail(
       "לא התקבלה תשובה כרגע. פרטי הקשר והודעות שנשמרו זמינים לצוות. אפשר לפנות בוואטסאפ או לנסות שוב.",
       503,

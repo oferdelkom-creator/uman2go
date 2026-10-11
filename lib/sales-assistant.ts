@@ -12,6 +12,44 @@ export const salesEnabled = () =>
     process.env.ANTHROPIC_API_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY,
   ) && process.env.SALES_ASSISTANT_ENABLED !== "false";
 
+export async function salesModelId() {
+  if (process.env.SALES_ASSISTANT_MODEL)
+    return process.env.SALES_ASSISTANT_MODEL;
+  // Confirm availability for this credential rather than assuming access to a new model.
+  const response = await fetch(
+    "https://api.anthropic.com/v1/models?limit=1000",
+    {
+      headers: {
+        "x-api-key": process.env.ANTHROPIC_API_KEY!,
+        "anthropic-version": "2023-06-01",
+      },
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000),
+    },
+  );
+  if (!response.ok) {
+    const error = new Error("Provider model discovery failed");
+    Object.assign(error, { statusCode: response.status });
+    throw error;
+  }
+  const catalogue = await response.json();
+  const models = Array.isArray(catalogue.data) ? catalogue.data : [];
+  const model = models.find(
+    (entry: {
+      id?: string;
+      line?: string;
+      display_name?: string;
+      lifecycle?: string;
+    }) =>
+      typeof entry.id === "string" &&
+      entry.lifecycle !== "retired" &&
+      (entry.line === "haiku" ||
+        (entry.line == null && entry.display_name?.includes("Haiku"))),
+  );
+  if (!model) throw new Error("No supported Haiku model available");
+  return model.id as string;
+}
+
 export function validOrigin(request: Request) {
   return request.headers.get("origin") === new URL(request.url).origin;
 }
