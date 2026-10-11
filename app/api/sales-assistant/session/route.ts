@@ -31,7 +31,15 @@ export async function GET() {
       .limit(80);
     if (error) return fail("השיחה לא נטענה. אפשר לנסות שוב.", 503);
     return NextResponse.json(
-      { enabled: true, session: { fullName: session.full_name, messages } },
+      {
+        enabled: true,
+        session: {
+          fullName: session.full_name,
+          messages,
+          completed: Boolean(session.completed_at),
+          emailAccepted: session.summary_email_status === "sent",
+        },
+      },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch {
@@ -82,16 +90,14 @@ export async function POST(request: Request) {
         new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10),
       );
     const token = randomBytes(32).toString("hex");
-    const { error } = await db
-      .from("sales_conversations")
-      .insert({
-        token_hash: hashToken(token),
-        full_name: fullName,
-        contact,
-        locale: ["he", "en", "fr", "uk"].includes(body.locale)
-          ? body.locale
-          : "he",
-      });
+    const { error } = await db.from("sales_conversations").insert({
+      token_hash: hashToken(token),
+      full_name: fullName,
+      contact,
+      locale: ["he", "en", "fr", "uk"].includes(body.locale)
+        ? body.locale
+        : "he",
+    });
     if (error) return fail("הפרטים לא נשמרו. אפשר לנסות שוב.", 503);
     (await cookies()).set(SALES_COOKIE, token, {
       httpOnly: true,

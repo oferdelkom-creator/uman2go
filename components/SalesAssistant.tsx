@@ -9,13 +9,21 @@ const copy = {
     title: "עוזר הנסיעה של UMAN2GO",
     intro: "עוזר AI שיעזור למצוא לינה, הסעות וטיולים שמתאימים לכם.",
     name: "שם מלא",
+    meet: "שלום, נעים להכיר! איך קוראים לך?",
+    next: "נעים להכיר, נמשיך",
+    contactIntro:
+      "כדי שנוכל לחזור אליך אם השיחה תתנתק, מה הטלפון או המייל שלך?",
+    editName: "שינוי השם",
+    finish: "סיום שיחה ושליחת סיכום לצוות",
+    retryFinish: "ניסיון נוסף לשליחת הסיכום",
+    finished: "תודה! השיחה הסתיימה והסיכום נשלח לצוות UMAN2GO להמשך טיפול.",
     contact: "טלפון או אימייל",
     consent:
-      "אני מסכים/ה לשמירת פרטי הקשר והשיחה ל־30 יום, כדי שצוות UMAN2GO יוכל להמשיך לטפל בפנייה. הנתונים נמחקים בתוך שעה מתום התקופה. תוכן השיחה מועבר ל־Claude לצורך מתן תשובות.",
+      "אני מסכים/ה לשמירת פרטי הקשר והשיחה ל־30 יום ולשליחת סיכום לצוות UMAN2GO במייל להמשך טיפול. הנתונים באתר נמחקים בתוך שעה מתום התקופה; הסיכום נשלח גם לתיבת המייל של הצוות. תוכן השיחה מועבר ל־Claude לצורך תשובות וסיכום.",
     start: "שמירה והתחלת שיחה",
     saved: "פרטי הקשר נשמרו. אפשר להמשיך כאן גם לאחר רענון העמוד באותו דפדפן.",
     greeting:
-      "שלום! אני עוזר ה־AI של UMAN2GO. במה אפשר לעזור לקראת הנסיעה לאומן או לאוקראינה?",
+      "נעים להכיר! במה אפשר לעזור לקראת הנסיעה לאומן או לאוקראינה — לינה, הסעה או טיול?",
     message: "מה תרצו לברר?",
     send: "שליחה",
     waiting: "מכין תשובה…",
@@ -29,14 +37,23 @@ const copy = {
     intro:
       "An AI assistant for accommodation, transport and tours that fit your trip.",
     name: "Full name",
+    meet: "Hello, nice to meet you! What is your name?",
+    next: "Nice to meet you — continue",
+    contactIntro:
+      "What is your phone number or email so our team can follow up if we get disconnected?",
+    editName: "Change name",
+    finish: "Finish and send a summary to the team",
+    retryFinish: "Retry sending the summary",
+    finished:
+      "Thank you! Your conversation has ended and a summary has been sent to the UMAN2GO team for follow-up.",
     contact: "Phone or email",
     consent:
-      "I agree to storing my contact details and conversation for 30 days so the UMAN2GO team can follow up. Data is deleted within one hour after expiry. Conversation content is sent to Claude to generate replies.",
+      "I agree to storing my contact details and conversation for 30 days and emailing a summary to the UMAN2GO team for follow-up. Website data is deleted within one hour after expiry; a summary is also sent to the team's mailbox. Conversation content is sent to Claude for replies and summaries.",
     start: "Save and start chatting",
     saved:
       "Your contact details are saved. You can resume after refreshing in the same browser.",
     greeting:
-      "Hello! I am the UMAN2GO AI assistant. How can I help with your trip to Uman or Ukraine?",
+      "Nice to meet you! What can I help with for your trip to Uman or Ukraine — accommodation, transport or a tour?",
     message: "What would you like to know?",
     send: "Send",
     waiting: "Preparing a reply…",
@@ -67,17 +84,25 @@ function MessageText({ content }: { content: string }) {
     );
 }
 
-export default function SalesAssistant() {
+export default function SalesAssistant({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const locale = useLocale();
   const t = locale === "he" ? copy.he : copy.en;
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
+  const [step, setStep] = useState<"name" | "contact">("name");
+  const [fullName, setFullName] = useState("");
+  const [completed, setCompleted] = useState(false);
+  const [emailAccepted, setEmailAccepted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [enabled, setEnabled] = useState(true);
   const [draft, setDraft] = useState("");
-  const end = useRef<HTMLDivElement>(null);
+  const log = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let alive = true;
     fetch("/api/sales-assistant/session", { cache: "no-store" })
@@ -88,6 +113,9 @@ export default function SalesAssistant() {
           setEnabled(data.enabled);
           if (data.session) {
             setStarted(true);
+            setFullName(data.session.fullName ?? "");
+            setCompleted(Boolean(data.session.completed));
+            setEmailAccepted(Boolean(data.session.emailAccepted));
             setMessages(data.session.messages ?? []);
           }
         }
@@ -103,7 +131,7 @@ export default function SalesAssistant() {
     };
   }, [t.error]);
   useEffect(() => {
-    end.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages, busy]);
   async function start(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -115,7 +143,7 @@ export default function SalesAssistant() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fullName: form.get("fullName"),
+          fullName,
           contact: form.get("contact"),
           consent: form.get("consent") === "on",
           locale,
@@ -134,7 +162,7 @@ export default function SalesAssistant() {
   async function send(event: React.FormEvent) {
     event.preventDefault();
     const message = draft.trim();
-    if (!message || busy) return;
+    if (!message || busy || completed) return;
     setBusy(true);
     setError("");
     try {
@@ -164,6 +192,30 @@ export default function SalesAssistant() {
       setBusy(false);
     }
   }
+  async function finish() {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const r = await fetch("/api/sales-assistant/finish", { method: "POST" });
+      const data = await r.json();
+      if (!r.ok) throw new Error(locale === "he" ? data.error : t.error);
+      setCompleted(true);
+      setEmailAccepted(Boolean(data.emailAccepted));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t.error);
+      const r = await fetch("/api/sales-assistant/session", {
+        cache: "no-store",
+      }).catch(() => null);
+      if (r?.ok) {
+        const data = await r.json();
+        setCompleted(Boolean(data.session?.completed));
+        setEmailAccepted(Boolean(data.session?.emailAccepted));
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
   async function reset() {
     setBusy(true);
     setError("");
@@ -173,6 +225,10 @@ export default function SalesAssistant() {
       });
       if (!r.ok) throw new Error();
       setStarted(false);
+      setStep("name");
+      setFullName("");
+      setCompleted(false);
+      setEmailAccepted(false);
       setMessages([]);
       setDraft("");
     } catch {
@@ -182,8 +238,19 @@ export default function SalesAssistant() {
     }
   }
   return (
-    <section className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-3xl font-bold text-brand-navy">{t.title}</h1>
+    <section
+      id="travel-assistant"
+      className={
+        embedded
+          ? "mx-auto mt-6 max-w-2xl rounded-3xl bg-white p-5 text-start text-foreground shadow-xl sm:p-6"
+          : "mx-auto max-w-2xl px-4 py-10"
+      }
+    >
+      {embedded ? (
+        <h2 className="text-2xl font-bold text-brand-navy">{t.title}</h2>
+      ) : (
+        <h1 className="text-3xl font-bold text-brand-navy">{t.title}</h1>
+      )}
       <p className="mt-3 text-foreground/70">{t.intro}</p>
       {loading ? (
         <p className="mt-6" role="status">
@@ -191,15 +258,25 @@ export default function SalesAssistant() {
         </p>
       ) : !enabled ? (
         <p className="mt-6">{t.error}</p>
-      ) : !started ? (
+      ) : !started && step === "name" ? (
         <form
-          onSubmit={start}
-          className="mt-6 grid gap-4 rounded-2xl border p-6 bg-white"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (fullName.trim().length >= 2) {
+              setFullName(fullName.trim());
+              setStep("contact");
+              setError("");
+            }
+          }}
+          className="mt-5 grid gap-4"
         >
+          <p className="rounded-xl bg-brand-cream p-3">{t.meet}</p>
           <label className="grid gap-2">
             {t.name}
             <input
               name="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
               minLength={2}
               maxLength={100}
@@ -207,6 +284,26 @@ export default function SalesAssistant() {
               className="rounded-lg border p-3"
             />
           </label>
+          <button className="rounded-xl bg-brand-terracotta p-3 text-white">
+            {t.next}
+          </button>
+        </form>
+      ) : !started ? (
+        <form
+          onSubmit={start}
+          className="mt-6 grid gap-4 rounded-2xl border p-6 bg-white"
+        >
+          <p className="rounded-xl bg-brand-cream p-3">
+            {fullName}, {t.contactIntro}
+          </p>
+          <button
+            type="button"
+            onClick={() => setStep("name")}
+            disabled={busy}
+            className="justify-self-start text-sm underline"
+          >
+            {t.editName}
+          </button>
           <label className="grid gap-2">
             {t.contact}
             <input
@@ -238,12 +335,15 @@ export default function SalesAssistant() {
         <div className="mt-6 rounded-2xl border bg-white p-4 sm:p-6">
           <p className="text-sm text-green-800">{t.saved}</p>
           <div
+            ref={log}
             role="log"
             aria-label={t.title}
             aria-live="polite"
             className="mt-4 max-h-[50vh] overflow-y-auto space-y-3"
           >
-            <p className="rounded-xl bg-brand-cream p-3">{t.greeting}</p>
+            <p className="rounded-xl bg-brand-cream p-3">
+              {fullName}, {t.greeting}
+            </p>
             {messages.map((m, i) => (
               <p
                 key={i}
@@ -254,31 +354,49 @@ export default function SalesAssistant() {
               </p>
             ))}
             {busy && <p role="status">{t.waiting}</p>}
-            <div ref={end} />
           </div>
-          <form onSubmit={send} className="mt-5 flex gap-2">
-            <label className="sr-only" htmlFor="sales-message">
-              {t.message}
-            </label>
-            <input
-              id="sales-message"
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              maxLength={2000}
-              placeholder={t.message}
-              disabled={busy}
-              className="min-w-0 flex-1 rounded-xl border p-3"
-            />
-            <button
-              disabled={busy || !draft.trim()}
-              className="rounded-xl bg-brand-terracotta px-4 text-white disabled:opacity-50"
+          {completed && emailAccepted ? (
+            <p
+              role="status"
+              className="mt-5 rounded-xl bg-green-50 p-3 text-green-900"
             >
-              {t.send}
+              {t.finished}
+            </p>
+          ) : null}
+          {!completed ? (
+            <form onSubmit={send} className="mt-5 flex gap-2">
+              <label className="sr-only" htmlFor="sales-message">
+                {t.message}
+              </label>
+              <input
+                id="sales-message"
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                maxLength={2000}
+                placeholder={t.message}
+                disabled={busy}
+                className="min-w-0 flex-1 rounded-xl border p-3"
+              />
+              <button
+                disabled={busy || !draft.trim()}
+                className="rounded-xl bg-brand-terracotta px-4 text-white disabled:opacity-50"
+              >
+                {t.send}
+              </button>
+            </form>
+          ) : null}
+          {!emailAccepted ? (
+            <button
+              onClick={finish}
+              disabled={busy || Boolean(draft.trim())}
+              className="mt-4 block rounded-xl border border-brand-terracotta p-3 text-sm font-semibold text-brand-terracotta disabled:opacity-50"
+            >
+              {completed ? t.retryFinish : t.finish}
             </button>
-          </form>
+          ) : null}
           <button
             onClick={reset}
-            disabled={busy}
+            disabled={busy || !completed}
             className="mt-4 text-sm underline disabled:opacity-50"
           >
             {t.reset}
