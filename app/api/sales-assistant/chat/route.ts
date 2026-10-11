@@ -67,16 +67,11 @@ export async function POST(request: Request) {
     console.info("Sales assistant model", { modelId });
     const result = await generateText({
       model: anthropic(modelId),
-      messages: [
-        {
-          role: "system",
-          content: salesInstructions(session.locale, catalogue),
-        },
-        ...(history.data ?? []).reverse().map((row) => ({
-          role: row.role as "user" | "assistant",
-          content: row.content,
-        })),
-      ],
+      instructions: salesInstructions(session.locale, catalogue),
+      messages: (history.data ?? []).reverse().map((row) => ({
+        role: row.role as "user" | "assistant",
+        content: row.content,
+      })),
       maxOutputTokens: 700,
       providerOptions: { anthropic: { thinking: { type: "disabled" } } },
       maxRetries: 0,
