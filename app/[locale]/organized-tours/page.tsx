@@ -5,7 +5,7 @@ import {formatCurrency,formatDate} from '@/lib/format';
 import {Section} from '@/components/ui/Section';
 import {Card} from '@/components/ui/Card';
 import {ButtonLink} from '@/components/ui/Button';
-export const metadata={title:'טיולים מאורגנים לאומן ולאוקראינה | Uman2Go'};
+export const metadata={title:'טיולים מאורגנים לאומן ולאוקראינה'};
 export default async function OrganizedToursPage(){
  const locale=await getLocale(),c=organizedCopy(locale),db=await createClient();
  const {data:tours,error}=await db.from('organized_tours').select('*').eq('status','active').gte('start_date',todayInUkraine()).order('start_date');

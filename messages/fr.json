@@ -23,6 +23,7 @@
     "login": "Connexion",
     "signup": "Inscription",
     "menu": "Menu",
+    "flights": "Vols",
     "organizedTours": "Voyages organisés",
     "joinAsProvider": "Devenir partenaire"
   },
@@ -583,6 +584,7 @@
     "contact": "Contact",
     "terms": "Conditions",
     "apartments": "Appartements",
+    "flights": "Vols",
     "organizedTours": "Voyages organisés",
     "joinAsProvider": "Devenir partenaire"
   },
