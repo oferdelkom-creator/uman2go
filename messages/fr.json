@@ -23,6 +23,7 @@
     "login": "Connexion",
     "signup": "Inscription",
     "menu": "Menu",
+    "organizedTours": "Voyages organisés",
     "joinAsProvider": "Devenir partenaire"
   },
   "auth": {
@@ -582,6 +583,7 @@
     "contact": "Contact",
     "terms": "Conditions",
     "apartments": "Appartements",
+    "organizedTours": "Voyages organisés",
     "joinAsProvider": "Devenir partenaire"
   },
   "joinHub": {

@@ -24,6 +24,7 @@
     "login": "Увійти",
     "signup": "Реєстрація",
     "menu": "Меню",
+    "organizedTours": "Організовані тури",
     "joinAsProvider": "Приєднатися як партнер"
   },
   "auth": {
@@ -583,6 +584,7 @@
     "contact": "Контакти",
     "terms": "Умови",
     "apartments": "Квартири",
+    "organizedTours": "Організовані тури",
     "joinAsProvider": "Приєднатися як партнер"
   },
   "joinHub": {

@@ -5,6 +5,9 @@ import { Section } from "@/components/ui/Section";
 import { TourGuideCard } from "@/components/TourGuideCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { localizedAlternates } from "@/lib/seo";
+import { ButtonLink } from "@/components/ui/Button";
+import { getLocale } from "next-intl/server";
+import { organizedCopy } from "@/lib/organized-tours";
 
 export async function generateMetadata({
   params,
@@ -23,12 +26,21 @@ export async function generateMetadata({
 export default async function ToursPage() {
   const supabase = await createClient();
   const t = await getTranslations("tours.list");
+  const c = organizedCopy(await getLocale());
   const { data: guides } = await supabase.from("tour_guides").select("*").eq("status", "active");
 
   return (
     <Section>
       <h1 className="font-display text-4xl font-extrabold text-brand-navy">{t("title")}</h1>
       <p className="mt-2 max-w-2xl text-foreground/70">{t("subtitle")}</p>
+      <div className="mt-6 rounded-2xl bg-brand-teal/10 p-6">
+        <h2 className="text-2xl font-bold text-brand-navy">{c.title}</h2>
+        <p className="mt-2">{c.intro}</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <ButtonLink href="/organized-tours">{c.details}</ButtonLink>
+          <ButtonLink href="/organized-tours/publish" variant="outline">{c.publish}</ButtonLink>
+        </div>
+      </div>
 
       {guides && guides.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -23,6 +23,7 @@
     "login": "התחברות",
     "signup": "הרשמה",
     "menu": "תפריט",
+    "organizedTours": "טיולים מאורגנים",
     "joinAsProvider": "הצטרפו כספקים"
   },
   "auth": {
@@ -584,6 +585,7 @@
     "contact": "צור קשר",
     "terms": "תקנון",
     "apartments": "דירות להשכרה",
+    "organizedTours": "טיולים מאורגנים",
     "joinAsProvider": "הצטרפו כספקים"
   },
   "joinHub": {
