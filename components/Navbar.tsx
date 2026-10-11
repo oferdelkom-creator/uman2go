@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Logo } from "@/components/Logo";
@@ -12,6 +12,8 @@ export default async function Navbar() {
     data: { user },
   } = await supabase.auth.getUser();
   const t = await getTranslations("nav");
+  const locale = await getLocale();
+  const assistantLabel = ({ he: "עוזר אישי", en: "Personal assistant", fr: "Assistant personnel", uk: "Особистий помічник" } as Record<string, string>)[locale] ?? "Personal assistant";
 
   let isOwner = false;
   if (user) {
@@ -25,20 +27,20 @@ export default async function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-brand-navy/10 bg-background/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold text-brand-navy">
           <Logo className="h-9 w-auto" />
           {SITE_NAME}
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="order-3 hidden w-full items-center justify-center gap-4 md:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className="text-sm font-semibold text-brand-navy/80 transition-colors hover:text-brand-terracotta"
             >
-              {t(link.key)}
+              {link.key === "assistant" ? assistantLabel : t(link.key)}
             </Link>
           ))}
         </nav>
@@ -76,7 +78,7 @@ export default async function Navbar() {
       <nav className="hidden flex-col gap-1 border-t border-brand-navy/10 bg-background px-4 py-3 peer-checked:flex md:hidden">
         {NAV_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-cream-deep">
-            {t(link.key)}
+            {link.key === "assistant" ? assistantLabel : t(link.key)}
           </Link>
         ))}
         <Link href="/join" className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-cream-deep">
