@@ -2,7 +2,7 @@
 import {useState, type FormEvent} from 'react';
 import {useLocale} from 'next-intl';
 import {createClient} from '@/lib/supabase/client';
-import {organizedCopy, todayInUkraine} from '@/lib/organized-tours';
+import {organizedCopy, todayInUkraine, safeTourPhotos} from '@/lib/organized-tours';
 import {FormField, Input, Select, Textarea} from '@/components/ui/FormField';
 import {Button} from '@/components/ui/Button';
 import {Link} from '@/i18n/navigation';
@@ -15,6 +15,7 @@ export function OrganizedTourForm({userId}:{userId:string}) {
  async function submit(e:FormEvent<HTMLFormElement>) {
   e.preventDefault(); if(busy) return; setBusy(true); setResult('');
   const f=new FormData(e.currentTarget);
+  if(photos.length>12 || safeTourPhotos(photos).length!==photos.length){setResult('error');setBusy(false);return;}
   const text=(key:string)=>String(f.get(key)??'').trim();
   try {
    const {error}=await createClient().from('organized_tours').insert({organizer_id:userId,organizer_name:text('organizer_name'),contact_phone:text('contact_phone'),title:text('title'),destination:text('destination'),start_date:text('start_date'),end_date:text('end_date'),description:text('description'),included:text('included'),cancellation_terms:text('cancellation_terms'),payment_terms:text('payment_terms'),price:Number(f.get('price')),currency:text('currency'),capacity:Number(f.get('capacity')),photos:photos.slice(0,12)});

@@ -8,3 +8,10 @@ export const organizedCopy = (locale: string) => locale === 'he' ? {
 export function todayInUkraine() {
  return new Intl.DateTimeFormat('en-CA', {timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 }
+
+export function safeTourPhotos(photos: string[]) {
+ return photos.filter(src => {
+  try { const url = new URL(src); return url.protocol === 'https:' && !url.username && !url.password; }
+  catch { return false; }
+ });
+}
