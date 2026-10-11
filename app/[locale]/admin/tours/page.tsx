@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/format";
 import { TourSignupStatusButton } from "@/app/[locale]/admin/tours/TourSignupStatusButton";
+import { ButtonLink } from "@/components/ui/Button";
+import { organizedCopy } from "@/lib/organized-tours";
 
 export default async function AdminToursPage() {
   const supabase = await createClient();
@@ -18,6 +20,7 @@ export default async function AdminToursPage() {
   return (
     <div>
       <h2 className="font-display text-2xl font-bold text-brand-navy">{t("title")}</h2>
+      <div className="mt-4"><ButtonLink href="/admin/organized-tours">{organizedCopy(locale).admin}</ButtonLink></div>
 
       {signups && signups.length > 0 ? (
         <div className="mt-6 flex flex-col gap-4">
