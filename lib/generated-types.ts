@@ -985,6 +985,104 @@ export type Database = {
           },
         ]
       }
+      sales_conversations: {
+        Row: {
+          busy_until: string | null
+          consent_at: string
+          contact: string
+          created_at: string
+          expires_at: string
+          full_name: string
+          id: string
+          locale: string
+          status: string
+          summary: string
+          token_hash: string
+          turns: number
+          updated_at: string
+        }
+        Insert: {
+          busy_until?: string | null
+          consent_at?: string
+          contact: string
+          created_at?: string
+          expires_at?: string
+          full_name: string
+          id?: string
+          locale?: string
+          status?: string
+          summary?: string
+          token_hash: string
+          turns?: number
+          updated_at?: string
+        }
+        Update: {
+          busy_until?: string | null
+          consent_at?: string
+          contact?: string
+          created_at?: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          locale?: string
+          status?: string
+          summary?: string
+          token_hash?: string
+          turns?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sales_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: number
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: never
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: never
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "sales_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_usage: {
+        Row: {
+          bucket: string
+          count: number
+          day: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          day?: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          day?: string
+        }
+        Relationships: []
+      }
       tour_dates: {
         Row: {
           capacity: number
@@ -1504,6 +1602,11 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      sales_claim_turn: { Args: { p_id: string }; Returns: boolean }
+      sales_take_quota: {
+        Args: { p_bucket: string; p_limit: number }
+        Returns: boolean
+      }
       uman_bot_acquire: { Args: { owner_id: string }; Returns: Json }
       uman_bot_release: { Args: { owner_id: string }; Returns: undefined }
       uman_bot_save: {

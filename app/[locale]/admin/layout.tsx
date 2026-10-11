@@ -43,6 +43,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </Link>
         ))}
       </nav>
+      <Link href="/admin/ai-conversations" className="mt-4 inline-block text-sm font-semibold underline">{locale === 'he' ? 'פניות מעוזר המכירות' : 'AI sales enquiries'}</Link>
       <div className="mt-8">{children}</div>
     </div>
   );
