@@ -64,6 +64,7 @@ export async function POST(request: Request) {
     stage = "model-discovery";
     const modelId = await salesModelId();
     stage = "generation";
+    console.info("Sales assistant model", { modelId });
     const result = await generateText({
       model: anthropic(modelId),
       messages: [
@@ -77,11 +78,17 @@ export async function POST(request: Request) {
         })),
       ],
       maxOutputTokens: 700,
+      providerOptions: { anthropic: { thinking: { type: "disabled" } } },
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(40000),
     });
     const reply = result.text.trim().slice(0, 6000);
-    if (!reply) throw new Error("Empty reply");
+    if (!reply) {
+      console.error("Sales assistant empty reply", {
+        finishReason: result.finishReason,
+      });
+      throw new Error("Empty reply");
+    }
     const answer = await db.from("sales_messages").insert({
       conversation_id: session.id,
       role: "assistant",
@@ -98,7 +105,11 @@ export async function POST(request: Request) {
       typeof error.statusCode === "number"
         ? error.statusCode
         : undefined;
-    console.error("Sales assistant request failed", { stage, statusCode });
+    console.error("Sales assistant request failed", {
+      stage,
+      statusCode,
+      errorType: error instanceof Error ? error.name : "unknown",
+    });
     return fail(
       "לא התקבלה תשובה כרגע. פרטי הקשר והודעות שנשמרו זמינים לצוות. אפשר לפנות בוואטסאפ או לנסות שוב.",
       503,
