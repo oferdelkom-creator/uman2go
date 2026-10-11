@@ -13,14 +13,19 @@ import { Reveal } from "@/components/Reveal";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
 import TelegramLink from "@/components/TelegramLink";
+import SalesAssistant from "@/components/SalesAssistant";
 
 const VERTICAL_ICONS: Record<string, React.ReactNode> = {
   hotels: (
     <path d="M6 20V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12M2 20h20M9 20v-4h6v4M9 10h.01M9 14h.01M15 10h.01M15 14h.01" />
   ),
-  transport: <path d="M5 17h14M5 17a2 2 0 1 0 4 0M5 17a2 2 0 1 1 4 0M15 17a2 2 0 1 0 4 0M15 17a2 2 0 1 1 4 0M3 17V9a1 1 0 0 1 1-1h14l3 5v4M3 9h18" />,
+  transport: (
+    <path d="M5 17h14M5 17a2 2 0 1 0 4 0M5 17a2 2 0 1 1 4 0M15 17a2 2 0 1 0 4 0M15 17a2 2 0 1 1 4 0M3 17V9a1 1 0 0 1 1-1h14l3 5v4M3 9h18" />
+  ),
   tours: <path d="M12 2 9.5 7 4 8l4 4-1 6 5-3 5 3-1-6 4-4-5.5-1L12 2Z" />,
-  flights: <path d="M22 16.5v-2l-8.5-5V4c0-1.1-.9-2-1.5-2s-1.5.9-1.5 2v5.5L2 14.5v2l8.5-2.5v5l-2.5 2v1.5l4-1 4 1v-1.5l-2.5-2v-5L22 16.5Z" />,
+  flights: (
+    <path d="M22 16.5v-2l-8.5-5V4c0-1.1-.9-2-1.5-2s-1.5.9-1.5 2v5.5L2 14.5v2l8.5-2.5v5l-2.5 2v1.5l4-1 4 1v-1.5l-2.5-2v-5L22 16.5Z" />
+  ),
 };
 
 const VERTICAL_GRADIENTS: Record<string, string> = {
@@ -32,7 +37,11 @@ const VERTICAL_GRADIENTS: Record<string, string> = {
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [t, tCommon, locale] = await Promise.all([getTranslations("home"), getTranslations("common"), getLocale()]);
+  const [t, tCommon, locale] = await Promise.all([
+    getTranslations("home"),
+    getTranslations("common"),
+    getLocale(),
+  ]);
 
   const [
     { data: hotels },
@@ -43,20 +52,59 @@ export default async function HomePage() {
     { count: hotelsCount },
     { count: driversCount },
   ] = await Promise.all([
-    supabase.from("hotels").select("*").eq("status", "active").eq("property_type", "hotel").order("featured", { ascending: false }).limit(3),
-    supabase.from("drivers").select("*").eq("status", "active").order("featured", { ascending: false }).limit(3),
-    supabase.from("rooms").select("hotel_id, price_per_night, currency").eq("status", "active"),
-    supabase.from("hotel_reviews").select("reviewer_name, host_rating, property_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
-    supabase.from("driver_reviews").select("reviewer_name, driver_rating, vehicle_rating, comment, created_at").order("created_at", { ascending: false }).limit(3),
-    supabase.from("hotels").select("id", { count: "exact", head: true }).eq("status", "active").eq("property_type", "hotel"),
-    supabase.from("drivers").select("id", { count: "exact", head: true }).eq("status", "active"),
+    supabase
+      .from("hotels")
+      .select("*")
+      .eq("status", "active")
+      .eq("property_type", "hotel")
+      .order("featured", { ascending: false })
+      .limit(3),
+    supabase
+      .from("drivers")
+      .select("*")
+      .eq("status", "active")
+      .order("featured", { ascending: false })
+      .limit(3),
+    supabase
+      .from("rooms")
+      .select("hotel_id, price_per_night, currency")
+      .eq("status", "active"),
+    supabase
+      .from("hotel_reviews")
+      .select(
+        "reviewer_name, host_rating, property_rating, comment, created_at",
+      )
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("driver_reviews")
+      .select(
+        "reviewer_name, driver_rating, vehicle_rating, comment, created_at",
+      )
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("hotels")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "active")
+      .eq("property_type", "hotel"),
+    supabase
+      .from("drivers")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "active"),
   ]);
 
-  const minPriceByHotel = new Map<string, { price: number; currency: string }>();
+  const minPriceByHotel = new Map<
+    string,
+    { price: number; currency: string }
+  >();
   for (const room of featuredRooms ?? []) {
     const current = minPriceByHotel.get(room.hotel_id);
     if (!current || room.price_per_night < current.price) {
-      minPriceByHotel.set(room.hotel_id, { price: room.price_per_night, currency: room.currency });
+      minPriceByHotel.set(room.hotel_id, {
+        price: room.price_per_night,
+        currency: room.currency,
+      });
     }
   }
 
@@ -74,7 +122,10 @@ export default async function HomePage() {
       createdAt: r.created_at,
     })),
   ]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
     .slice(0, 3);
 
   const realPhotos = (hotels ?? [])
@@ -82,14 +133,16 @@ export default async function HomePage() {
     .filter((url): url is string => Boolean(url))
     .slice(0, 4);
 
-  const verticals = (["hotels", "transport", "tours", "flights"] as const).map((key) => ({
-    key,
-    href: `/${key}`,
-    title: t(`verticals.${key}.title`),
-    description: t(`verticals.${key}.description`),
-    gradient: VERTICAL_GRADIENTS[key],
-    icon: VERTICAL_ICONS[key],
-  }));
+  const verticals = (["hotels", "transport", "tours", "flights"] as const).map(
+    (key) => ({
+      key,
+      href: `/${key}`,
+      title: t(`verticals.${key}.title`),
+      description: t(`verticals.${key}.description`),
+      gradient: VERTICAL_GRADIENTS[key],
+      icon: VERTICAL_ICONS[key],
+    }),
+  );
 
   return (
     <>
@@ -98,14 +151,31 @@ export default async function HomePage() {
           <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-gold blur-3xl" />
           <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-brand-teal blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-6xl px-4 py-24 text-center sm:px-6 lg:px-8">
-          <p className="font-display text-sm font-bold tracking-widest text-brand-gold uppercase">Uman2Go</p>
-          <h1 className="mt-4 font-display text-4xl font-extrabold sm:text-6xl">{t("heroTitle")}</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">{t("heroSubtitle")}</p>
+        <div className="relative mx-auto max-w-6xl px-4 py-10 text-center sm:px-6 lg:px-8">
+          <p className="font-display text-sm font-bold tracking-widest text-brand-gold uppercase">
+            Uman2Go
+          </p>
+          <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-5xl">
+            {t("heroTitle")}
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">
+            {t("heroSubtitle")}
+          </p>
+          <SalesAssistant embedded />
           <ul className="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-white/85">
             {["verified", "whatsapp", "secure", "languages"].map((key) => (
               <li key={key} className="flex items-center gap-1.5">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-brand-gold">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="shrink-0 text-brand-gold"
+                >
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
                 {t(`trustBar.${key}`)}
@@ -119,7 +189,11 @@ export default async function HomePage() {
             <ButtonLink href="/plan" className="text-base px-7 py-3">
               {t("planTrip")}
             </ButtonLink>
-            <ButtonLink href="/transport" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3">
+            <ButtonLink
+              href="/transport"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-brand-navy text-base px-7 py-3"
+            >
               {t("requestTransport")}
             </ButtonLink>
             <TelegramLink />
@@ -143,14 +217,25 @@ export default async function HomePage() {
                 href={v.href}
                 className={`group flex h-full flex-col gap-4 rounded-3xl bg-gradient-to-br ${v.gradient} p-8 text-white shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl`}
               >
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   {v.icon}
                 </svg>
                 <h2 className="font-display text-2xl font-bold">{v.title}</h2>
                 <p className="text-white/85">{v.description}</p>
                 <span className="mt-auto inline-flex items-center gap-1 font-semibold">
                   {t("viewMore")}
-                  <span className="transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1">←</span>
+                  <span className="transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1">
+                    ←
+                  </span>
                 </span>
               </Link>
             </Reveal>
@@ -162,8 +247,13 @@ export default async function HomePage() {
         <Section tinted>
           <Reveal>
             <div className="flex items-end justify-between">
-              <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("featuredHotels")}</h2>
-              <Link href="/hotels" className="text-sm font-semibold text-brand-terracotta hover:underline">
+              <h2 className="font-display text-3xl font-extrabold text-brand-navy">
+                {t("featuredHotels")}
+              </h2>
+              <Link
+                href="/hotels"
+                className="text-sm font-semibold text-brand-terracotta hover:underline"
+              >
                 {t("allHotels")}
               </Link>
             </div>
@@ -173,7 +263,11 @@ export default async function HomePage() {
               const price = minPriceByHotel.get(hotel.id);
               return (
                 <Reveal key={hotel.id}>
-                  <HotelCard hotel={hotel} fromPrice={price?.price} currency={price?.currency} />
+                  <HotelCard
+                    hotel={hotel}
+                    fromPrice={price?.price}
+                    currency={price?.currency}
+                  />
                 </Reveal>
               );
             })}
@@ -185,8 +279,13 @@ export default async function HomePage() {
         <Section>
           <Reveal>
             <div className="flex items-end justify-between">
-              <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("featuredDrivers")}</h2>
-              <Link href="/transport" className="text-sm font-semibold text-brand-terracotta hover:underline">
+              <h2 className="font-display text-3xl font-extrabold text-brand-navy">
+                {t("featuredDrivers")}
+              </h2>
+              <Link
+                href="/transport"
+                className="text-sm font-semibold text-brand-terracotta hover:underline"
+              >
                 {t("allDrivers")}
               </Link>
             </div>
@@ -204,8 +303,12 @@ export default async function HomePage() {
       <Section tinted>
         <Reveal>
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("transportQuick.title")}</h2>
-            <p className="mt-2 text-foreground/70">{t("transportQuick.subtitle")}</p>
+            <h2 className="font-display text-3xl font-extrabold text-brand-navy">
+              {t("transportQuick.title")}
+            </h2>
+            <p className="mt-2 text-foreground/70">
+              {t("transportQuick.subtitle")}
+            </p>
           </div>
           <div className="mx-auto mt-8 max-w-4xl">
             <HomeTransportQuickForm />
@@ -215,8 +318,12 @@ export default async function HomePage() {
 
       <Section className="text-center">
         <Reveal>
-          <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("vipTitle")}</h2>
-          <p className="mx-auto mt-3 max-w-xl text-foreground/70">{t("vipDescription")}</p>
+          <h2 className="font-display text-3xl font-extrabold text-brand-navy">
+            {t("vipTitle")}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-foreground/70">
+            {t("vipDescription")}
+          </p>
           <ButtonLink href="/vip" className="mt-6">
             {t("vipButton")}
           </ButtonLink>
@@ -226,8 +333,12 @@ export default async function HomePage() {
       <Section tinted>
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-3xl font-extrabold text-brand-navy">{t("socialProof.title")}</h2>
-            <p className="mt-2 text-foreground/70">{t("socialProof.subtitle")}</p>
+            <h2 className="font-display text-3xl font-extrabold text-brand-navy">
+              {t("socialProof.title")}
+            </h2>
+            <p className="mt-2 text-foreground/70">
+              {t("socialProof.subtitle")}
+            </p>
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
@@ -236,30 +347,50 @@ export default async function HomePage() {
                 realReviews.map((review, i) => (
                   <Card key={i} className="p-5">
                     <div className="flex items-center justify-between">
-                      <p className="font-semibold text-brand-navy">{review.name.split(" ")[0]}</p>
+                      <p className="font-semibold text-brand-navy">
+                        {review.name.split(" ")[0]}
+                      </p>
                       <RatingStars rating={review.rating} />
                     </div>
-                    {review.comment && <p className="mt-2 text-sm text-foreground/70">{review.comment}</p>}
-                    <p className="mt-2 text-xs text-foreground/50">{formatDate(review.createdAt, locale)}</p>
+                    {review.comment && (
+                      <p className="mt-2 text-sm text-foreground/70">
+                        {review.comment}
+                      </p>
+                    )}
+                    <p className="mt-2 text-xs text-foreground/50">
+                      {formatDate(review.createdAt, locale)}
+                    </p>
                   </Card>
                 ))
               ) : (
                 <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
-                  <p className="text-sm text-foreground/70">{t("socialProof.noReviewsYet")}</p>
+                  <p className="text-sm text-foreground/70">
+                    {t("socialProof.noReviewsYet")}
+                  </p>
                 </Card>
               )}
             </div>
 
             <Card className="flex flex-col items-center justify-center gap-4 p-6 text-center">
               <div>
-                <p className="font-display text-4xl font-extrabold text-brand-terracotta">{hotelsCount ?? 0}</p>
-                <p className="mt-1 text-sm text-foreground/70">{t("socialProof.hotelsCount")}</p>
+                <p className="font-display text-4xl font-extrabold text-brand-terracotta">
+                  {hotelsCount ?? 0}
+                </p>
+                <p className="mt-1 text-sm text-foreground/70">
+                  {t("socialProof.hotelsCount")}
+                </p>
               </div>
               <div>
-                <p className="font-display text-4xl font-extrabold text-brand-terracotta">{driversCount ?? 0}</p>
-                <p className="mt-1 text-sm text-foreground/70">{t("socialProof.driversCount")}</p>
+                <p className="font-display text-4xl font-extrabold text-brand-terracotta">
+                  {driversCount ?? 0}
+                </p>
+                <p className="mt-1 text-sm text-foreground/70">
+                  {t("socialProof.driversCount")}
+                </p>
               </div>
-              <p className="mt-2 text-xs text-foreground/60">{t("socialProof.checkedByTeam")}</p>
+              <p className="mt-2 text-xs text-foreground/60">
+                {t("socialProof.checkedByTeam")}
+              </p>
             </Card>
 
             {realPhotos.length > 0 ? (

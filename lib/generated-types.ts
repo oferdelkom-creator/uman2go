@@ -988,6 +988,8 @@ export type Database = {
       sales_conversations: {
         Row: {
           busy_until: string | null
+          completed_at: string | null
+          completion_summary: string | null
           consent_at: string
           contact: string
           created_at: string
@@ -997,12 +999,17 @@ export type Database = {
           locale: string
           status: string
           summary: string
+          summary_email_id: string | null
+          summary_email_sent_at: string | null
+          summary_email_status: string
           token_hash: string
           turns: number
           updated_at: string
         }
         Insert: {
           busy_until?: string | null
+          completed_at?: string | null
+          completion_summary?: string | null
           consent_at?: string
           contact: string
           created_at?: string
@@ -1012,12 +1019,17 @@ export type Database = {
           locale?: string
           status?: string
           summary?: string
+          summary_email_id?: string | null
+          summary_email_sent_at?: string | null
+          summary_email_status?: string
           token_hash: string
           turns?: number
           updated_at?: string
         }
         Update: {
           busy_until?: string | null
+          completed_at?: string | null
+          completion_summary?: string | null
           consent_at?: string
           contact?: string
           created_at?: string
@@ -1027,6 +1039,9 @@ export type Database = {
           locale?: string
           status?: string
           summary?: string
+          summary_email_id?: string | null
+          summary_email_sent_at?: string | null
+          summary_email_status?: string
           token_hash?: string
           turns?: number
           updated_at?: string
@@ -1602,6 +1617,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      sales_claim_completion: { Args: { p_id: string }; Returns: boolean }
       sales_claim_turn: { Args: { p_id: string }; Returns: boolean }
       sales_take_quota: {
         Args: { p_bucket: string; p_limit: number }
@@ -1762,3 +1778,4 @@ export const Constants = {
     },
   },
 } as const
+

@@ -23,6 +23,8 @@ export async function POST(request: Request) {
     if (!salesEnabled()) return fail("השירות אינו זמין כרגע.", 503);
     const session = await currentConversation();
     if (!session) return fail("יש להשאיר פרטי קשר כדי להתחיל שיחה.", 401);
+    if (session.completed_at)
+      return fail("השיחה הסתיימה. אפשר לפתוח שיחה חדשה.", 409);
     if (Number(request.headers.get("content-length") ?? 0) > 12000)
       return fail("ההודעה ארוכה מדי.", 413);
     const raw = await request.text();

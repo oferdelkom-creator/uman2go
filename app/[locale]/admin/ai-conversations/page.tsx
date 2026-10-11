@@ -5,7 +5,9 @@ export default async function ConversationsPage() {
   // Column grants deliberately exclude the bearer-token hash.
   const { data, error } = await db
     .from("sales_conversations")
-    .select("id,full_name,contact,locale,created_at,updated_at,summary,status")
+    .select(
+      "id,full_name,contact,locale,created_at,updated_at,summary,status,completed_at,completion_summary,summary_email_status,summary_email_sent_at",
+    )
     .gt("expires_at", new Date().toISOString())
     .order("updated_at", { ascending: false })
     .limit(100);
@@ -38,7 +40,17 @@ export default async function ConversationsPage() {
               {new Date(row.updated_at).toLocaleString("he-IL")} · {row.locale}
             </p>
             <p className="mt-3 whitespace-pre-wrap">
-              {row.summary || "השאיר/ה פרטי קשר; השיחה טרם התחילה."}
+              {row.completion_summary ||
+                row.summary ||
+                "השאיר/ה פרטי קשר; השיחה טרם התחילה."}
+            </p>
+            <p className="mt-3 text-sm">
+              {row.completed_at ? "השיחה הסתיימה" : "השיחה פעילה"} ·{" "}
+              {row.summary_email_status === "sent"
+                ? "הסיכום נשלח במייל"
+                : row.summary_email_status === "failed"
+                  ? "שליחת המייל נכשלה; נדרש טיפול"
+                  : "הסיכום טרם נשלח"}
             </p>
             <details className="mt-3">
               <summary className="cursor-pointer">תוכן השיחה</summary>
