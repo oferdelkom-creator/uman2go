@@ -4,6 +4,7 @@ All state changes, the inbound update receipt, audit events and outbound message
 commit together. Transport retries do not duplicate bookings or assignments.
 """
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from zoneinfo import ZoneInfo
@@ -293,6 +294,13 @@ class Service(Fleet, Distance, Companies, Profiles, Interaction, CRM):
             return
         if data == 'language' or command in ('/start', '/language'):
             if command == '/start':
+                parts = text.split()
+                if len(parts) == 2 and re.fullmatch(r'taxi_[a-f0-9]{48}', parts[1]):
+                    # Opaque draft only: no ride, GPS grant, price or reservation is created by /start.
+                    url = 'https://www.uman2go.com/api/umanbot?draft=' + parts[1][5:]
+                    self.send(db, uid, 'בקשת מונית מהאתר · Taxi draft from UMAN2GO\nפתחו, שתפו GPS, בדקו יעד ומספר נוסעים ואשרו שליחה. עדיין לא הוזמנה מונית.\nOpen, share GPS, review destination and passengers, then submit. No taxi has been booked.',
+                        markup={'inline_keyboard': [[{'text': 'פתיחת הבקשה · Open draft', 'web_app': {'url': url}}]]})
+                    return
                 self.state(db, uid, 'home')
             self.send(db, uid, 'בחרו שפה / Choose language / Выберите язык / Виберіть мову',
                       [(name, 'lang:' + code) for code, name in LANGUAGES.items()])

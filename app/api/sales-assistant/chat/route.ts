@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { generateText } from "ai";
+import { generateText, tool, jsonSchema } from "ai";
+import { prepareTaxiDraft } from "@/lib/sales-taxi";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -67,9 +68,40 @@ export async function POST(request: Request) {
     const modelId = await salesModelId();
     stage = "generation";
     console.info("Sales assistant model", { modelId });
+    let taxiDraft: Awaited<ReturnType<typeof prepareTaxiDraft>> | undefined;
     const result = await generateText({
       model: anthropic(modelId),
       instructions: salesInstructions(session.locale, catalogue),
+      tools: {
+        prepareImmediateTaxi: tool({
+          description:
+            "Prepare a taxi draft only when the customer explicitly wants an immediate ride from their current GPS location in Ukraine and has provided a full destination and passenger count. No ride is submitted. The customer must open Telegram, share GPS, review and send the request, then choose a driver and price. Never use for future rides, provider signup, or an unspecified pickup.",
+          inputSchema: jsonSchema<{
+            destination: string;
+            passengers: number;
+            immediate: true;
+          }>({
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              destination: { type: "string", minLength: 5, maxLength: 400 },
+              passengers: { type: "integer", minimum: 1, maximum: 50 },
+              immediate: { type: "boolean", const: true },
+            },
+            required: ["destination", "passengers", "immediate"],
+          }),
+          execute: async ({ destination, passengers, immediate }) => {
+            if (immediate !== true) throw new Error("Immediate rides only");
+            if (!taxiDraft)
+              taxiDraft = await prepareTaxiDraft(
+                session.id,
+                destination,
+                passengers,
+              );
+            return { prepared: true, requiresTelegramConfirmation: true };
+          },
+        }),
+      },
       messages: (history.data ?? []).reverse().map((row) => ({
         role: row.role as "user" | "assistant",
         content: row.content,
@@ -79,7 +111,11 @@ export async function POST(request: Request) {
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(40000),
     });
-    const reply = result.text.trim().slice(0, 6000);
+    const reply = taxiDraft
+      ? session.locale === "he"
+        ? `הכנתי בקשת מונית מיידית ליעד: ${taxiDraft.destination}, עבור ${taxiDraft.passengers} נוסעים.\nהבקשה עדיין לא נשלחה לנהגים. בטלגרם לחצו Start ואז פתיחת הבקשה, שתפו GPS, בדקו את הפרטים ואשרו שליחה. הנהגים יציעו מחיר ותבחרו הצעה. הקישור תקף ל־15 דקות; אין חיוב באתר.\n${taxiDraft.url}`
+        : `Prepared an immediate taxi draft to ${taxiDraft.destination} for ${taxiDraft.passengers} passengers. It has not been sent to drivers. In Telegram press Start, open the draft, share GPS, review and submit. Drivers will quote and you choose an offer. The link expires in 15 minutes; no website charge.\n${taxiDraft.url}`
+      : result.text.trim().slice(0, 6000);
     if (!reply) {
       console.error("Sales assistant empty reply", {
         finishReason: result.finishReason,

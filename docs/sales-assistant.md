@@ -27,3 +27,12 @@ Idle scheduling: `supabase/sales-assistant-idle.sql` and `supabase/tests/sales-a
 Scheduler requests use a signed timestamp and random nonce, accepted for 90 seconds and consumed once using an atomic quota. The persistent signing secret never enters the pg_net request queue. Both Vault and dispatcher remain private.
 
 The assistant also identifies provider onboarding intent, asks about category/business/service area/capacity and desired listing, and points to the verified /join hub. It does not approve or publish providers or invent commercial terms. Handoff summaries distinguish traveler enquiries, provider applications, mixed intent and unclear intent; provider summaries include service details and missing information for review.
+
+## Immediate taxi handoff
+The assistant can prepare an immediate taxi draft from the customer's current GPS location in Ukraine, after collecting the destination and passenger count. It does not submit, assign a driver, quote or charge. Future/different-pickup requests stay in the transport enquiry flow.
+
+`prepareImmediateTaxi` writes a 15-minute service-only draft, stores only the SHA256 of a random 192-bit link token, and returns the official `UMAN2GO_RidesBot` start link. No contact details or GPS are copied from the website. Telegram `/start taxi_<token>` queues a review button without creating a ride. The mini app verifies Telegram initData before atomically binding the draft to the first verified user; a different user and expired token cannot read it.
+
+The draft fills the existing editable destination/passenger fields. Existing GPS checks and the customer's Send request button still apply. A stable taxi request ID uses the existing transactional web_actions idempotency record, so retrying or reopening cannot create a second ride. Drivers quote, the passenger selects a price, and payment remains the existing on-arrival flow. Drafts expire after 15 minutes and are deleted hourly or with their parent conversation. Website consent explains the Telegram handoff.
+
+Validation: TypeScript and changed-file lint, Telegram draft-only/GPS/duplicate booking tests and existing mini-app tests; SQL rollback test for binding, expiry and client-role denial. No test ride sent to live drivers.
