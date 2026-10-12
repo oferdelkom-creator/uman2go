@@ -70,6 +70,7 @@ const copy = {
 };
 
 function MessageText({ content }: { content: string }) {
+  const locale = useLocale();
   // Only known internal routes and the official WhatsApp link become clickable.
   return content
     .split(
@@ -79,8 +80,20 @@ function MessageText({ content }: { content: string }) {
       /^(?:https:\/\/t\.me\/UMAN2GO_RidesBot\?start=taxi_[a-f0-9]{48}|https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)$/.test(
         part,
       ) ? (
-        <a key={index} href={part} className="underline text-brand-terracotta">
-          {part}
+        <a
+          key={index}
+          href={part}
+          className="underline text-brand-terracotta"
+          target={part.startsWith("https://t.me/") ? "_blank" : undefined}
+          rel={
+            part.startsWith("https://t.me/") ? "noopener noreferrer" : undefined
+          }
+        >
+          {part.startsWith("https://t.me/")
+            ? locale === "he"
+              ? "פתיחת בקשת המונית בטלגרם"
+              : "Open taxi request in Telegram"
+            : part}
         </a>
       ) : (
         <span key={index}>{part}</span>
@@ -452,3 +465,4 @@ export default function SalesAssistant({
     </section>
   );
 }
+
