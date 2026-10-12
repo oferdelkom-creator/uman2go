@@ -11,6 +11,10 @@ begin
  or has_table_privilege('authenticated','vault.decrypted_secrets','SELECT') then
   raise exception 'Vault secret exposed';
  end if;
+ if position('Bearer ' in pg_get_functiondef('uman_private.dispatch_sales_summaries()'::regprocedure))>0
+ or position('extensions.hmac' in pg_get_functiondef('uman_private.dispatch_sales_summaries()'::regprocedure))=0 then
+  raise exception 'Persistent scheduler secret must not enter the HTTP queue';
+ end if;
  insert into public.sales_conversations(token_hash,full_name,contact)
  values(encode(gen_random_bytes(32),'hex'),'Idle regression','test@example.invalid') returning id into cid;
  if public.sales_claim_idle_completion(cid) then raise exception 'Fresh conversation completed'; end if;

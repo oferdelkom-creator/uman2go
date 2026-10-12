@@ -39,17 +39,21 @@ revoke all on function public.sales_claim_completion(uuid),public.sales_idle_can
 grant execute on function public.sales_claim_completion(uuid),public.sales_idle_candidates(integer),public.sales_claim_idle_completion(uuid) to service_role;
 
 -- The scheduler token is provisioned separately in Vault and Vercel; never commit its value.
+-- Only a short-lived, single-use HMAC signature enters pg_net, never the Vault secret.
 create schema if not exists uman_private;
 create function uman_private.dispatch_sales_summaries() returns bigint
 language plpgsql security invoker set search_path = '' as $$
-declare cron_token text;
+declare cron_token text; issued text; nonce text; signature text;
 begin
  if not exists(select 1 from public.sales_idle_candidates(1)) then return null; end if;
  select decrypted_secret into cron_token from vault.decrypted_secrets where name='uman_sales_summary_cron_token';
  if cron_token is null then raise exception 'Sales scheduler credential is missing'; end if;
+ issued := floor(extract(epoch from clock_timestamp()))::bigint::text;
+ nonce := gen_random_uuid()::text;
+ signature := encode(extensions.hmac(issued||':'||nonce,cron_token,'sha256'),'hex');
  return net.http_post(
   url:='https://www.uman2go.com/api/internal/sales-summary',
-  headers:=jsonb_build_object('Content-Type','application/json','Authorization','Bearer '||cron_token),
+  headers:=jsonb_build_object('Content-Type','application/json','Authorization','SalesCron '||issued||':'||nonce||':'||signature),
   body:='{}'::jsonb,timeout_milliseconds:=60000);
 end $$;
 revoke all on function uman_private.dispatch_sales_summaries() from public,anon,authenticated,service_role;
