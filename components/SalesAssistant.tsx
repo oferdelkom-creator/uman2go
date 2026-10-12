@@ -25,7 +25,7 @@ const copy = {
     start: "שמירה והתחלת שיחה",
     saved: "פרטי הקשר נשמרו. אפשר להמשיך כאן גם לאחר רענון העמוד באותו דפדפן.",
     greeting:
-      "נעים להכיר! במה אפשר לעזור לקראת הנסיעה לאומן או לאוקראינה — לינה, הסעה או טיול?",
+      "נעים להכיר! במה אפשר לעזור לקראת הנסיעה לאומן או לאוקראינה — לינה, הסעה, טיול או הצטרפות כספק שירות?",
     message: "מה תרצו לברר?",
     send: "שליחה",
     waiting: "מכין תשובה…",
@@ -57,7 +57,7 @@ const copy = {
     saved:
       "Your contact details are saved. You can resume after refreshing in the same browser.",
     greeting:
-      "Nice to meet you! What can I help with for your trip to Uman or Ukraine — accommodation, transport or a tour?",
+      "Nice to meet you! What can I help with for your trip to Uman or Ukraine — accommodation, transport, a tour or joining as a service provider?",
     message: "What would you like to know?",
     send: "Send",
     waiting: "Preparing a reply…",
@@ -73,10 +73,10 @@ function MessageText({ content }: { content: string }) {
   // Only known internal routes and the official WhatsApp link become clickable.
   return content
     .split(
-      /(https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)/g,
+      /(https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)/g,
     )
     .map((part, index) =>
-      /^(?:https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)$/.test(
+      /^(?:https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)$/.test(
         part,
       ) ? (
         <a key={index} href={part} className="underline text-brand-terracotta">
