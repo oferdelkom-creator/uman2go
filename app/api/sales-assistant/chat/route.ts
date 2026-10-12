@@ -92,6 +92,11 @@ export async function POST(request: Request) {
       content: reply,
     });
     if (answer.error) throw new Error("Reply save failed");
+    const activity = await db
+      .from("sales_conversations")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+    if (activity.error) throw new Error("Activity save failed");
     return NextResponse.json({ reply });
   } catch (error) {
     // Never log provider request objects: they can contain secrets or customer messages.

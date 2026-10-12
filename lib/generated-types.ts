@@ -999,6 +999,7 @@ export type Database = {
           locale: string
           status: string
           summary: string
+          summary_email_attempts: number
           summary_email_id: string | null
           summary_email_sent_at: string | null
           summary_email_status: string
@@ -1019,6 +1020,7 @@ export type Database = {
           locale?: string
           status?: string
           summary?: string
+          summary_email_attempts?: number
           summary_email_id?: string | null
           summary_email_sent_at?: string | null
           summary_email_status?: string
@@ -1039,6 +1041,7 @@ export type Database = {
           locale?: string
           status?: string
           summary?: string
+          summary_email_attempts?: number
           summary_email_id?: string | null
           summary_email_sent_at?: string | null
           summary_email_status?: string
@@ -1618,7 +1621,9 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       sales_claim_completion: { Args: { p_id: string }; Returns: boolean }
+      sales_claim_idle_completion: { Args: { p_id: string }; Returns: boolean }
       sales_claim_turn: { Args: { p_id: string }; Returns: boolean }
+      sales_idle_candidates: { Args: { p_limit?: number }; Returns: string[] }
       sales_take_quota: {
         Args: { p_bucket: string; p_limit: number }
         Returns: boolean

@@ -15,6 +15,8 @@ const copy = {
       "כדי שנוכל לחזור אליך אם השיחה תתנתק, מה הטלפון או המייל שלך?",
     editName: "שינוי השם",
     finish: "סיום שיחה ושליחת סיכום לצוות",
+    automatic:
+      "לאחר 5 דקות ללא הודעה חדשה, השיחה תסתיים וסיכום יישלח אוטומטית לצוות. אפשר גם לסיים עכשיו.",
     retryFinish: "ניסיון נוסף לשליחת הסיכום",
     finished: "תודה! השיחה הסתיימה והסיכום נשלח לצוות UMAN2GO להמשך טיפול.",
     contact: "טלפון או אימייל",
@@ -43,6 +45,8 @@ const copy = {
       "What is your phone number or email so our team can follow up if we get disconnected?",
     editName: "Change name",
     finish: "Finish and send a summary to the team",
+    automatic:
+      "After 5 minutes without a new message, this conversation ends and a summary is emailed to the team automatically. You can also finish now.",
     retryFinish: "Retry sending the summary",
     finished:
       "Thank you! Your conversation has ended and a summary has been sent to the UMAN2GO team for follow-up.",
@@ -130,6 +134,28 @@ export default function SalesAssistant({
       alive = false;
     };
   }, [t.error]);
+  useEffect(() => {
+    if (!started || busy || emailAccepted) return;
+    let alive = true;
+    const timer = setInterval(async () => {
+      try {
+        const response = await fetch("/api/sales-assistant/session", {
+          cache: "no-store",
+        });
+        const data = await response.json();
+        if (alive && response.ok && data.session?.completed) {
+          setCompleted(true);
+          setEmailAccepted(Boolean(data.session.emailAccepted));
+        }
+      } catch {
+        /* Keep the saved conversation available after transient network failures. */
+      }
+    }, 30000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, [started, busy, emailAccepted]);
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages, busy]);
@@ -315,6 +341,7 @@ export default function SalesAssistant({
               className="rounded-lg border p-3"
             />
           </label>
+          <p className="text-xs leading-6 text-foreground/70">{t.automatic}</p>
           <label className="flex gap-3 text-sm leading-6">
             <input
               type="checkbox"
@@ -384,6 +411,11 @@ export default function SalesAssistant({
                 {t.send}
               </button>
             </form>
+          ) : null}
+          {!completed ? (
+            <p className="mt-4 text-xs leading-6 text-foreground/70">
+              {t.automatic}
+            </p>
           ) : null}
           {!emailAccepted ? (
             <button
