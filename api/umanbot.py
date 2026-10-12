@@ -1,5 +1,7 @@
 """Vercel entrypoint. Public static assets; authenticated application/webhook endpoints."""
 import hmac
+import hashlib
+import re
 import json
 import mimetypes
 import os
@@ -69,6 +71,21 @@ class handler(BaseHTTPRequestHandler):
         if route=='setup':
             page=b'''<!doctype html><meta charset="utf-8"><title>UMAN2GO Deployment</title><h1>UMAN2GO deployment</h1><label>Access file <input id="access" type="file"></label><p id="loaded"></p><form method="post" action="?r=ops"><label>Deployment secret <input name="secret" type="password" required autocomplete="off"></label><select name="operation"><option>status</option><option>activate</option><option>pause</option></select><button>Run</button></form><script src="?r=setup.js"></script>'''
             return self.reply(200,page,'text/html')
+        if route=='draft':
+            try:
+                token,admins=settings()
+                user=authenticate(self.headers.get('X-Telegram-Init-Data',''),token)
+                draft_token=parse_qs(urlparse(self.path).query).get('token',[''])[0]
+                if not re.fullmatch(r'[a-f0-9]{48}',draft_token):
+                    return self.reply(400,{'error':'INVALID_DRAFT'})
+                result=CloudStore().rpc('sales_taxi_claim',{'p_hash':hashlib.sha256(draft_token.encode()).hexdigest(),'p_user_id':user['id']})
+                if not result:
+                    return self.reply(404,{'error':'DRAFT_EXPIRED'})
+                return self.reply(200,result[0])
+            except PermissionError:
+                return self.reply(401,{'error':'OPEN_IN_TELEGRAM'})
+            except Exception:
+                return self.reply(503,{'error':'TEMPORARILY_UNAVAILABLE'})
         if route!='state':
             try:
                 raw,kind=static_asset(route)

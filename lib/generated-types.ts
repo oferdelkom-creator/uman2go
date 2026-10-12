@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      sales_taxi_drafts: {
+        Row: {
+          token_hash: string;
+          conversation_id: string;
+          destination: string;
+          passengers: number;
+          expires_at: string;
+          telegram_user_id: number | null;
+        };
+        Insert: {
+          token_hash: string;
+          conversation_id: string;
+          destination: string;
+          passengers: number;
+          expires_at?: string;
+          telegram_user_id?: number | null;
+        };
+        Update: { expires_at?: string; telegram_user_id?: number | null };
+        Relationships: [];
+      };
+
       bookings: {
         Row: {
           adults_count: number | null
@@ -1601,6 +1622,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      sales_taxi_claim: { Args: { p_hash: string; p_user_id: number }; Returns: { destination: string; passengers: number }[] }
+
       available_room_ids: {
         Args: { p_check_in: string; p_check_out: string }
         Returns: string[]
