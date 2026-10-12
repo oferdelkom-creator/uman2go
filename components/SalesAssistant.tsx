@@ -74,10 +74,10 @@ function MessageText({ content }: { content: string }) {
   // Only known internal routes and the official WhatsApp link become clickable.
   return content
     .split(
-      /(https:\/\/t\.me\/UMAN2GO_RidesBot\?start=taxi_[a-f0-9]{48}|https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)/g,
+      /(https:\/\/t\.me\/UMAN2GO_RidesBot\?start=taxi_[a-f0-9]{48}|https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip|rosh-hashanah)(?:\/[a-zA-Z0-9_-]+)?)/g,
     )
     .map((part, index) =>
-      /^(?:https:\/\/t\.me\/UMAN2GO_RidesBot\?start=taxi_[a-f0-9]{48}|https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip)(?:\/[a-zA-Z0-9_-]+)?)$/.test(
+      /^(?:https:\/\/t\.me\/UMAN2GO_RidesBot\?start=taxi_[a-f0-9]{48}|https:\/\/wa\.me\/972523181877|\/(?:en\/|fr\/|uk\/)?(?:join|plan|hotels|transport|tours|organized-tours|flights|vip|rosh-hashanah)(?:\/[a-zA-Z0-9_-]+)?)$/.test(
         part,
       ) ? (
         <a
@@ -465,4 +465,3 @@ export default function SalesAssistant({
     </section>
   );
 }
-

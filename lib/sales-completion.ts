@@ -2,6 +2,8 @@ import "server-only";
 import { generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { CITY_LABELS, WAITLIST_CAMPAIGN } from "@/lib/rosh-hashanah-waitlist";
+import { hashToken } from "@/lib/sales-assistant";
 import { salesModelId } from "@/lib/sales-assistant";
 import { ADMIN_EMAIL, EMAIL_FROM } from "@/lib/resend";
 
@@ -75,6 +77,14 @@ export async function completeSalesConversation(id: string, automatic = false) {
         .eq("id", session.id);
       if (saved.error) throw new Error("Summary save failed");
     }
+    const enrollment = await db.from("rosh_hashanah_waitlist")
+      .select("departure_city,passengers,installments")
+      .eq("campaign", WAITLIST_CAMPAIGN)
+      .eq("contact_key", hashToken(session.contact.trim().toLowerCase().replace(/[\s()-]/g, "")))
+      .gt("expires_at", new Date().toISOString()).maybeSingle();
+    const waitlistSummary = enrollment.data
+      ? `\n\nרשימת המתנה מאומתת בטופס — ראש השנה 2027: ${CITY_LABELS[enrollment.data.departure_city]}, ${enrollment.data.passengers} נוסעים, תשלומים מועדפים: ${enrollment.data.installments ?? "לא נמסר"}. זו התעניינות בלבד; אין הזמנה או אישור תשלומים.\nhttps://www.uman2go.com/admin/flight-waitlist`
+      : enrollment.error ? "\n\nלא ניתן היה לבדוק רישום לרשימת ההמתנה; נדרשת בדיקה בניהול." : "";
     stage = "email";
     if (!process.env.RESEND_API_KEY) throw new Error("Email unavailable");
     // Fixed recipient and plain text prevent visitors or the model from redirecting mail or injecting HTML.
@@ -89,7 +99,7 @@ export async function completeSalesConversation(id: string, automatic = false) {
         from: EMAIL_FROM,
         to: [ADMIN_EMAIL],
         subject: "UMAN2GO — סיכום שיחה והמשך טיפול",
-        text: `שם: ${session.full_name}\nפרטי קשר: ${session.contact}\nמספר פנייה: ${session.id}\n\n${summary}\n\nהשיחה המלאה זמינה לניהול:\nhttps://www.uman2go.com/admin/ai-conversations\n\nהסיכום נוצר אוטומטית לצורך בדיקה והמשך טיפול; אין בו אישור הזמנה או שינוי אוטומטי של מידע באתר.`,
+        text: `שם: ${session.full_name}\nפרטי קשר: ${session.contact}\nמספר פנייה: ${session.id}\n\n${summary}${waitlistSummary}\n\nהשיחה המלאה זמינה לניהול:\nhttps://www.uman2go.com/admin/ai-conversations\n\nהסיכום נוצר אוטומטית לצורך בדיקה והמשך טיפול; אין בו אישור הזמנה או שינוי אוטומטי של מידע באתר.`,
       }),
       signal: AbortSignal.timeout(10000),
     });
