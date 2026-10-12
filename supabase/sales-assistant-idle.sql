@@ -39,6 +39,8 @@ revoke all on function public.sales_claim_completion(uuid),public.sales_idle_can
 grant execute on function public.sales_claim_completion(uuid),public.sales_idle_candidates(integer),public.sales_claim_idle_completion(uuid) to service_role;
 
 -- The scheduler token is provisioned separately in Vault and Vercel; never commit its value.
+-- Request headers contain the dedicated scheduler token while queued; browser roles cannot read them.
+revoke select on net.http_request_queue from public,anon,authenticated;
 create schema if not exists uman_private;
 create function uman_private.dispatch_sales_summaries() returns bigint
 language plpgsql security invoker set search_path = '' as $$

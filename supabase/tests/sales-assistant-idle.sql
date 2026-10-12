@@ -11,6 +11,10 @@ begin
  or has_table_privilege('authenticated','vault.decrypted_secrets','SELECT') then
   raise exception 'Vault secret exposed';
  end if;
+ if has_table_privilege('anon','net.http_request_queue','SELECT')
+ or has_table_privilege('authenticated','net.http_request_queue','SELECT') then
+  raise exception 'Scheduler request headers exposed';
+ end if;
  insert into public.sales_conversations(token_hash,full_name,contact)
  values(encode(gen_random_bytes(32),'hex'),'Idle regression','test@example.invalid') returning id into cid;
  if public.sales_claim_idle_completion(cid) then raise exception 'Fresh conversation completed'; end if;
