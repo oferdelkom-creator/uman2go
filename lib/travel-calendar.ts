@@ -7,7 +7,12 @@ const civil = (date: Date, timeZone: string) => {
   const part = (type: string) => parts.find((p) => p.type === type)!.value;
   return part("year") + "-" + part("month") + "-" + part("day");
 };
-const rules = [
+type CalendarRule = { month: string; day: number; days: number; name: string; demand: string; leadDays: number; location?: string; source?: string };
+const rules: CalendarRule[] = [
+  { month: "Nisan", day: 1, days: 1, name: "יום הולדת רבי נחמן / Rabbi Nachman's birthday", demand: "Breslov commemorative date; potential group travel, not confirmed occupancy or an announced event", leadDays: 2, location: "Born in Medzhybizh; travel commemorations may be in Uman. Ask the intended destination.", source: "https://beit-rabenu.com/chagim/birthday-rabbi-nachman" },
+  { month: "Tishri", day: 18, days: 1, name: "הילולת רבי נחמן / Rabbi Nachman's yahrzeit", demand: "Breslov pilgrimage commemoration in Uman during Sukkot; actual demand and gatherings require confirmation", leadDays: 3, location: "Rabbi Nachman's grave, Uman", source: "https://beit-rabenu.com/chagim/birthday-rabbi-nachman" },
+  { month: "Tevet", day: 10, days: 1, name: "הילולת רבי נתן / Rabbi Natan's yahrzeit", demand: "Breslov commemoration; also the Fast of 10 Tevet. Do not describe the fast as a celebration or invent fasting times.", leadDays: 2, location: "Rabbi Natan's grave is in Bratslav, not Uman; coordinate onward travel separately.", source: "https://www.breslev.org/breslev-articles/לקראת-עשרה-בטבת/" },
+  { month: "Shevat", day: 15, days: 1, name: "יום הולדת רבי נתן / Rabbi Natan's birthday (Tu Bishvat)", demand: "Breslov commemorative date; potential travel only, not evidence of an event or peak occupancy", leadDays: 1, location: "Born in Nemyriv; grave in Bratslav. Ask intended destination.", source: "https://ofererez.co.il/רבי-נתן-מברסלב-ביוגרפיה/" },
   { month: "Tishri", day: 1, days: 2, name: "ראש השנה / Rosh Hashanah", demand: "main Uman pilgrimage peak", leadDays: 7 },
   { month: "Tishri", day: 10, days: 1, name: "יום כיפור / Yom Kippur", demand: "holiday travel constraints; demand unverified", leadDays: 1 },
   { month: "Tishri", day: 15, days: 9, name: "סוכות ושמחת תורה / Sukkot and Simchat Torah (Diaspora)", demand: "potential holiday travel period, not confirmed demand", leadDays: 3 },
@@ -43,6 +48,8 @@ export function travelCalendarContext(now = new Date()) {
         endsAtNightfallOn: end,
         planningWindowStarts: civil(new Date(date.getTime() - rule.leadDays * DAY), "UTC"),
         demand: rule.demand,
+        ...(rule.location ? { location: rule.location } : {}),
+        ...(rule.source ? { source: rule.source } : {}),
       });
     }
   }
@@ -51,7 +58,7 @@ export function travelCalendarContext(now = new Date()) {
     dateInUman: today,
     dateInIsrael: civil(now, "Asia/Jerusalem"),
     calendarConvention: "Uman uses Diaspora holiday lengths. Israel differs for Passover, Shavuot and Simchat Torah. Hebrew dates change at sunset; exact candle-lighting, sunset, Shabbat-end and flight-permitted times require a verified city-specific source. Date boundaries here are not exact times.",
-    seasonalPlanning: "Summer and school vacations may affect family travel; vacation dates depend on country. Elul and the days before Rosh Hashanah merit early planning. Other festivals are potential travel periods, not measured Uman occupancy. No live prices, availability, schedules, closures or crowd forecasts are supplied by this calendar.",
+    seasonalPlanning: "Summer and school vacations may affect family travel; vacation dates depend on country. Elul and the days before Rosh Hashanah merit early planning. Other festivals and Breslov birthdays/yahrzeits are potential travel periods, not measured Uman occupancy. A commemorative date is not proof of an organized gathering. Bratslav, Nemyriv and Medzhybizh are separate destinations, not neighborhoods of Uman. No live prices, availability, schedules, closures or crowd forecasts are supplied by this calendar.",
     upcomingOrOngoing: events,
     sourceReference: "https://www.hebcal.com/holidays/",
   };
