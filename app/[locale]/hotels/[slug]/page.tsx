@@ -11,6 +11,7 @@ import { PhotoGallery } from "@/components/ui/PhotoGallery";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/format";
 import { tField, tFieldArray } from "@/lib/i18n-content";
+import { amenityLabel, whatsappNumber } from "@/lib/provider-display";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { BookingForm } from "@/app/[locale]/hotels/[slug]/BookingForm";
 import { PaymentReturnBanner } from "@/app/[locale]/hotels/[slug]/PaymentReturnBanner";
@@ -67,7 +68,7 @@ export default async function HotelDetailPage({
 
   const area = tField(hotel.area, hotel.area_i18n, locale);
   const address = tField(hotel.address, hotel.address_i18n, locale);
-  const amenities = tFieldArray(hotel.amenities, hotel.amenities_i18n, locale);
+  const amenities = tFieldArray(hotel.amenities, hotel.amenities_i18n, locale).map((value) => amenityLabel(value, locale));
   const description = tField(hotel.description, hotel.description_i18n, locale);
 
   const hasDateSearch = Boolean(checkIn && checkOut);
@@ -146,7 +147,7 @@ export default async function HotelDetailPage({
               <p className="font-display text-sm font-bold text-brand-navy">{t("contact")}</p>
               {hotel.contact_name && <p className="mt-1 text-sm text-foreground/70">{hotel.contact_name}</p>}
               <a
-                href={`https://wa.me/${(hotel.whatsapp_phone || WHATSAPP_NUMBER).replace(/\D/g, "")}?text=${encodeURIComponent(t("whatsappPrefill", { hotelName: hotel.name }))}`}
+                href={`https://wa.me/${whatsappNumber(hotel.whatsapp_phone) || WHATSAPP_NUMBER}?text=${encodeURIComponent(t("whatsappPrefill", { hotelName: hotel.name }))}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal hover:underline"
