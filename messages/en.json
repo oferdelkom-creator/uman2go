@@ -111,8 +111,8 @@
       "cancellationPolicyTitle": "Cancellation Policy",
       "cancellationPolicyText": "Bookings can be cancelled or changed by coordinating directly with the hotel. We recommend checking the specific cancellation terms before confirming.",
       "paymentMethodsTitle": "Payment Methods",
-      "paymentMethodOnline": "Online deposit (credit card)",
-      "paymentMethodCash": "Balance - cash/transfer on arrival",
+      "paymentMethodOnline": "Payment methods and any deposit are agreed with the hotel.",
+      "paymentMethodCash": "Confirm payment terms directly with the hotel before paying.",
       "responseTimeTitle": "Response Time",
       "responseTimeText": "We and the property team try to get back to you the same day.",
       "whatsappContact": "Contact on WhatsApp",
@@ -296,7 +296,7 @@
     "trustBar": {
       "verified": "Verified hotels and drivers",
       "whatsapp": "Personal WhatsApp support",
-      "secure": "Secure booking",
+      "secure": "Booking requests coordinated with the provider",
       "languages": "Service in Hebrew, English, French and Ukrainian"
     },
     "searchHotels": "Search Hotels",
@@ -557,7 +557,7 @@
     "metaTitle": "Terms of Service",
     "title": "Terms of Service",
     "paragraph1": "{siteName} serves as a platform connecting travelers with independent hotels, drivers and tour guides operating in Uman. The actual booking, payment and service are provided by the service provider (the hotel owner/driver/guide), not by the platform itself.",
-    "paragraph2": "At booking time, a 10% deposit of the booking price is charged upfront through the site, constituting the platform's full commission - the price shown to you already reflects this, with no added markup. The remaining balance (90%) is paid directly to the service provider on arrival, as arranged with them.",
+    "paragraph2": "Payment terms, any deposit and payment dates are agreed with the service provider and must be confirmed before payment. Submitting a request on the site does not itself constitute a charge or a confirmed booking. For organized tours, payment is made directly to the organizer; the site does not collect the tour payment.",
     "paragraph3": "Cancellations and changes are subject to the specific service provider's cancellation policy. We recommend checking the cancellation policy before confirming a booking.",
     "paragraph4": "Using the site constitutes agreement to these terms. We reserve the right to update these terms from time to time."
   },
