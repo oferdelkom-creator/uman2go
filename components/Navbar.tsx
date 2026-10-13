@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { MobileMenu } from "@/components/MobileMenu";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui/Button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -28,7 +29,7 @@ export default async function Navbar() {
   return (
     <header className="sticky top-0 z-30 border-b border-brand-navy/10 bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold text-brand-navy">
+        <Link href="/" className="flex items-center gap-2 pe-12 font-display text-xl font-extrabold text-brand-navy">
           <Logo className="h-9 w-auto" />
           {SITE_NAME}
         </Link>
@@ -67,15 +68,9 @@ export default async function Navbar() {
           )}
         </div>
 
-        <label htmlFor="mobile-menu-toggle" className="cursor-pointer md:hidden" aria-label={t("menu")}>
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-navy">
-            <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-          </svg>
-        </label>
       </div>
 
-      <input type="checkbox" id="mobile-menu-toggle" className="peer hidden" />
-      <nav className="hidden flex-col gap-1 border-t border-brand-navy/10 bg-background px-4 py-3 peer-checked:flex md:hidden">
+      <MobileMenu label={t("menu")}>
         {NAV_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="rounded-lg px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-cream-deep">
             {link.key === "assistant" ? assistantLabel : t(link.key)}
@@ -99,7 +94,7 @@ export default async function Navbar() {
             </>
           )}
         </div>
-      </nav>
+      </MobileMenu>
     </header>
   );
 }
