@@ -111,8 +111,8 @@
       "cancellationPolicyTitle": "Politique d'annulation",
       "cancellationPolicyText": "Les réservations peuvent être annulées ou modifiées en coordination directe avec l'hôtel. Nous recommandons de vérifier les conditions d'annulation spécifiques avant de confirmer.",
       "paymentMethodsTitle": "Moyens de paiement",
-      "paymentMethodOnline": "Acompte en ligne (carte bancaire)",
-      "paymentMethodCash": "Solde - espèces/virement à l'arrivée",
+      "paymentMethodOnline": "Les moyens de paiement et tout acompte sont convenus avec l’hôtel.",
+      "paymentMethodCash": "Confirmez les conditions de paiement directement avec l’hôtel avant de payer.",
       "responseTimeTitle": "Temps de réponse",
       "responseTimeText": "Nous et l'équipe du logement essayons de vous répondre le jour même.",
       "whatsappContact": "Contacter sur WhatsApp",
@@ -296,7 +296,7 @@
     "trustBar": {
       "verified": "Hôtels et chauffeurs vérifiés",
       "whatsapp": "Support personnel sur WhatsApp",
-      "secure": "Réservation sécurisée",
+      "secure": "Demandes de réservation coordonnées avec le prestataire",
       "languages": "Service en hébreu, anglais, français et ukrainien"
     },
     "searchHotels": "Rechercher un hôtel",
@@ -557,7 +557,7 @@
     "metaTitle": "Conditions d'utilisation",
     "title": "Conditions générales d'utilisation",
     "paragraph1": "{siteName} sert de plateforme de mise en relation entre voyageurs et hôtels, chauffeurs et guides touristiques indépendants opérant à Ouman. La réservation, le paiement et le service sont fournis par le prestataire (le propriétaire de l'hôtel/chauffeur/guide) et non par la plateforme elle-même.",
-    "paragraph2": "Lors de la réservation, un acompte de 10% du prix de la réservation est facturé à l'avance via le site, constituant l'intégralité de la commission de la plateforme - le prix affiché inclut déjà cet acompte, sans majoration. Le solde restant (90%) est payé directement au prestataire à l'arrivée, selon les modalités convenues avec lui.",
+    "paragraph2": "Les conditions de paiement, tout acompte et les échéances sont convenus avec le prestataire et doivent être confirmés avant le paiement. Envoyer une demande sur le site ne constitue pas en soi un débit ou une réservation confirmée. Pour les voyages organisés, le paiement se fait directement à l’organisateur ; le site ne collecte pas le paiement du voyage.",
     "paragraph3": "Les annulations et modifications sont soumises à la politique d'annulation du prestataire concerné. Nous vous recommandons de vérifier cette politique avant de confirmer une réservation.",
     "paragraph4": "L'utilisation du site vaut acceptation de ces conditions. Nous nous réservons le droit de mettre à jour ces conditions de temps à autre."
   },
