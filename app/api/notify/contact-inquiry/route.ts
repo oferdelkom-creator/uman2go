@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   const { full_name, email, message } = await request.json();
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: EMAIL_FROM,
       to: ADMIN_EMAIL,
       replyTo: String(email || ""),
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
         <p>${message}</p>
       `),
     });
+    if (result.error) return NextResponse.json({ ok: false }, { status: 502 });
   } catch {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
