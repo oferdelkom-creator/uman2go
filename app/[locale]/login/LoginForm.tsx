@@ -33,6 +33,8 @@ export function LoginForm() {
       return;
     }
 
+    // Retry a new account's welcome after email confirmation and sign-in.
+    await fetch("/api/notify/welcome", { method: "POST", signal: AbortSignal.timeout(10000) }).catch(() => {});
     // "next" is stored locale-neutral (see proxy.ts) — this locale-aware
     // push re-adds the current locale's prefix.
     router.push(searchParams.get("next") ?? "/");

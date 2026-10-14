@@ -1,34 +1,22 @@
-import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { resend, EMAIL_FROM } from "@/lib/resend";
-import { renderEmail } from "@/lib/emailTemplate";
-
+import { createClient } from '@/lib/supabase/server';
+import { resend, EMAIL_FROM } from '@/lib/resend';
+import { acknowledgement } from '@/lib/welcomeEmail.mjs';
+export const dynamic = 'force-dynamic';
+const json = (body: unknown, status = 200) => Response.json(body, {status, headers:{'Cache-Control':'private, no-store'}});
 export async function POST(request: Request) {
-  const { userId } = await request.json();
-  const supabase = createAdminClient();
-
-  const { data: profile } = await supabase.from("profiles").select("email, full_name, role").eq("id", userId).maybeSingle();
-  if (!profile?.email) return NextResponse.json({ ok: false }, { status: 404 });
-
-  const isOwner = profile.role === "hotel_owner";
-
+  if (request.headers.get('origin') !== new URL(request.url).origin) return json({error:'Use the website to complete registration.'},403);
+  const db = await createClient();
+  const {data:{user},error} = await db.auth.getUser();
+  if (error || !user || user.is_anonymous || !user.email || !user.email_confirmed_at) return json({error:'Verified sign-in required.'},401);
+  // Restrict this notification to new accounts; the provider deduplicates the
+  // immutable event for 24 hours, longer than this entire eligibility window.
+  const age = Date.now() - Date.parse(user.created_at);
+  if (!Number.isFinite(age) || age < 0 || age >= 23*60*60*1000) return json({ok:true,sent:false,reason:'outside_welcome_window'});
+  if (!process.env.RESEND_API_KEY) return json({error:'Email service is not configured.'},503);
+  const mail = acknowledgement('uman2go', {name:String(user.user_metadata?.full_name ?? '').slice(0,120),kind:'account'});
   try {
-    await resend.emails.send({
-      from: EMAIL_FROM,
-      to: profile.email,
-      subject: "ברוכים הבאים ל-Uman2Go!",
-      html: renderEmail(`
-        <h2 style="margin:0 0 12px;color:#a0522d;">ברוכים הבאים, ${profile.full_name || ""}!</h2>
-        <p>${
-          isOwner
-            ? "תודה שהצטרפתם כבעלי מלון. בכניסה לאזור האישי תוכלו להוסיף את פרטי המלון שלכם ולהתחיל לקבל הזמנות."
-            : "תודה שנרשמתם! עכשיו תוכלו לחפש מלונות, להזמין הסעות ולהירשם לטיולים באומן."
-        }</p>
-      `),
-    });
-  } catch {
-    // best-effort
-  }
-
-  return NextResponse.json({ ok: true });
+    const {data,error:sendError} = await resend.emails.send({from:EMAIL_FROM,to:user.email,subject:mail.subject,html:mail.html,text:mail.text,replyTo:mail.replyTo},{idempotencyKey:'uman2go-welcome/'+user.id});
+    if (sendError || !data?.id) return json({error:'Email could not be accepted for delivery.'},502);
+    return json({ok:true,accepted:true});
+  } catch { return json({error:'Email could not be accepted for delivery.'},502); }
 }

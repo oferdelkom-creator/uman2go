@@ -54,10 +54,10 @@ export function SignupForm() {
       return;
     }
 
-    fetch("/api/notify/welcome", {
+    await fetch("/api/notify/welcome", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: data.user?.id }),
+      signal: AbortSignal.timeout(10000),
     }).catch(() => {});
 
     router.push("/");
