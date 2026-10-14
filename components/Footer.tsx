@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/Logo";
 import { SITE_NAME } from "@/lib/constants";
@@ -6,6 +6,8 @@ import TelegramLink from "@/components/TelegramLink";
 
 export default async function Footer() {
   const t = await getTranslations();
+  const locale = await getLocale();
+  const cancellationLabel = ({ he: "ביטול עסקה / הזמנה", en: "Cancel a transaction / booking", fr: "Annuler une transaction / réservation", uk: "Скасувати замовлення / бронювання" } as Record<string, string>)[locale] ?? "Cancel a transaction / booking";
 
   const columns = [
     {
@@ -64,6 +66,7 @@ export default async function Footer() {
             </div>
           ))}
         </div>
+        <div className="mt-8"><Link href="/terms#cancellation" className="inline-block rounded-xl border border-white px-5 py-3 font-bold text-white underline underline-offset-4">{cancellationLabel}</Link></div>
         <p className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-white/50">
           © {new Date().getFullYear()} {SITE_NAME}
         </p>
