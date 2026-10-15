@@ -14,6 +14,12 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_inquiries: {
+        Row: { id: string; full_name: string; email: string; message: string; status: string; source: string; source_reference: string | null; created_at: string; email_status: string; email_sent_at: string | null };
+        Insert: { id: string; full_name: string; email: string; message: string; status?: string; source?: string; source_reference?: string | null; created_at?: string; email_status?: string; email_sent_at?: string | null };
+        Update: { status?: string; email_status?: string; email_sent_at?: string | null };
+        Relationships: [];
+      };
       rosh_hashanah_waitlist: {
         Row: {id: string; campaign: string; contact_key: string; full_name: string; contact: string; departure_city: string; passengers: number; installments: number | null; consent_at: string; consent_version: string; created_at: string; expires_at: string;};
         Insert: {id?: string; campaign?: string; contact_key: string; full_name: string; contact: string; departure_city: string; passengers: number; installments?: number | null; consent_at?: string; consent_version?: string; created_at?: string; expires_at?: string;};
