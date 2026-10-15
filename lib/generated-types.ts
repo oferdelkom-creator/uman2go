@@ -14,6 +14,12 @@ export type Database = {
   }
   public: {
     Tables: {
+      transfer_reservations: {
+        Row: { id:string; conversation_id:string|null; source:string; full_name:string; contact:string; vehicle_code:string; stops_code:string; departure_date:string|null; departure_time:string|null; passengers:number; pickup:string|null; notes:string; pricing_version:string; currency:string; quote:Json; total_cents:number; deposit_cents:number; driver_balance_cents:number; status:string; supplier_name:string|null; supplier_approved_at:string|null; supplier_reference:string|null; payment_verified_at:string|null; payment_reference:string|null; notification_status:string; submitted_at:string|null; created_at:string; expires_at:string };
+        Insert: { id?:string; conversation_id?:string|null; source:string; full_name:string; contact:string; vehicle_code:string; stops_code:string; departure_date?:string|null; departure_time?:string|null; passengers:number; pickup?:string|null; notes?:string; pricing_version:string; currency?:string; quote:Json; total_cents:number; deposit_cents:number; driver_balance_cents:number; status?:string; supplier_name?:string|null; supplier_approved_at?:string|null; supplier_reference?:string|null; payment_verified_at?:string|null; payment_reference?:string|null; notification_status?:string; submitted_at?:string|null; created_at?:string; expires_at?:string };
+        Update: { status?:string; supplier_name?:string; supplier_approved_at?:string; supplier_reference?:string; payment_verified_at?:string; payment_reference?:string; notification_status?:string; submitted_at?:string };
+        Relationships: [];
+      };
       contact_inquiries: {
         Row: { id: string; full_name: string; email: string; message: string; status: string; source: string; source_reference: string | null; created_at: string; email_status: string; email_sent_at: string | null };
         Insert: { id: string; full_name: string; email: string; message: string; status?: string; source?: string; source_reference?: string | null; created_at?: string; email_status?: string; email_sent_at?: string | null };
@@ -1373,6 +1379,7 @@ export type Database = {
           peak_surcharge_pct: number
           price_per_km: number
           round_trip_discount_pct: number
+          supplier_fee_pct: number
           service_fee_pct: number
           updated_at: string
           vehicle_class: string
@@ -1386,6 +1393,7 @@ export type Database = {
           peak_surcharge_pct?: number
           price_per_km: number
           round_trip_discount_pct?: number
+          supplier_fee_pct?: number
           service_fee_pct?: number
           updated_at?: string
           vehicle_class: string
@@ -1399,6 +1407,7 @@ export type Database = {
           peak_surcharge_pct?: number
           price_per_km?: number
           round_trip_discount_pct?: number
+          supplier_fee_pct?: number
           service_fee_pct?: number
           updated_at?: string
           vehicle_class?: string
@@ -1821,4 +1830,3 @@ export const Constants = {
     },
   },
 } as const
-

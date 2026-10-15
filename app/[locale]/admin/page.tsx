@@ -17,6 +17,7 @@ export default async function AdminDashboardPage() {
     { count: homeRentalCount },
     { count: newProvidersCount },
     { count: tripRequestsCount },
+    { count: transferReservationsCount },
   ] = await Promise.all([
     supabase.from("bookings").select("id", { count: "exact", head: true }),
     supabase.from("transport_requests").select("id", { count: "exact", head: true }),
@@ -27,6 +28,7 @@ export default async function AdminDashboardPage() {
     supabase.from("home_rental_leads").select("id", { count: "exact", head: true }),
     supabase.from("provider_applications").select("id", { count: "exact", head: true }).eq("status", "new"),
     supabase.from("trip_requests").select("id", { count: "exact", head: true }),
+    supabase.from("transfer_reservations").select("id", {count:"exact",head:true}).neq("status","draft"),
   ]);
 
   const leadsCount = (vipCount ?? 0) + (investmentCount ?? 0) + (flightCount ?? 0) + (homeRentalCount ?? 0);
@@ -34,7 +36,7 @@ export default async function AdminDashboardPage() {
   const cards = [
     { href: "/admin/trips", title: t("tripRequests"), count: tripRequestsCount ?? 0 },
     { href: "/admin/bookings", title: t("hotelBookings"), count: bookingsCount ?? 0 },
-    { href: "/admin/transport", title: t("transportRequests"), count: transportCount ?? 0 },
+    { href: "/admin/transport", title: t("transportRequests"), count: (transportCount ?? 0) + (transferReservationsCount ?? 0) },
     { href: "/admin/tours", title: t("tourSignups"), count: tourSignupsCount ?? 0 },
     { href: "/admin/leads", title: t("leads"), count: leadsCount },
     { href: "/admin/providers", title: t("newProviders"), count: newProvidersCount ?? 0 },

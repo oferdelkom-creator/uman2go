@@ -1,0 +1,1 @@
+alter table public.transport_default_pricing alter column service_fee_pct set default 5; alter table public.transport_default_pricing add column supplier_fee_pct numeric(5,2) not null default 5 check (supplier_fee_pct >= 0 and supplier_fee_pct <= 100); update public.transport_default_pricing set service_fee_pct=5,supplier_fee_pct=5,updated_at=now();
