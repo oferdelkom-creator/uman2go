@@ -8,17 +8,21 @@ import { FormField, Input, Textarea } from "@/components/ui/FormField";
 export function ContactForm() {
   const t = useTranslations("contact");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [inquiryId, setInquiryId] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
     const formData = new FormData(e.currentTarget);
+    const id = inquiryId ?? crypto.randomUUID();
+    setInquiryId(id);
 
     try {
       const res = await fetch("/api/notify/contact-inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          id,
           full_name: formData.get("full_name"),
           email: formData.get("email"),
           message: formData.get("message"),
