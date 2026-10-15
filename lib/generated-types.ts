@@ -1020,6 +1020,7 @@ export type Database = {
       }
       sales_conversations: {
         Row: {
+          retained_for_followup: boolean
           busy_until: string | null
           completed_at: string | null
           completion_summary: string | null
@@ -1041,6 +1042,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          retained_for_followup?: boolean
           busy_until?: string | null
           completed_at?: string | null
           completion_summary?: string | null
@@ -1062,6 +1064,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          retained_for_followup?: boolean
           busy_until?: string | null
           completed_at?: string | null
           completion_summary?: string | null
@@ -1818,3 +1821,4 @@ export const Constants = {
     },
   },
 } as const
+
