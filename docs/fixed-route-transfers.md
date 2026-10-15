@@ -1,0 +1,13 @@
+# Chisinau to Uman transfers
+
+The 15 October 2026 emailed UMAN2GO transfer price list is the source for the one-way vehicle fares and two stop bundles in `lib/transfer-pricing.ts`. Customer-final prices already include the customer fee. No return fare, seasonal multiplier or live availability is supplied by this price list.
+
+For agreed supplier base P: customer total = 1.05P; supplier commission = 0.05P; customer commission = 0.05P; platform advance = 0.10P; direct driver balance = 0.95P. All arithmetic uses integer cents. A $315 final fare means $300 base, $30 advance and $285 to the driver. Supplements follow the same split. The new website, bot tools and stored reservation snapshot share this calculation. Legacy per-kilometre defaults retain their route rates but their fee settings are aligned to customer 5% and supplier 5%.
+
+Reservations are server-written and administrator-readable. The browser and model cannot submit a paid or confirmed state. Bot preparation saves a draft summary; a separate unambiguous customer confirmation submits it as `pending_supplier`. Same-turn confirmations, changed-detail messages, expired drafts and duplicate submissions are rejected or handled idempotently. Contact details are reused from the consented bot session.
+
+The administrator must record the supplier identity and written approval reference before the request becomes `awaiting_deposit`. They must then verify the exact advance amount against a real payment and supply its reference before the state becomes `confirmed`. This records evidence; it does not charge a card. The existing unverified Grow integration is not used to manufacture a payment link or payment success. Staff coordinate the actual payment through their verified payment channel. No automated customer confirmation notification is claimed; staff communicate final confirmation.
+
+Website submissions validate contact, consent, date, local Chisinau pickup time, location and vehicle capacity, recompute prices server-side, store first and notify second. Notification failure leaves the request accessible in `/admin/transport`. Submitted requests are independent of bot-session deletion. Admin dashboard counts include submitted fixed-route requests. Existing requests for other routes remain separate and do not inherit this fare.
+
+Tests: `node --test tests/transfer-pricing.test.cjs tests/transfer-confirmation.test.cjs` with TypeScript installed. Database checks verify amount reconciliation and that confirmation requires both supplier and payment evidence. Verify one website request and one bot draft/confirmation flow after deployment; use clearly labelled internal test records and do not mark an actual payment.

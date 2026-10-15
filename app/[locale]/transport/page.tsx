@@ -1,3 +1,4 @@
+import { TransferPriceList } from "@/components/TransferPriceList";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
@@ -36,6 +37,7 @@ export default async function TransportPage() {
         <ButtonLink href="/transport/request" variant="outline">{t("generalRequest")}</ButtonLink>
       </div>
 
+      <TransferPriceList />
       {drivers && drivers.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {drivers.map((driver) => (
