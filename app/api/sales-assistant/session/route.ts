@@ -76,11 +76,12 @@ export async function POST(request: Request) {
     if (!(await quota(request, "start")))
       return fail("הגענו למגבלת השימוש. אפשר לפנות בוואטסאפ.", 429);
     const db = createAdminClient();
-    // Thirty-day retention, with cleanup on new sessions. No personal data enters the usage table.
+    // Honour the original 30-day policy for legacy consent; retain opted-in enquiries for follow-up.
     const cleanup = await db
       .from("sales_conversations")
       .delete()
-      .lt("expires_at", new Date().toISOString());
+      .lt("expires_at", new Date().toISOString())
+      .eq("retained_for_followup", false);
     if (cleanup.error) return fail("השירות אינו זמין כרגע.", 503);
     await db
       .from("sales_usage")
@@ -92,6 +93,7 @@ export async function POST(request: Request) {
     const token = randomBytes(32).toString("hex");
     const { error } = await db.from("sales_conversations").insert({
       token_hash: hashToken(token),
+      retained_for_followup: body.retentionConsentVersion === "followup-v1",
       full_name: fullName,
       contact,
       locale: ["he", "en", "fr", "uk"].includes(body.locale)
@@ -119,3 +121,4 @@ export async function DELETE(request: Request) {
   });
   return NextResponse.json({ reset: true });
 }
+

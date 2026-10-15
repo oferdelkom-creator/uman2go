@@ -46,6 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <Link href="/admin/ai-conversations" className="mt-4 inline-block text-sm font-semibold underline">{locale === 'he' ? 'פניות מעוזר המכירות' : 'AI sales enquiries'}</Link>
       <Link href="/admin/flight-waitlist" className="ms-4 mt-4 inline-block text-sm font-semibold underline">{locale === 'he' ? 'רשימת המתנה לראש השנה 2027' : 'Rosh Hashanah 2027 waitlist'}</Link>
       <div className="mt-8">{children}</div>
+      <Link href="/admin/contact-inquiries" className="mt-4 inline-block font-semibold underline">פניות מטופס יצירת קשר</Link>
     </div>
   );
 }

@@ -21,7 +21,7 @@ const copy = {
     finished: "תודה! השיחה הסתיימה והסיכום נשלח לצוות UMAN2GO להמשך טיפול.",
     contact: "טלפון או אימייל",
     consent:
-      "אני מסכים/ה לשמירת פרטי הקשר והשיחה ל־30 יום ולשליחת סיכום לצוות UMAN2GO במייל להמשך טיפול. הנתונים באתר נמחקים בתוך שעה מתום התקופה; הסיכום נשלח גם לתיבת המייל של הצוות. תוכן השיחה מועבר ל־Claude לצורך תשובות וסיכום. בהכנת מונית מיידית, יעד ומספר נוסעים מועברים למיני־אפ בטלגרם לאחר פתיחת הקישור; הבקשה תישלח לנהגים רק באישורכם שם.",
+      "אני מסכים/ה לשמירת פרטי הקשר והשיחה במערכת UMAN2GO לצורך מעקב וטיפול בפנייה, עד לבקשת מחיקה דרך הנציג, ולשליחת סיכום לצוות במייל. הגישה לשיחה בדפדפן פגה לאחר 30 יום; הפנייה נשמרת לצוות להמשך טיפול. תוכן השיחה מועבר ל־Claude לצורך תשובות וסיכום. בהכנת מונית מיידית, יעד ומספר נוסעים מועברים למיני־אפ בטלגרם לאחר פתיחת הקישור; הבקשה תישלח לנהגים רק באישורכם שם.",
     start: "שמירה והתחלת שיחה",
     saved: "פרטי הקשר נשמרו. אפשר להמשיך כאן גם לאחר רענון העמוד באותו דפדפן.",
     greeting:
@@ -52,7 +52,7 @@ const copy = {
       "Thank you! Your conversation has ended and a summary has been sent to the UMAN2GO team for follow-up.",
     contact: "Phone or email",
     consent:
-      "I agree to storing my contact details and conversation for 30 days and emailing a summary to the UMAN2GO team for follow-up. Website data is deleted within one hour after expiry; a summary is also sent to the team's mailbox. Conversation content is sent to Claude for replies and summaries. For an immediate taxi draft, destination and passenger count are transferred to the Telegram mini app when you open its link; submitting to drivers requires your confirmation there.",
+      "I agree to storing my contact details and conversation in UMAN2GO for enquiry follow-up until I request deletion through the team, and emailing a summary to the team. Browser access expires after 30 days; the enquiry remains available to the team for follow-up. Conversation content is sent to Claude for replies and summaries. For an immediate taxi draft, destination and passenger count are transferred to the Telegram mini app when you open its link; submitting to drivers requires your confirmation there.",
     start: "Save and start chatting",
     saved:
       "Your contact details are saved. You can resume after refreshing in the same browser.",
@@ -185,6 +185,7 @@ export default function SalesAssistant({
           fullName,
           contact: form.get("contact"),
           consent: form.get("consent") === "on",
+          retentionConsentVersion: "followup-v1",
           locale,
         }),
       });
@@ -465,3 +466,4 @@ export default function SalesAssistant({
     </section>
   );
 }
+
