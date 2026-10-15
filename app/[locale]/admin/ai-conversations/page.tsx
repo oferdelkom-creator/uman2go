@@ -8,7 +8,7 @@ export default async function ConversationsPage() {
     .select(
       "id,full_name,contact,locale,created_at,updated_at,summary,status,completed_at,completion_summary,summary_email_status,summary_email_sent_at",
     )
-    .gt("expires_at", new Date().toISOString())
+    .or(`retained_for_followup.eq.true,expires_at.gt.${new Date().toISOString()}`)
     .order("updated_at", { ascending: false })
     .limit(100);
   if (error) return <p role="alert">לא ניתן לטעון את הפניות כרגע.</p>;
@@ -26,8 +26,7 @@ export default async function ConversationsPage() {
     <section>
       <h2 className="text-2xl font-bold">פניות מעוזר המכירות</h2>
       <p className="mt-2 text-sm">
-        פרטי קשר נשמרים לפני תחילת השיחה. מוצגות עד 100 הפניות האחרונות; השיחות
-        נשמרות עד 30 יום. אין כאן אישור הזמנה.
+        פרטי קשר נשמרים לפני תחילת השיחה. מוצגות עד 100 הפניות האחרונות. פניות חדשות בהסכמה מעודכנת נשמרות למעקב עד בקשת מחיקה; פניות בהסכמה הישנה נשמרות ל־30 יום. אין כאן אישור הזמנה.
       </p>
       {messagesError && <p role="alert">תוכן השיחות לא נטען.</p>}
       {!data?.length && <p className="mt-6">עדיין אין פניות.</p>}
@@ -77,3 +76,4 @@ export default async function ConversationsPage() {
     </section>
   );
 }
+
