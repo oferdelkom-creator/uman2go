@@ -1,5 +1,6 @@
 "use client";
 
+import { PrivacyNotice } from "@/components/PrivacyNotice";
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
@@ -46,6 +47,7 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <PrivacyNotice />
       <FormField label={t("fullName")} htmlFor="full_name" required>
         <Input id="full_name" name="full_name" required />
       </FormField>
