@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/Logo";
 import { SITE_NAME } from "@/lib/constants";
+import { BusinessContactDetails } from "@/components/BusinessContactDetails";
 import TelegramLink from "@/components/TelegramLink";
 
 export default async function Footer() {
@@ -67,6 +68,7 @@ export default async function Footer() {
           ))}
         </div>
         <div className="mt-8"><Link href="/terms#cancellation" className="inline-block rounded-xl border border-white px-5 py-3 font-bold text-white underline underline-offset-4">{cancellationLabel}</Link></div>
+        <BusinessContactDetails footer />
         <p className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-white/50">
           © {new Date().getFullYear()} {SITE_NAME}
         </p>
