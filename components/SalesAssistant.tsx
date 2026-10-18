@@ -1,5 +1,6 @@
 "use client";
 
+import { PrivacyNotice } from "@/components/PrivacyNotice";
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 
@@ -292,6 +293,7 @@ export default function SalesAssistant({
         <h1 className="text-3xl font-bold text-brand-navy">{t.title}</h1>
       )}
       <p className="mt-3 text-foreground/70">{t.intro}</p>
+      <div className="mt-4"><PrivacyNotice /></div>
       {loading ? (
         <p className="mt-6" role="status">
           {t.waiting}
