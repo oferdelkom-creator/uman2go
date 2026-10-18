@@ -10,6 +10,7 @@ export default async function Footer() {
   const locale = await getLocale();
   const cancellationLabel = ({ he: "ביטול עסקה / הזמנה", en: "Cancel a transaction / booking", fr: "Annuler une transaction / réservation", uk: "Скасувати замовлення / бронювання" } as Record<string, string>)[locale] ?? "Cancel a transaction / booking";
 
+  const privacyLabel = ({he:"מדיניות פרטיות",en:"Privacy policy",fr:"Politique de confidentialité",uk:"Політика конфіденційності"} as Record<string,string>)[locale] ?? "Privacy policy";
   const columns = [
     {
       title: t("footer.services"),
@@ -35,6 +36,7 @@ export default async function Footer() {
         { href: "/about", label: t("footer.about") },
         { href: "/contact", label: t("footer.contact") },
         { href: "/terms", label: t("footer.terms") },
+        { href: "/privacy", label: privacyLabel },
       ],
     },
   ];

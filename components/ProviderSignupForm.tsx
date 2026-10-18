@@ -1,5 +1,6 @@
 "use client";
 
+import { PrivacyNotice } from "@/components/PrivacyNotice";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
@@ -131,6 +132,7 @@ export function ProviderSignupForm({ initialType }: { initialType?: string }) {
 
   return (
     <div className="flex flex-col gap-6">
+      <PrivacyNotice />
       <div className="flex items-center justify-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
           <span
