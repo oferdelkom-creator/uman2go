@@ -17,7 +17,7 @@ export async function BusinessContactDetails({ footer = false }: { footer?: bool
       <h2 className="font-semibold">{c.title}</h2>
       <p className="mt-2">UMAN2GO · <bdi dir="rtl">{c.company}</bdi> · {c.registration}</p>
       <address className="mt-2 not-italic">{c.address}</address>
-      <p className="mt-2">{c.phone}: <a className={linkClass} href="tel:+972533329778"><bdi dir="ltr">053-332-9778</bdi></a></p>
+      <p className="mt-2">{c.phone}: <a className={linkClass} href="tel:+972523181877"><bdi dir="ltr">052-318-1877</bdi></a></p>
       <p className="mt-2">{c.email}: <a className={linkClass} href="mailto:ofer.delkom@gmail.com"><bdi dir="ltr">ofer.delkom@gmail.com</bdi></a></p>
       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
         <Link className={linkClass} href="/terms">{c.terms}</Link>

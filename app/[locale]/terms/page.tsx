@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "תקנון וזכויות צרכן |
 const sections = [
   [
     "מפעיל האתר ופרטי קשר",
-    "UMAN2GO מופעל על ידי דלקום ע י קום בע״מ, ח״פ 515917516. כתובת: לוי אשכול 80, דירה 2, תל אביב, ישראל. טלפון 0533329778; דוא״ל ofer.delkom@gmail.com."
+    "UMAN2GO מופעל על ידי דלקום ע י קום בע״מ, ח״פ 515917516. כתובת: לוי אשכול 80, דירה 2, תל אביב, ישראל. טלפון 0523181877; דוא״ל ofer.delkom@gmail.com."
   ],
   [
     "תפקיד האתר ואישור הזמנה",
@@ -57,7 +57,7 @@ export default function TermsPage() {
           {sections.map(([title, text]) => <section key={title}><h2 className="text-xl font-bold text-brand-navy">{title}</h2><p className="mt-2">{text}</p></section>)}
           <section id="cancellation" className="scroll-mt-24 rounded-2xl border border-brand-navy/20 p-5">
             <h2 className="text-xl font-bold text-brand-navy">מסירת הודעת ביטול</h2>
-            <p className="mt-2">ניתן למסור הודעת ביטול בטלפון <a className="underline" href="tel:+972533329778">0533329778</a>, בדוא״ל <a className="underline" href="mailto:ofer.delkom@gmail.com?subject=הודעת%20ביטול%20הזמנה">ofer.delkom@gmail.com</a>, בדואר רשום לכתובת העסק לעיל או בטופס המקוון שבהמשך. ניתן למסור הודעה בעל פה במקום העסק, אלא אם הדין מחייב כתב. אין חובה להשתמש דווקא בטופס או לנמק ביטול מחמת חרטה.</p>
+            <p className="mt-2">ניתן למסור הודעת ביטול בטלפון <a className="underline" href="tel:+972523181877">0523181877</a>, בדוא״ל <a className="underline" href="mailto:ofer.delkom@gmail.com?subject=הודעת%20ביטול%20הזמנה">ofer.delkom@gmail.com</a>, בדואר רשום לכתובת העסק לעיל או בטופס המקוון שבהמשך. ניתן למסור הודעה בעל פה במקום העסק, אלא אם הדין מחייב כתב. אין חובה להשתמש דווקא בטופס או לנמק ביטול מחמת חרטה.</p>
             <p className="mt-2">ציינו שם ומספר זהות כנדרש בחוק ופרטי הזמנה לזיהוי העסקה. אין לצרף צילום תעודה או פרטי אשראי. בטופס כתבו ״ביטול הזמנה״ ואת הפרטים הרלוונטיים. במקרה של תקלה ניתן לפנות מיד בטלפון או בדוא״ל, בלי להמתין לתשובתנו. אישור קליטת הודעה אינו קביעה סופית לגבי זכאות להחזר.</p>
             <div className="mt-5"><ContactForm /></div>
           </section>

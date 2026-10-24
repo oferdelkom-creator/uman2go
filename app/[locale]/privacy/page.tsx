@@ -9,7 +9,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
     "sections": [
       [
         "מי אחראי למידע",
-        "UMAN2GO מופעל על ידי דלקום ע י קום בע״מ, ח״פ 515917516, לוי אשכול 80, דירה 2, תל אביב, ישראל. החברה היא בעלת השליטה במידע שנאסף לצורך הפעלת האתר. לבקשות פרטיות: ofer.delkom@gmail.com או 053-332-9778."
+        "UMAN2GO מופעל על ידי דלקום ע י קום בע״מ, ח״פ 515917516, לוי אשכול 80, דירה 2, תל אביב, ישראל. החברה היא בעלת השליטה במידע שנאסף לצורך הפעלת האתר. לבקשות פרטיות: ofer.delkom@gmail.com או 052-318-1877."
       ],
       [
         "מסירת מידע היא לבחירתכם",
@@ -183,7 +183,7 @@ export default async function PrivacyPage() {
     <h1 className="font-display text-3xl font-extrabold text-brand-navy">{policy.title}</h1>
     <p className="text-sm text-foreground/70">{policy.updated}</p>
     {policy.sections.map(([title, text]) => <section key={title}><h2 className="text-xl font-bold text-brand-navy">{title}</h2><p className="mt-2 whitespace-pre-line">{text}</p></section>)}
-    <p><a className="underline underline-offset-4" href="mailto:ofer.delkom@gmail.com">ofer.delkom@gmail.com</a> · <a className="underline underline-offset-4" href="tel:+972533329778"><bdi dir="ltr">053-332-9778</bdi></a></p>
+    <p><a className="underline underline-offset-4" href="mailto:ofer.delkom@gmail.com">ofer.delkom@gmail.com</a> · <a className="underline underline-offset-4" href="tel:+972523181877"><bdi dir="ltr">052-318-1877</bdi></a></p>
     <Link className="underline underline-offset-4" href="/contact">{({he:"צור קשר",en:"Contact",fr:"Contact",uk:"Контакти"} as Record<string,string>)[locale] ?? "Contact"}</Link>
   </article></Section>;
 }
