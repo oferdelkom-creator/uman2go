@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Heebo, Rubik } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Analytics } from "@vercel/analytics/next";
+import VercelPageviews from "@/components/VercelPageviews";
 import { routing } from "@/i18n/routing";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -92,7 +92,7 @@ export default async function LocaleLayout({
           <Footer />
           <WhatsAppButton />
         </NextIntlClientProvider>
-        <Analytics />
+        <VercelPageviews locale={locale} />
       </body>
     </html>
   );

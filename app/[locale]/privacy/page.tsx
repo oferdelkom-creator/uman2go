@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 const policies: Record<string, {title: string; updated: string; sections: string[][]}> = {
   "he": {
     "title": "מדיניות פרטיות",
-    "updated": "עודכן ביום 18.10.2026",
+    "updated": "עודכן ביום 08.11.2026",
     "sections": [
       [
         "מי אחראי למידע",
@@ -33,7 +33,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
       ],
       [
         "עוגיות ומדידת שימוש",
-        "האתר משתמש בעוגיות ובאחסון מקומי ככל שנחוץ להתחברות, להעדפת שפה ולרציפות שיחה. באתר משולב Vercel Analytics למדידת שימוש וביצועים. ניתן לנהל עוגיות דרך הדפדפן; חסימת עוגיות חיוניות עלולה לפגוע בהתחברות או בשירות. מדיניות זו אינה הסכמה גורפת למעקב או לפרסום."
+        "האתר משתמש בעוגיות ובאחסון מקומי ככל שנחוץ להתחברות, להעדפת שפה ולרציפות שיחה. מדידת Vercel Analytics מופעלת רק לאחר הסכמה מפורשת ובדפי הבית הציבוריים בלבד. מסכי לקוחות, הזמנות, תשלומים, חשבון, ניהול וטפסים מוחרגים, ופרמטרים ומקטעים בכתובת מוסרים. הבחירה נשמרת מקומית ל־180 יום וניתן לסרב או לבטל אותה בהעדפות המדידה בדף הבית. ניתן לנהל עוגיות דרך הדפדפן; חסימת עוגיות חיוניות עלולה לפגוע בהתחברות או בשירות. מדיניות זו אינה הסכמה גורפת למעקב או לפרסום."
       ],
       [
         "שמירה ואבטחה",
@@ -51,7 +51,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
   },
   "en": {
     "title": "Privacy policy",
-    "updated": "Updated 18 October 2026",
+    "updated": "Updated 8 November 2026",
     "sections": [
       [
         "Who controls your information",
@@ -79,7 +79,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
       ],
       [
         "Cookies and analytics",
-        "Cookies and local storage may support sign-in, language preferences and conversation continuity. The site includes Vercel Analytics for usage and performance measurement. Browser settings allow you to manage cookies; blocking essential cookies may affect sign-in or service. This policy is not blanket consent to tracking or advertising."
+        "Cookies and local storage may support sign-in, language preferences and conversation continuity. Optional Vercel Analytics runs only after explicit analytics consent on public home pages. Customer, booking, payment, account, admin and form routes are excluded, and URL queries and fragments are removed. Your choice is stored locally for 180 days; use Analytics preferences on a home page to decline or withdraw. Browser settings allow you to manage cookies; blocking essential cookies may affect sign-in or service. This policy is not blanket consent to tracking or advertising."
       ],
       [
         "Retention and security",
@@ -97,7 +97,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
   },
   "fr": {
     "title": "Politique de confidentialité",
-    "updated": "Mise à jour : 18 octobre 2026",
+    "updated": "Mise à jour : 8 novembre 2026",
     "sections": [
       [
         "Responsable et contact",
@@ -117,7 +117,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
       ],
       [
         "Cookies et mesure",
-        "Des cookies et le stockage local permettent connexion, langue et continuité des échanges. Vercel Analytics mesure usage et performances. Les réglages du navigateur permettent de gérer les cookies ; bloquer les éléments essentiels peut affecter le service. Cette politique ne constitue pas un consentement général au suivi ou à la publicité."
+        "Des cookies et le stockage local permettent connexion, langue et continuité des échanges. Vercel Analytics est activé uniquement après votre accord explicite sur les pages d’accueil publiques. Les pages clients, réservations, paiements, comptes, administration et formulaires sont exclues ; les paramètres et fragments des URL sont supprimés. Votre choix est conservé localement pendant 180 jours et peut être retiré dans les préférences de mesure de la page d’accueil. Les réglages du navigateur permettent de gérer les cookies ; bloquer les éléments essentiels peut affecter le service. Cette politique ne constitue pas un consentement général au suivi ou à la publicité."
       ],
       [
         "Conservation et sécurité",
@@ -135,7 +135,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
   },
   "uk": {
     "title": "Політика конфіденційності",
-    "updated": "Оновлено 18 жовтня 2026 року",
+    "updated": "Оновлено 8 листопада 2026 року",
     "sections": [
       [
         "Відповідальна компанія",
@@ -155,7 +155,7 @@ const policies: Record<string, {title: string; updated: string; sections: string
       ],
       [
         "Cookies і аналітика",
-        "Cookies та локальне сховище можуть забезпечувати вхід, вибір мови і продовження розмови. Vercel Analytics вимірює використання та продуктивність. Керувати cookies можна у браузері; блокування необхідних cookies може завадити роботі сервісу. Ця політика не є загальною згодою на стеження чи рекламу."
+        "Cookies та локальне сховище можуть забезпечувати вхід, вибір мови і продовження розмови. Vercel Analytics вмикається лише після явної згоди на загальнодоступних головних сторінках. Сторінки клієнтів, бронювань, платежів, облікового запису, адміністрації та форм виключені; параметри й фрагменти URL видаляються. Вибір зберігається локально 180 днів і може бути змінений у налаштуваннях аналітики на головній сторінці. Керувати cookies можна у браузері; блокування необхідних cookies може завадити роботі сервісу. Ця політика не є загальною згодою на стеження чи рекламу."
       ],
       [
         "Зберігання та безпека",
