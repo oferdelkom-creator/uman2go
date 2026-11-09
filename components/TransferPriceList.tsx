@@ -1,0 +1,14 @@
+import { getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { TRANSFER_VEHICLES, transferQuote, usd } from "@/lib/transfer-pricing";
+export async function TransferPriceList(){
+ const he=(await getLocale())==='he';
+ return <section className="my-10 rounded-2xl border bg-white p-5 sm:p-8">
+ <h2 className="text-2xl font-bold">{he?'מחירון נסיעות קישינב → אומן':'Chisinau → Uman transfer prices'}</h2>
+ <p className="my-3">{he?'מחיר לרכב בכיוון אחד, בדולר, כולל עמלת לקוח 5%. המקדמה לאתר כלולה במחיר; היתרה משולמת ישירות לנהג. זמינות הרכב והמסלול כפופה לאישור ספק.':'One-way prices per vehicle in USD, including the 5% customer fee. The platform advance is part of the total; the balance is paid directly to the driver. Supplier approval is required.'}</p>
+ <div className="overflow-x-auto"><table className="w-full text-start text-sm"><thead><tr className="border-b"><th className="p-3 text-start">{he?'רכב':'Vehicle'}</th><th className="p-3">{he?'מחיר כולל':'Total'}</th><th className="p-3">{he?'מקדמה לאתר':'Advance'}</th><th className="p-3">{he?'יתרה לנהג':'Driver balance'}</th><th><span className="sr-only">{he?'בקשת הזמנה':'Request booking'}</span></th></tr></thead><tbody>{TRANSFER_VEHICLES.map(v=>{const q=transferQuote(v.code);return <tr key={v.code} className="border-b"><td className="p-3">{he?v.he:v.en}</td><td className="p-3 text-center" dir="ltr">{usd(q.totalCents)}</td><td className="p-3 text-center" dir="ltr">{usd(q.depositCents)}</td><td className="p-3 text-center" dir="ltr">{usd(q.driverBalanceCents)}</td><td><Link className="font-semibold underline" href={`/transport/request?vehicle=${v.code}`}>{he?'בקשת הזמנה':'Request'}</Link></td></tr>})}</tbody></table></div>
+ <h3 className="mt-8 text-lg font-bold">{he?'תוספות עצירה למסלול':'Route stop supplements'}</h3>
+ <div className="overflow-x-auto"><table className="mt-3 w-full text-sm"><thead><tr><th className="p-2 text-start">{he?'רכב':'Vehicle'}</th><th className="p-2">{he?'מז׳יבוז׳ וברסלב':'Medzhybizh and Bratslav'}</th><th className="p-2">{he?'ברדיצ׳ב, מז׳יבוז׳ וברסלב':'Berdychiv, Medzhybizh and Bratslav'}</th></tr></thead><tbody>{['private','suv','minivan','sprinter21','minibus29','bus57'].map(code=>{const a=transferQuote(code,'medzhybizh-bratslav');const b=transferQuote(code,'berdychiv-medzhybizh-bratslav');return <tr key={code} className="border-b"><td className="p-2">{he?a.vehicleHe:a.vehicleEn}</td><td className="p-2 text-center" dir="ltr">{usd(a.supplementCents)}</td><td className="p-2 text-center" dir="ltr">{usd(b.supplementCents)}</td></tr>})}</tbody></table></div>
+ <p className="mt-4 text-sm">{he?'תוספת הספרינטר חלה על 8–21 נוסעים, ותוספת האוטובוס על 34–57 נוסעים. לנסיעה חזור, הלוך ושוב או למסלול אחר נדרשת הצעה נפרדת.':'Sprinter supplements apply to 8–21 passengers; coach supplements to 34–57. Return trips, round trips and other routes require a separate quote.'}</p>
+ </section>;
+}

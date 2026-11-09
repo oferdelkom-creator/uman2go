@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
+import { TransferBookingForm } from "@/components/TransferBookingForm";
 import { TransportRequestForm } from "@/components/TransportRequestForm";
 
 export async function generateMetadata({
@@ -14,7 +15,8 @@ export async function generateMetadata({
   return { title: t("metaTitle") };
 }
 
-export default async function TransportRequestPage() {
+export default async function TransportRequestPage({searchParams}:{searchParams:Promise<{vehicle?:string;stops?:string}>}) {
+  const selection=await searchParams;
   const t = await getTranslations("transport.request");
 
   return (
@@ -23,7 +25,8 @@ export default async function TransportRequestPage() {
         <h1 className="text-center font-display text-3xl font-extrabold text-brand-navy">{t("title")}</h1>
         <p className="mt-2 text-center text-foreground/70">{t("subtitle")}</p>
         <Card className="mt-8 p-6 sm:p-8">
-          <TransportRequestForm />
+          <TransferBookingForm initialVehicle={selection.vehicle} initialStops={selection.stops} />
+          <details className="mt-8"><summary>מסלול אחר / Other route</summary><div className="mt-4"><TransportRequestForm /></div></details>
         </Card>
       </div>
     </Section>

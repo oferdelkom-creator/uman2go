@@ -1,3 +1,5 @@
+import { transferQuote, transferQuoteText, TRANSFER_VEHICLES, TRANSFER_STOPS } from "@/lib/transfer-pricing";
+import { prepareSalesTransferDraft, submitSalesTransferDraft } from "@/lib/transfer-reservations";
 import { NextResponse } from "next/server";
 import { generateText, tool, jsonSchema } from "ai";
 import { prepareTaxiDraft } from "@/lib/sales-taxi";
@@ -17,6 +19,7 @@ export const maxDuration = 60;
 const fail = (error: string, status: number) =>
   NextResponse.json({ error }, { status });
 export async function POST(request: Request) {
+  const turnStartedAt = new Date().toISOString();
   let conversationId: string | undefined;
   let stage = "validation";
   try {
@@ -68,11 +71,39 @@ export async function POST(request: Request) {
     const modelId = await salesModelId();
     stage = "generation";
     console.info("Sales assistant model", { modelId });
+    let transferReply: string | undefined;
+    let preparedThisTurn = false;
     let taxiDraft: Awaited<ReturnType<typeof prepareTaxiDraft>> | undefined;
     const result = await generateText({
       model: anthropic(modelId),
       instructions: salesInstructions(session.locale, catalogue),
       tools: {
+
+        quoteScheduledTransfer: tool({
+          description: "Calculate an exact customer-final USD quote only for one-way Chisinau to Uman. Use the selected vehicle and stop package; never use for return, round trip, custom routes or immediate taxis. It does not submit a booking.",
+          inputSchema: jsonSchema<{vehicle_code:string;stops_code:string;passengers:number}>({type:"object",additionalProperties:false,properties:{vehicle_code:{type:"string",enum:TRANSFER_VEHICLES.map(v=>v.code)},stops_code:{type:"string",enum:TRANSFER_STOPS.map(v=>v.code)},passengers:{type:"integer",minimum:1,maximum:57}},required:["vehicle_code","stops_code","passengers"]}),
+          execute: async (input) => {
+            try { const quote=transferQuote(input.vehicle_code,input.stops_code,input.passengers);transferReply=transferQuoteText(quote,session.locale)+'\n'+(session.locale==='he'?'כדי להכין בקשת הזמנה, מה תאריך הנסיעה הרצוי?':'To prepare a booking request, what is your journey date?');return quote; }
+            catch { transferReply=session.locale==='he'?'הרכב, העצירות או מספר הנוסעים אינם תואמים למחירון. נבחר רכב מתאים?':'The vehicle, stops or passenger count do not match the price list. Please choose a suitable vehicle.';return {error:'Invalid quote'}; }
+          },
+        }),
+        prepareScheduledTransferBooking: tool({
+          description: "Save a draft summary only after collecting a one-way Chisinau to Uman vehicle, stop package, passenger count, exact date, Chisinau-local pickup time and pickup location. Customer name/contact are already saved. Show the exact summary and ask for a separate explicit confirmation. A draft does not submit or confirm a booking.",
+          inputSchema: jsonSchema<{vehicle_code:string;stops_code:string;passengers:number;departure_date:string;departure_time:string;pickup:string;notes:string}>({type:"object",additionalProperties:false,properties:{vehicle_code:{type:"string",enum:TRANSFER_VEHICLES.map(v=>v.code)},stops_code:{type:"string",enum:TRANSFER_STOPS.map(v=>v.code)},passengers:{type:"integer",minimum:1,maximum:57},departure_date:{type:"string",pattern:"^\\d{4}-\\d{2}-\\d{2}$"},departure_time:{type:"string",pattern:"^([01]\\d|2[0-3]):[0-5]\\d$"},pickup:{type:"string",minLength:3,maxLength:400},notes:{type:"string",maxLength:1500}},required:["vehicle_code","stops_code","passengers","departure_date","departure_time","pickup","notes"]}),
+          execute: async (input) => {
+            preparedThisTurn=true;
+            try {const draft=await prepareSalesTransferDraft(session,input);transferReply=draft.reply;return {prepared:true,requiresSeparateConfirmation:true};}
+            catch {transferReply=session.locale==='he'?'הסיכום לא נשמר. בדקו תאריך, שעת איסוף, נקודת איסוף ומספר נוסעים. לא נשלחה בקשת הזמנה.':'The summary could not be saved. Check the date, pickup time, location and passenger count. No booking request was submitted.';return {error:'Invalid or unavailable draft'};}
+          },
+        }),
+        submitScheduledTransferBooking: tool({
+          description: "Submit the latest previously displayed draft as a pending-supplier booking request only when this customer message explicitly confirms that exact summary. Do not call on a question, negotiation, changed details or a generic request to book before showing the summary. Never call in the same turn as preparing the draft. No supplier approval, charge or final booking is performed.",
+          inputSchema: jsonSchema<Record<string,never>>({type:"object",additionalProperties:false,properties:{}}),
+          execute: async () => {
+            try {if(preparedThisTurn)throw Error();const result=await submitSalesTransferDraft(session.id,message,session.locale,turnStartedAt);transferReply=result.reply;return {saved:true,status:'pending_supplier'};}
+            catch {transferReply=session.locale==='he'?'כדי לשמור בקשת הזמנה, צריך תחילה סיכום מלא ולאחריו הודעת אישור מפורשת כגון ״מאשר הזמנה״. לא נשמרה בקשה חדשה.':'A complete booking summary and a separate explicit confirmation such as “confirm booking” are required. No new request was submitted.';return {error:'Confirmation required'};}
+          },
+        }),
         prepareImmediateTaxi: tool({
           description:
             "Prepare a taxi draft only when the customer explicitly wants an immediate ride from their current GPS location in Ukraine and has provided a full destination and passenger count. No ride is submitted. The customer must open Telegram, share GPS, review and send the request, then choose a driver and price. Never use for future rides, provider signup, or an unspecified pickup.",
@@ -111,11 +142,11 @@ export async function POST(request: Request) {
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(40000),
     });
-    const reply = taxiDraft
+    const reply = transferReply ?? (taxiDraft
       ? session.locale === "he"
         ? `הכנתי בקשת מונית מיידית ליעד: ${taxiDraft.destination}, עבור ${taxiDraft.passengers} נוסעים.\nהבקשה עדיין לא נשלחה לנהגים. בטלגרם לחצו Start ואז פתיחת הבקשה, שתפו GPS, בדקו את הפרטים ואשרו שליחה. הנהגים יציעו מחיר ותבחרו הצעה. הקישור תקף ל־15 דקות; אין חיוב באתר.\n${taxiDraft.url}`
         : `Prepared an immediate taxi draft to ${taxiDraft.destination} for ${taxiDraft.passengers} passengers. It has not been sent to drivers. In Telegram press Start, open the draft, share GPS, review and submit. Drivers will quote and you choose an offer. The link expires in 15 minutes; no website charge.\n${taxiDraft.url}`
-      : result.text.trim().slice(0, 6000);
+      : result.text.trim().slice(0, 6000));
     if (!reply) {
       console.error("Sales assistant empty reply", {
         finishReason: result.finishReason,
